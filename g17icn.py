@@ -1,4 +1,4 @@
-# script to simulate one network with several nodes
+# script to emulate one network with several nodes
 
 import argparse
 import asyncio
@@ -21,13 +21,16 @@ logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 logger.debug("hello world")
 
-
 class G17ICNNODE:
     def __init__(self, task_id, logger):
         self.task_id = task_id
         self.logger = logger
         self.jwt = g17jwt.JWT()
         self.jwt.init_jwt(key_size=32)
+
+    # start a http server to listen for connections and handle publish/subscribe messages
+    async def start(self): 
+        pass
 
     # subscribe to data on the network
     async def get(self):
