@@ -23,24 +23,29 @@ logger.addHandler(console_handler)
 logger.debug("hello world")
 
 
-import aiohttp
+from aiohttp import web
 class HTTPServer:
     def __init__(self):
+        self.logger = logging.getLogger()
         pass
 
     async def handler(self, request):
-        return aiohttp.web.Response(text="ok")
+        return web.Response(text="ok")
 
     async def start(self):
-        app = aiohttp.web.Application()
+        app = web.Application()
         app.router.add_get("/", lambda r: self.handler(r))
-        web_runner = aiohttp.web.AppRunner(app)
+        web_runner = web.AppRunner(app)
         # TODO handle errors
         await web_runner.setup()
-        site = aiohttp.web.TCPSite(web_runner,'localhost', 0)
+        site = web.TCPSite(web_runner,'localhost', 0)
         await site.start()
-        self.port = site._server.sockets[0].getsocketname()[1]
-        self.logger.debug("started server on port", self.port)
+        print(site._server.sockets)
+        addr = site._server.sockets[0].getsockname()
+        self.host = addr[0]
+        self.port = int(addr[1])
+        print(type(self.port))
+        self.logger.debug(f"started server on port {self.port}")
 
 # interested party and producer
 # interested party sends interest to network
@@ -50,22 +55,16 @@ class G17ICNNODE:
     def __init__(self, task_id, emulation):
         self.task_id = task_id
         self.logger = logging.getLogger()
-        self.jwt = g17jwt.JWT()
-        self.jwt.init_jwt(key_size=32)
-
+        self.jwt = g17jwt.JWT().init_jwt(key_size=32)
         self.PIT = {}
         self.FIB = {}
-
         self.emulation = emulation
-
         self.port = 0 # placeholder
-
-        self.server = HttpServer()
+        self.server = HTTPServer()
 
     async def discover_neighbours(self):
         current_neighbours = await self.emulation.discover_neighbours(self.task_id)
         # TODO
-
 
     # send interest to data to the network to satisfy interest
     async def get(self):
@@ -77,9 +76,7 @@ class G17ICNNODE:
 
     async def start(self):
         self.logger.debug(f"starting node {self.task_id}")
-        while True:
-            await asyncio.sleep(random.randint(1,3))
-            self.logger.debug(f"task {self.task_id} awakes")
+        await self.server.start()
 
 
 class ICNEmulator:
@@ -118,6 +115,4 @@ async def main():
     await emulator.start()
 
 if __name__ == "__main__":
-    server = HTTPServer()
-    asyncio.run(server.start())
     asyncio.run(main())
