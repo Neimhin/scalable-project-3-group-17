@@ -17,6 +17,7 @@ from aiohttp import web
 class HTTPServer:
     def __init__(self):
         self.logger = logging.getLogger()
+        self.desires = ["/meaning-of-life"]
         pass
 
     async def handler(self, request):
@@ -36,6 +37,9 @@ class HTTPServer:
         self.port = int(addr[1])
         print(type(self.port))
         self.logger.debug(f"started server on port {self.port}")
+
+    def set_desires(self, desires):
+        self.desires = desires
 
 # interested party and producer
 # interested party sends interest to network
@@ -102,6 +106,13 @@ class ICNEmulator:
 
         self.nodes = [G17ICNNODE(idx,self) for idx in self.node_ids]
         self.tasks = [asyncio.create_task(node.start()) for node in self.nodes]
+
+    def emulation_loop(self):
+        async def loop():
+            while True:
+                await asyncio.sleep(1)
+                self.logger.debug("running emulation loop")
+        return asyncio.create_task(loop())
     
     async def start(self):
         await asyncio.gather(*self.tasks)
