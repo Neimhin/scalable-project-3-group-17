@@ -52,7 +52,7 @@ class G17ICNNODE:
             "sender_address": sender_address
         '''
         t = await request.text()
-        print(t)
+        # print(t)
         packet = self.jwt.decode(t)
         # print(packet)
         return web.Response(text="ok")
@@ -79,11 +79,13 @@ class G17ICNNODE:
                 "public_key": self.jwt.public_key.decode('utf-8')
                 })
             response = await client.post(self.HOSTNAME + str(port), content=payload)
-            print("RESPONSE", response.text)
+            # print("RESPONSE", response.text)
             # TODO handle 200 ok response and error responses
+    
     # send named data to the network
-    async def set(self):
+    async def sendToNetwork(self):
         pass
+    
 
     async def start(self):
         self.jwt = g17jwt.JWT()
@@ -92,17 +94,23 @@ class G17ICNNODE:
         self.PIT = {} 
         self.FIB = {}
         self.CACHE = {}
+        
         async def handler_async(request):
             return await self.handler(request)
+        
         self.server = HTTPServer(handler_async)
         self.desires = ["/port/0", "/port/1", "/port/2"]
         self.neigbour_ports = []
         self.logger.debug(f"starting node {self.task_id}")
+        
         await self.server.start()
+        
         data_name = f"/port/{self.task_id}"
         # print(self.jwt)
+        
         data = self.jwt.encode({data_name: self.server.port})
         self.CACHE[data_name] = data
+        
         while True:
             self.neigbour_ports = self.discover_neighbours()
             await asyncio.gather(*[asyncio.create_task(self.get(desire)) for desire in self.desires])
