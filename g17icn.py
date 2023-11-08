@@ -22,12 +22,32 @@ logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 logger.debug("hello world")
 
+
+import aiohttp
+class HTTPServer:
+    def __init__(self):
+        pass
+
+    async def handler(self, request):
+        return aiohttp.web.Response(text="ok")
+
+    async def start(self):
+        app = aiohttp.web.Application()
+        app.router.add_get("/", lambda r: self.handler(r))
+        web_runner = aiohttp.web.AppRunner(app)
+        # TODO handle errors
+        await web_runner.setup()
+        site = aiohttp.web.TCPSite(web_runner,'localhost', 0)
+        await site.start()
+        self.port = site._server.sockets[0].getsocketname()[1]
+        self.logger.debug("started server on port", self.port)
+
 # interested party and producer
 # interested party sends interest to network
 # producer sends data to satisfy interest if interest is received
 
 class G17ICNNODE:
-    def __init__(self, task_id, scenario):
+    def __init__(self, task_id, emulation):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.jwt = g17jwt.JWT()
@@ -36,14 +56,16 @@ class G17ICNNODE:
         self.PIT = {}
         self.FIB = {}
 
+        self.emulation = emulation
+
         self.port = 0 # placeholder
 
-    async def discover_neighbours():
-        pass
+        self.server = HttpServer()
 
-    # start a http server to listen for connections and handle publish/subscribe messages
-    async def start(self): 
-        pass
+    async def discover_neighbours(self):
+        current_neighbours = await self.emulation.discover_neighbours(self.task_id)
+        # TODO
+
 
     # send interest to data to the network to satisfy interest
     async def get(self):
@@ -61,11 +83,12 @@ class G17ICNNODE:
 
 
 class ICNEmulator:
-
     async def discover_neighbours(task_id):
             pass
+    
     def __init__(self,num_nodes=3):
-        self.adjancency_matrix = np.array([[0,1,0],[1,0,1],[0,1,0]])
+        self.num_nodes = 3
+        self.adjacency_matrix = np.array([[0,1,0],[1,0,1],[0,1,0]])
 
         self.node_ids = np.array(list(range(3)))
 
@@ -73,7 +96,9 @@ class ICNEmulator:
         self.tasks = [asyncio.create_task(node.start()) for node in self.nodes]
     
     async def start(self):
-        await asyncio.gather(self.tasks)
+        await asyncio.gather(*self.tasks)
+
+    
 
 
 async def main():
@@ -87,4 +112,6 @@ async def main():
     await emulator.start()
 
 if __name__ == "__main__":
+    server = HTTPServer()
+    asyncio.run(server.start())
     asyncio.run(main())
