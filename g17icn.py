@@ -22,7 +22,6 @@ logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 logger.debug("hello world")
 
-
 from aiohttp import web
 class HTTPServer:
     def __init__(self):
@@ -52,7 +51,8 @@ class HTTPServer:
 # producer sends data to satisfy interest if interest is received
 
 class G17ICNNODE:
-    def __init__(self, task_id, emulation):
+
+    def __init__(self, task_id, scenario):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.jwt = g17jwt.JWT().init_jwt(key_size=32)
@@ -64,7 +64,20 @@ class G17ICNNODE:
 
     async def discover_neighbours(self):
         current_neighbours = await self.emulation.discover_neighbours(self.task_id)
-        # TODO
+
+    # start a http server to listen for connections and handle publish/subscribe messages
+    async def start(self): 
+        pass
+
+    '''
+    Handle a request for a interested. 
+    When it get a request from other nodes, it will at first check the self.PIT to find if there is a same request, if exist, do not pass this request, and save this request to waiting list.
+    When a request interested come back to this node, it should check the time validity, if not valid, discard it. if valid, return this interested message to the requestor and nodes in the waiting list.
+    It will check its` cache, if there is an entry suitable to this interested, return it. If not, it will use the self.FIB to pass this request to the next hop and save this request to its pit.
+    TO BE CONTINUE lol
+    '''
+    def HandleInterested():
+        pass
 
     # send interest to data to the network to satisfy interest
     async def get(self):
@@ -99,9 +112,7 @@ class ICNEmulator:
         self.tasks = [asyncio.create_task(node.start()) for node in self.nodes]
     
     async def start(self):
-        await asyncio.gather(*self.tasks)
-
-    
+        await asyncio.gather(self.tasks)
 
 
 async def main():
