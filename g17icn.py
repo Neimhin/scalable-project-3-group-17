@@ -1,10 +1,12 @@
 # script to emulate one network with several nodes
 
+import requests
 import argparse
 import asyncio
 import random
 import logging
 import g17jwt
+import httpx
 import numpy as np
 
 # TODO: refactor to another file
@@ -15,17 +17,14 @@ logger.debug("hello world")
 
 from aiohttp import web
 class HTTPServer:
-    def __init__(self):
+    def __init__(self,handler):
         self.logger = logging.getLogger()
-        self.desires = ["/meaning-of-life"]
-        pass
-
-    async def handler(self, request):
-        return web.Response(text="ok")
+        self.port = None
+        self.handler = handler
 
     async def start(self):
         app = web.Application()
-        app.router.add_get("/", lambda r: self.handler(r))
+        app.router.add_post("/", lambda r: self.handler(r))
         web_runner = web.AppRunner(app)
         # TODO handle errors
         await web_runner.setup()
@@ -46,13 +45,9 @@ class HTTPServer:
 # producer sends data to satisfy interest if interest is received
 
 class G17ICNNODE:
-
     def __init__(self, task_id, emulation):
         self.task_id = task_id
         self.logger = logging.getLogger()
-        self.jwt = g17jwt.JWT().init_jwt(key_size=32)
-        self.PIT = {} # 
-        self.FIB = {}
         self.emulation = emulation
         self.location="124.0.0" # represented the node location
         self.server = HTTPServer()
@@ -64,37 +59,78 @@ class G17ICNNODE:
         return self.neighbour
 
     
-    def HandleInterested(self,request):
-        '''
-    Handle an interest request (whih is a JWT).
-    When nodeA gets a request from another nodeB, nodeA will first check the location. If the location point to nodeA then nodeA will check cache to see whether it has the data. 
-    If nodeA does not satisfy the requirement of location, it will save this request to its interested table and send this request to next hop follow the entry of Forwarding Infromation Base(FIB)
-    If there is another same request coming to nodeA, nodeA will discard this request and put this request sender in waiting list.
     
-    Parameters:
-    request->format:disctionary which include:
-    -----------------------------------location: come from the sender, specific the location  it want to know.
-    -----------------------------------data_name: tell the interested data the sender want.
+    async def handler(self, request):
         '''
+        When nodeA gets a request from another nodeB, nodeA will first check the location. If the location point to nodeA then nodeA will check cache to see whether it has the data. 
+        If nodeA does not satisfy the requirement of location, it will save this request to its interested table and send this request to next hop follow the entry of Forwarding Infromation Base(FIB)
+        If there is another same request coming to nodeA, nodeA will discard this request and put this request sender in waiting list.
+        Parameters:
+        request`s format: disctionary which include:
+        "data_name": request_type/(location),
+        "public_key": public key value,
+        "time_stamp": timevalue,
+        "sender_address": sender_address
+        '''
+        t = await request.text()
+        print(t)
+        packet = self.jwt.decode(t)
+        print(packet)
+        return web.Response(text="ok")
         if request['location']==self.location:
             request_type=request['data_name'].split("/")[0]
         pass
 
     # send interest to data to the network to satisfy interest
-    async def get(self):
+    async def get(self,data_name):
+        cached_data = self.CACHE.get(data_name)
+        if cached_data:
+            return
+        for port in self.neigbour_ports:
+            await self.send_interest_to(port, data_name)
         pass
 
+    async def send_interest_to(self,port,data_name):
+        if not port:
+            return
+        async with httpx.AsyncClient() as client:
+            payload = self.jwt.encode({
+                "type": "interest",
+                "name": data_name,
+                "public_key": str(self.jwt.public_key)
+                })
+            response = await client.post("http://localhost:" + str(port), content=payload)
+            print("RESPONSE", response.text)
+            # TODO handle 200 ok response and error responses
     # send named data to the network
     async def set(self):
         pass
 
     async def start(self):
+        self.jwt = g17jwt.JWT()
+        print(self.jwt)
+        self.jwt.init_jwt(key_size=32)
+        self.PIT = {} # 
+        self.FIB = {}
+        self.CACHE = {}
+        async def handler_async(request):
+            return await self.handler(request)
+        self.server = HTTPServer(handler_async)
+        self.desires = ["/port/0", "/port/1", "/port/2"]
+        self.neigbour_ports = []
         self.logger.debug(f"starting node {self.task_id}")
         await self.server.start()
+        data_name = f"/port/{self.task_id}"
+        print(self.jwt)
+        data = self.jwt.encode({data_name: self.server.port})
+        self.CACHE[data_name] = data
         while True:
-            await asyncio.sleep(3)
-            neigbour_ports = self.discover_neighbours()
+            self.neigbour_ports = self.discover_neighbours()
+            await asyncio.gather(*[asyncio.create_task(self.get(desire)) for desire in self.desires])
+                
             self.logger.debug(f"still running on port {self.server.port}: task_id: {self.task_id}")
+            await asyncio.sleep(3)
+
 
 
 class ICNEmulator:

@@ -25,7 +25,7 @@ def rs256_keypair(key_size=2048,public_exponent=65537):
 
 # contributors: [nrobinso-7.11.23]
 class JWT:
-    def __init(self):
+    def __init__(self):
         self.private_key = None
         self.public_key = None
         self.logger = logging.getLogger()
@@ -42,6 +42,11 @@ class JWT:
 
     def decode(self, token):
         if self.public_key:
-            return jwt.decode(token, self.public_key, algorithms=["RS256"])
+            tok = jwt.decode(token, options={"verify_signature": False}, algorithms=["RS256"])
+
+            # TODO for naarora
+            print(tok)
+            jwt.decode(token, bytes(tok["public_key"],encoding="utf-8"), algorithms=["RS256"])
+            return tok
         else:
             raise ValueError("Public key not available. Call init_jwt with a public key.")
