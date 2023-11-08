@@ -5,6 +5,8 @@ import g17jwt
 # contributors: [nrobinso-7.11.23]
 import tempfile
 import unittest
+
+
 class TestJWTManager(unittest.TestCase):
     def test_jwt_operations(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -14,6 +16,7 @@ class TestJWTManager(unittest.TestCase):
             encoded_token = jwts.encode(payload)
             decoded_payload = jwts.decode(encoded_token)
             self.assertEqual(decoded_payload, payload)
+
 
 if __name__ == "__main__":
     unittest.main()
