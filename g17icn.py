@@ -86,9 +86,15 @@ class ICNEmulator:
     async def discover_neighbours(task_id):
             pass
     
+    def initialize_adjacency_matrix():
+        pass
+    
     def __init__(self,num_nodes=3):
         self.num_nodes = 3
-        self.adjacency_matrix = np.array([[0,1,0],[1,0,1],[0,1,0]])
+        self.adjacency_matrix = np.array(
+            [[0,1,0],
+             [1,0,1],
+             [0,1,0]])
 
         self.node_ids = np.array(list(range(3)))
 
