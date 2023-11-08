@@ -8,6 +8,7 @@ import logging
 import g17jwt
 import httpx
 import numpy as np
+from datetime import datetime
 
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -52,6 +53,8 @@ class G17ICNNODE:
         self.location="124.0.0" # represented the node location
         self.server = HTTPServer()
         self.neighbour=[]
+        self.PIT={}
+        self.FIB={}
 
     def discover_neighbours(self):
         self.neighbour = self.emulation.discover_neighbours(self.task_id)
@@ -60,26 +63,73 @@ class G17ICNNODE:
 
     
     
-    async def handler(self, request):
+    async def handler(self, request,flag):
         '''
+        Author:[zhfu-8th-11-2023]
+
         When nodeA gets a request from another nodeB, nodeA will first check the location. If the location point to nodeA then nodeA will check cache to see whether it has the data. 
         If nodeA does not satisfy the requirement of location, it will save this request to its interested table and send this request to next hop follow the entry of Forwarding Infromation Base(FIB)
         If there is another same request coming to nodeA, nodeA will discard this request and put this request sender in waiting list.
         Parameters:
         request`s format: disctionary which include:
-        "data_name": request_type/(location),
-        "public_key": public key value,
-        "time_stamp": timevalue,
-        "sender_address": sender_address
+            "data_name": request_type/(location),
+            "public_key": public key value,
+            "time_stamp": timevalue,
+            "sender_address": sender_address,
+        flag represented this request come from where, 0 shows that this request comes from itself, 1 represented other nodes.
         '''
         t = await request.text()
         print(t)
         packet = self.jwt.decode(t)
         print(packet)
-        return web.Response(text="ok")
-        if request['location']==self.location:
-            request_type=request['data_name'].split("/")[0]
-        pass
+        web.Response(text="ok")
+        
+        request_interesting=packet['data_name']
+        if packet['location']==self.location:
+            request_type=request_interesting.split("/")[0]  # request_type value should be "tempture", "light_intensive" and anything else like this.
+            packet["data"]=self.CACHE[request_type]
+            return self.jwt.encode( packet)
+        else:
+            if self.PIT[request_interesting]==None:
+                #self.PIT[request_interesting]={}
+                sub_dict={}
+                sub_dict['flag']=flag
+                sub_dict['waiting_list']=[packet['public_key']]
+                self.PIT[request_interesting]=sub_dict
+            else:
+                self.PIT[request_interesting]['waiting_list'].append(packet['public_key'])
+            
+            message=self.jwt.encode({
+                        'data_name':request_interesting,
+                        "public_key":self.jwt.public_key,
+                        "time_stamp":time,
+                        "hop_number":packet['hop_number']+1,
+                        "data":packet["data"]
+                    })
+
+            if self.FIB[request_interesting]==None:
+                min_hop=100000,
+                min_port=-1
+                time=datetime.now().timestamp()
+
+                for neighbor in self.neighbour:
+                    
+                    print(f"send intereseting message to {neighbor}")
+                    response = send_interest_to(neighbor,message)
+                    res=self.jwt.decode(response)
+                    if min_hop>res['hop_number']:
+                        min_port=neighbor
+                port_info={}
+                port_info['time_stamp']=datetime.now().timestamp()
+                port_info['min_hop']=min_port
+                self.FIB[request_interesting]=port_info
+                
+            else:
+                port = self.FIB[request_interesting]
+                respond=send_interes_to(port,message)
+            
+            return response
+                
 
     # send interest to data to the network to satisfy interest
     async def get(self,data_name):

@@ -5,25 +5,39 @@
     "data_name": request_type/(location),
     "public_key": public key value,
     "time_stamp": timevalue,
-    "sender_address": sender_address
+    "hop_number": hop number # default as 0, each time this interesting package is passed, value increment.
+    "data":data  # the request data, filled by the node who have this data
 }
 
 Eg:  {"data_name": "tempture/(129,30)" ,
       "public_key": "slkdjaskldjasldjlas",
-      "timeStamp":timeValue,
-      "sender_address": ? }
+      "time_stamp":datetime.now().timestamp(),
+      "hop_number":3 # 3 shows that this request has passed 3 devices 
+      "data":None
+     }
 
 ## Interesting Table Format
 
 {
-    "data_name":request_type/(location),
-    "request_type":flag  # when flag=1 represented this request from other nodes, 0 represented from itself.
-    "waiting_list":[]   #nodes index waiting for this request
+    "data_name":request_type/(location):
+    {
+        "request_type":flag  # when flag=1 represented this request from other nodes, 0 represented from itself.
+
+        "waiting_list":[]   #nodes index waiting for this request
+    }
 }
 
 ## Neighbour 
 
-neighbour list should include the port number and its location.locals
+neighbour list should include the port number ['port_number']
+
+## CACHE FORMAT
+
+{
+    'tempture':value,
+    "intensive_value":value,
+    "....." : .....
+}
 
 ## Node
 
