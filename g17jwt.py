@@ -25,7 +25,7 @@ def rs256_keypair(key_size=2048,public_exponent=65537):
 
 # contributors: [nrobinso-7.11.23]
 class JWT:
-    def __init(self):
+    def __init__(self):
         self.private_key = None
         self.public_key = None
         self.logger = logging.getLogger()
