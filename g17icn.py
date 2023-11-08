@@ -49,30 +49,36 @@ class G17ICNNODE:
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
-        self.HOSTNAME = "http://localhost:"
+    
 
 
     def discover_neighbours(self):
-        current_neighbours_ports = self.emulation.discover_neighbours(self.task_id)
-        self.logger.debug(f"got neighbours {str(current_neighbours_ports)}")
-        return current_neighbours_ports
+        self.neighbour = self.emulation.discover_neighbours(self.task_id)
+        self.logger.debug(f"got neighbours {str(self.neighbour)}")
+        return self.neighbour
 
-    '''
-    Handle an interest request (whih is a JWT).
-    When we get a request from another node, we will first check the self.PIT to find if we have already received this interest request.
-    If we have, do not pass this request, and sender to list of nodes waiting for that data.
-    When an interest request is received, it should check the time validity, if not valid, discard it.
-    If valid respond to the sender with a 200 OK response code.
-    It will check its` cache, if there is an entry suitable to satisfy the interest request, respond with the data as a JWT.
-    If not, it will use the self.FIB to pass this request to the next hop and save this request to its pit.
-    TO BE CONTINUE lol
-    '''
+    
+    
     async def handler(self, request):
+        '''
+        When nodeA gets a request from another nodeB, nodeA will first check the location. If the location point to nodeA then nodeA will check cache to see whether it has the data. 
+        If nodeA does not satisfy the requirement of location, it will save this request to its interested table and send this request to next hop follow the entry of Forwarding Infromation Base(FIB)
+        If there is another same request coming to nodeA, nodeA will discard this request and put this request sender in waiting list.
+        Parameters:
+        request`s format: disctionary which include:
+        "data_name": request_type/(location),
+        "public_key": public key value,
+        "time_stamp": timevalue,
+        "sender_address": sender_address
+        '''
         t = await request.text()
         print(t)
         packet = self.jwt.decode(t)
         # print(packet)
         return web.Response(text="ok")
+        if request['location']==self.location:
+            request_type=request['data_name'].split("/")[0]
+        pass
 
     # send interest to data to the network to satisfy interest
     async def get(self,data_name):
