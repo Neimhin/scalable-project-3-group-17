@@ -85,11 +85,37 @@ class G17ICNNODE:
 
 
 class ICNEmulator:
-    async def discover_neighbours(task_id):
-            pass
-    
-    def initialize_adjacency_matrix():
-        pass
+    def initialize_adjacency_matrix(n):
+        # Initialize an n x n matrix filled with zeros
+        adj_matrix = [[0] * n for _ in range(n)]
+
+        # Fill the adjacency matrix to represent linear connections
+        for i in range(n):
+            if i > 0:
+                adj_matrix[i][i - 1] = 1  # Connect to the previous node
+            if i < n - 1:
+                adj_matrix[i][i + 1] = 1  # Connect to the next node
+
+        return adj_matrix
+
+    async def discover_neighbors(node_number, adjacency_matrix):
+        if node_number < 0 or node_number >= len(adjacency_matrix):
+            return []  # Invalid node number
+
+        neighbors = []
+        for i in range(len(adjacency_matrix[node_number])):
+            if adjacency_matrix[node_number][i] == 1:
+                neighbors.append(i)
+
+        return neighbors
+
+    n=5
+    adjacency_matrix = initialize_adjacency_matrix(n) 
+    task_id = 2
+    neighbors = discover_neighbors(task_id, adjacency_matrix)
+
+    def get_port_numbers(neighbors):
+        return [neighbors[i].port for i in neighbors]
     
     def __init__(self,num_nodes=3):
         self.num_nodes = 3
