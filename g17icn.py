@@ -11,15 +11,6 @@ import numpy as np
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler("default.log")
-file_handler.setLevel(logging.DEBUG)
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(formatter)
-console_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-logger.addHandler(console_handler)
 logger.debug("hello world")
 
 from aiohttp import web
@@ -52,22 +43,17 @@ class HTTPServer:
 
 class G17ICNNODE:
 
-    def __init__(self, task_id, scenario):
+    def __init__(self, task_id, emulation):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.jwt = g17jwt.JWT().init_jwt(key_size=32)
-        self.PIT = {}
+        self.PIT = {} # 
         self.FIB = {}
         self.emulation = emulation
-        self.port = 0 # placeholder
         self.server = HTTPServer()
 
     async def discover_neighbours(self):
         current_neighbours = await self.emulation.discover_neighbours(self.task_id)
-
-    # start a http server to listen for connections and handle publish/subscribe messages
-    async def start(self): 
-        pass
 
     '''
     Handle an interest request (whih is a JWT).
@@ -75,7 +61,8 @@ class G17ICNNODE:
     If we have, do not pass this request, and sender to list of nodes waiting for that data.
     When an interest request is received, it should check the time validity, if not valid, discard it.
     If valid respond to the sender with a 200 OK response code.
-    It will check its` cache, if there is an entry suitable to this interested, return it. If not, it will use the self.FIB to pass this request to the next hop and save this request to its pit.
+    It will check its` cache, if there is an entry suitable to satisfy the interest request, respond with the data as a JWT.
+    If not, it will use the self.FIB to pass this request to the next hop and save this request to its pit.
     TO BE CONTINUE lol
     '''
     def HandleInterested():
@@ -92,6 +79,9 @@ class G17ICNNODE:
     async def start(self):
         self.logger.debug(f"starting node {self.task_id}")
         await self.server.start()
+        while True:
+            await asyncio.sleep(3)
+            self.logger.debug(f"still running on port {self.server.port}: task_id: {self.task_id}")
 
 
 class ICNEmulator:
@@ -114,7 +104,7 @@ class ICNEmulator:
         self.tasks = [asyncio.create_task(node.start()) for node in self.nodes]
     
     async def start(self):
-        await asyncio.gather(self.tasks)
+        await asyncio.gather(*self.tasks)
 
 
 async def main():
