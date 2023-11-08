@@ -45,8 +45,9 @@ class JWT:
             tok = jwt.decode(token, options={"verify_signature": False}, algorithms=["RS256"])
 
             # TODO for naarora
-            print(tok)
-            jwt.decode(token, bytes(tok["public_key"],encoding="utf-8"), algorithms=["RS256"])
+            # import pdb
+            # pdb.set_trace()
+            jwt.decode(token, bytes(tok["public_key"], 'utf-8'), algorithms=["RS256"])
             return tok
         else:
             raise ValueError("Public key not available. Call init_jwt with a public key.")

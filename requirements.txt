@@ -1,0 +1,5 @@
+jwt
+requests
+httpx
+numpy
+aiohttp

@@ -49,7 +49,7 @@ class G17ICNNODE:
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
-    
+        self.HOSTNAME = "http://localhost:"
 
 
     def discover_neighbours(self):
@@ -71,7 +71,7 @@ class G17ICNNODE:
         t = await request.text()
         print(t)
         packet = self.jwt.decode(t)
-        print(packet)
+        # print(packet)
         return web.Response(text="ok")
 
     # send interest to data to the network to satisfy interest
@@ -90,9 +90,9 @@ class G17ICNNODE:
             payload = self.jwt.encode({
                 "type": "interest",
                 "name": data_name,
-                "public_key": str(self.jwt.public_key)
+                "public_key": self.jwt.public_key.decode('utf-8')
                 })
-            response = await client.post("http://localhost:" + str(port), content=payload)
+            response = await client.post(self.HOSTNAME + str(port), content=payload)
             print("RESPONSE", response.text)
             # TODO handle 200 ok response and error responses
     # send named data to the network
@@ -101,9 +101,9 @@ class G17ICNNODE:
 
     async def start(self):
         self.jwt = g17jwt.JWT()
-        print(self.jwt)
-        self.jwt.init_jwt(key_size=32)
-        self.PIT = {} # 
+        # print(self.jwt)
+        self.jwt.init_jwt(key_size=32)        
+        self.PIT = {} 
         self.FIB = {}
         self.CACHE = {}
         async def handler_async(request):
@@ -114,7 +114,7 @@ class G17ICNNODE:
         self.logger.debug(f"starting node {self.task_id}")
         await self.server.start()
         data_name = f"/port/{self.task_id}"
-        print(self.jwt)
+        # print(self.jwt)
         data = self.jwt.encode({data_name: self.server.port})
         self.CACHE[data_name] = data
         while True:
