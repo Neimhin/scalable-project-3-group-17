@@ -70,9 +70,11 @@ class G17ICNNODE:
         pass
 
     '''
-    Handle a request for a interested. 
-    When it get a request from other nodes, it will at first check the self.PIT to find if there is a same request, if exist, do not pass this request, and save this request to waiting list.
-    When a request interested come back to this node, it should check the time validity, if not valid, discard it. if valid, return this interested message to the requestor and nodes in the waiting list.
+    Handle an interest request (whih is a JWT).
+    When we get a request from another node, we will first check the self.PIT to find if we have already received this interest request.
+    If we have, do not pass this request, and sender to list of nodes waiting for that data.
+    When an interest request is received, it should check the time validity, if not valid, discard it.
+    If valid respond to the sender with a 200 OK response code.
     It will check its` cache, if there is an entry suitable to this interested, return it. If not, it will use the self.FIB to pass this request to the next hop and save this request to its pit.
     TO BE CONTINUE lol
     '''
