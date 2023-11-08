@@ -1,4 +1,5 @@
 from aiohttp import web
+import logging
 
 
 class HTTPServer:
@@ -11,7 +12,9 @@ class HTTPServer:
         app = web.Application()
         app.router.add_post("/", lambda r: self.handler(r))
         web_runner = web.AppRunner(app)
+
         # TODO handle errors
+        
         await web_runner.setup()
         site = web.TCPSite(web_runner,'localhost', 0)
         await site.start()

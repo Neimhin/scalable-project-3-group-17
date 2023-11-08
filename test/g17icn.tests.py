@@ -1,6 +1,6 @@
 import unittest
 import tempfile
-import g17jwt
+from .. import g17jwt
 
 # contributors: [nrobinso-7.11.23]
 import tempfile

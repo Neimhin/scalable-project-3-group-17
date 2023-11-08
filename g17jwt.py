@@ -4,6 +4,7 @@ from cryptography.hazmat.backends import default_backend
 import jwt
 import logging
 
+
 # contributors: [nrobinso-7.11.23]
 def rs256_keypair(key_size=2048,public_exponent=65537):
     private_key = rsa.generate_private_key(
@@ -22,6 +23,7 @@ def rs256_keypair(key_size=2048,public_exponent=65537):
         format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
     return (private_key_pem, public_key_pem)
+
 
 # contributors: [nrobinso-7.11.23]
 class JWT:
@@ -43,10 +45,6 @@ class JWT:
     def decode(self, token):
         if self.public_key:
             tok = jwt.decode(token, options={"verify_signature": False}, algorithms=["RS256"])
-
-            # TODO for naarora
-            # import pdb
-            # pdb.set_trace()
             jwt.decode(token, bytes(tok["public_key"], 'utf-8'), algorithms=["RS256"])
             return tok
         else:

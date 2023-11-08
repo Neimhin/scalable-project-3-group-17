@@ -1,3 +1,6 @@
+import numpy as np
+from node import G17ICNNODE
+
 class ICNEmulator:
     def initialize_adjacency_matrix(self, n):
         # Initialize an n x n matrix filled with zeros
@@ -25,6 +28,7 @@ class ICNEmulator:
         return [self.nodes[i].server.port for i in neighbors]
     
     def __init__(self,num_nodes=3):
+        import asyncio
         self.num_nodes = num_nodes
         self.adjacency_matrix = self.initialize_adjacency_matrix(self.num_nodes)
         self.node_ids = np.array(list(range(self.num_nodes)))
@@ -32,6 +36,7 @@ class ICNEmulator:
         self.tasks = [asyncio.create_task(node.start()) for node in self.nodes]
 
     def emulation_loop(self):
+        import asyncio
         async def loop():
             while True:
                 await asyncio.sleep(1)
@@ -39,4 +44,5 @@ class ICNEmulator:
         return asyncio.create_task(loop())
     
     async def start(self):
+        import asyncio
         await asyncio.gather(*self.tasks)

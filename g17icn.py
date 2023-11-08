@@ -6,11 +6,7 @@ import asyncio
 import random
 import logging
 import g17jwt
-import httpx
-import numpy as np
 
-import http_server
-from node import G17ICNNODE
 from emulator import ICNEmulator
 
 # TODO: refactor to another file
