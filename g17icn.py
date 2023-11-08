@@ -56,8 +56,10 @@ class G17ICNNODE:
         self.emulation = emulation
         self.server = HTTPServer()
 
-    async def discover_neighbours(self):
-        current_neighbours = await self.emulation.discover_neighbours(self.task_id)
+    def discover_neighbours(self):
+        current_neighbours_ports = self.emulation.discover_neighbours(self.task_id)
+        self.logger.debug(f"got neighbours {str(current_neighbours_ports)}")
+        return current_neighbours_ports
 
     '''
     Handle an interest request (whih is a JWT).
@@ -85,6 +87,7 @@ class G17ICNNODE:
         await self.server.start()
         while True:
             await asyncio.sleep(3)
+            neigbour_ports = self.discover_neighbours()
             self.logger.debug(f"still running on port {self.server.port}: task_id: {self.task_id}")
 
 
@@ -102,19 +105,17 @@ class ICNEmulator:
 
         return adj_matrix
 
-    def discover_neighbors(self, node_number, adjacency_matrix):
-        if node_number < 0 or node_number >= len(adjacency_matrix):
+    def discover_neighbours(self, node_number):
+        if node_number < 0 or node_number >= len(self.adjacency_matrix):
             return []  # Invalid node number
 
         neighbors = []
-        for i in range(len(adjacency_matrix[node_number])):
-            if adjacency_matrix[node_number][i] == 1:
-                neighbors.append(i)
+        for task_id, connected in enumerate(self.adjacency_matrix[node_number]):
+            if connected:
+                neighbors.append(task_id)
 
-        return [self.nodes[i].port for i in neighbors]
-
-    def get_port_numbers(neighbors):
-        return [neighbors[i].port for i in neighbors]
+        print(neighbors)
+        return [self.nodes[i].server.port for i in neighbors]
     
     def __init__(self,num_nodes=3):
         self.num_nodes = num_nodes
