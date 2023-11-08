@@ -102,7 +102,7 @@ class ICNEmulator:
 
         return adj_matrix
 
-    async def discover_neighbors(self, node_number, adjacency_matrix):
+    def discover_neighbors(self, node_number, adjacency_matrix):
         if node_number < 0 or node_number >= len(adjacency_matrix):
             return []  # Invalid node number
 
@@ -113,23 +113,13 @@ class ICNEmulator:
 
         return [self.nodes[i].port for i in neighbors]
 
-    n=5
-    adjacency_matrix = initialize_adjacency_matrix(n) 
-    task_id = 2
-    neighbors = discover_neighbors(task_id, adjacency_matrix)
-
     def get_port_numbers(neighbors):
         return [neighbors[i].port for i in neighbors]
     
     def __init__(self,num_nodes=3):
-        self.num_nodes = 3
-        self.adjacency_matrix = np.array(
-            [[0,1,0],
-             [1,0,1],
-             [0,1,0]])
-
-        self.node_ids = np.array(list(range(3)))
-
+        self.num_nodes = num_nodes
+        self.adjacency_matrix = self.initialize_adjacency_matrix(self.num_nodes)
+        self.node_ids = np.array(list(range(self.num_nodes)))
         self.nodes = [G17ICNNODE(idx,self) for idx in self.node_ids]
         self.tasks = [asyncio.create_task(node.start()) for node in self.nodes]
 
