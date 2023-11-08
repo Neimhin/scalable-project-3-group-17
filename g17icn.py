@@ -89,7 +89,7 @@ class G17ICNNODE:
 
 
 class ICNEmulator:
-    def initialize_adjacency_matrix(n):
+    def initialize_adjacency_matrix(self, n):
         # Initialize an n x n matrix filled with zeros
         adj_matrix = [[0] * n for _ in range(n)]
 
@@ -102,7 +102,7 @@ class ICNEmulator:
 
         return adj_matrix
 
-    async def discover_neighbors(node_number, adjacency_matrix):
+    async def discover_neighbors(self, node_number, adjacency_matrix):
         if node_number < 0 or node_number >= len(adjacency_matrix):
             return []  # Invalid node number
 
@@ -111,7 +111,7 @@ class ICNEmulator:
             if adjacency_matrix[node_number][i] == 1:
                 neighbors.append(i)
 
-        return neighbors
+        return [self.nodes[i].port for i in neighbors]
 
     n=5
     adjacency_matrix = initialize_adjacency_matrix(n) 
