@@ -1,6 +1,7 @@
 # tcdicn-17, group 17's implementation of tcdicn
 
 ## Interest Packet Format (HTTP with plain text mime consisting of a JWT):
+`x-tcdicn-hop` is a custom http header which specifieds the how many hops the packet has traveled before sending
 ```http
 x-tcdicn-hop: 0
 {
