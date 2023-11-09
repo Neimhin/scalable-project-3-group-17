@@ -1,7 +1,9 @@
 import asyncio
 
 # contributors: [nrobinso-9.11.23]
-def desire_queue_deterministic(list_of_desires: list,interval=1):
+# create a queue that drip feeds the values in list_of_desires with an interval of interval between each
+# the drip feeding starts as soon as this function is called
+def desire_queue_deterministic(list_of_desires: list, interval=1):
     queue = asyncio.Queue()
     for item in list_of_desires:
         assert type(item) is str
@@ -15,7 +17,6 @@ def desire_queue_deterministic(list_of_desires: list,interval=1):
     return queue
 
 if __name__ == "__main__":
-
     # TODO move this to unit test in ./test
     # demo a simple queue
     async def main():

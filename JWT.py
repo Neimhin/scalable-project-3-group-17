@@ -6,6 +6,7 @@ import logging
 
 ALGORITHM="RS256"
 
+# TODO: use a faster algorithm or one with a smaller key, e.g. ed25519
 
 # contributors: [nrobinso-7.11.23]
 def rs256_keypair(key_size=2048,public_exponent=65537):

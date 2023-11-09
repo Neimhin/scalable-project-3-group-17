@@ -9,7 +9,7 @@ from aiohttp import web
 import asyncio
 from datetime import datetime
 
-import g17jwt
+import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
 
@@ -34,7 +34,7 @@ class Device:
         self.server = HTTPServer(handler_async)
         self.desire_queue_task = None
         self.desire_queue = None
-        self.jwt = g17jwt.JWT()
+        self.jwt = JWT.JWT()
         self.jwt.init_jwt(key_size=32)        
         self.PIT = {} 
         self.FIB = {}

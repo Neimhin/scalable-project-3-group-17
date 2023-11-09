@@ -1,19 +1,32 @@
 # tcdicn-17, group 17's implementation of tcdicn
 
 ## Interest Request Format:
-```json
-{
-    "data_name": request_type/(location),
-    "public_key": public key value,
-    "time_stamp": timevalue,
-    "sender_address": sender_address
-}
+```http
+HTTP 1.1
+x-tcdicn-hop: 0
+base64(<jwt-headers>
+.{
+    "type": "interest",
+    "data_name": "/temperature/(129,30)" ,
+    "requestor_public_key": "------PUBLIC KEY-----. .....",
+    "created_at": 1231234.123,
+}.
+<signature>)
 ```
 
-Eg:  {"data_name": "tempture/(129,30)" ,
-      "public_key": "slkdjaskldjasldjlas",
-      "timeStamp":timeValue,
-      "sender_address": ? }
+```http
+HTTP 1.1
+x-tcdicn-hop: 0
+base64(<jwt-headers>
+.{
+    "type": "satisfy",
+    "data_name": "/temperature/(129,30)" ,
+    "data": {"unit": "celsius", "value": 8},
+    "sender_public_key": "------PUBLIC KEY-----. .....",
+    "created_at": 1231234.123,
+}.
+<signature>)
+```
 
 ## Interest Table Format
 

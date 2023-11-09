@@ -8,25 +8,21 @@ class HTTPServer:
         self.logger = logging.getLogger()
         self.port = None
         self.handler = handler
+        # an async event that is set after the server has started
         self.started = asyncio.Event()
 
     async def start(self):
         app = web.Application()
-        app.router.add_post("/", lambda r: self.handler(r))
+        app.router.add_post("/", self.handler)
         web_runner = web.AppRunner(app)
-
-        # TODO handle errors
-        
         await web_runner.setup()
         site = web.TCPSite(web_runner,'localhost', 0)
         await site.start()
+
+        # let outside listener know the server has started:
+        # usage: await server.started.wait()
         self.started.set()
-        print(site._server.sockets)
         addr = site._server.sockets[0].getsockname()
         self.host = addr[0]
         self.port = int(addr[1])
-        print(type(self.port))
         self.logger.debug(f"started server on port {self.port}")
-
-    def set_desires(self, desires):
-        self.desires = desires

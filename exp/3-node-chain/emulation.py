@@ -7,7 +7,7 @@ import argparse
 import asyncio
 import random
 import logging
-import g17jwt
+import JWT
 import interest_emulation
 
 from emulator import ICNEmulator
