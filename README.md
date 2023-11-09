@@ -1,12 +1,14 @@
 # tcdicn-17, group 17's implementation of tcdicn
 
 ## Interested Request Format:
+```json
 {
     "data_name": request_type/(location),
     "public_key": public key value,
     "time_stamp": timevalue,
     "sender_address": sender_address
 }
+```
 
 Eg:  {"data_name": "tempture/(129,30)" ,
       "public_key": "slkdjaskldjasldjlas",
