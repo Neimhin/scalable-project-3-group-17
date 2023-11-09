@@ -6,7 +6,17 @@
 x-tcdicn-hop: 0
 {
     "data_name": request_type/(location),
-    "requestor_public_key": public key value,
+    "router-0-pub-key": public key value,
+    "time_stamp": timevalue,
+}
+<signature>
+```
+```http
+x-tcdicn-hop: 0
+{
+    "data_name": request_type/(location),
+    "router-0-pub-key": public key value,
+    "router-1-pub-key": public key of first router,
     "time_stamp": timevalue,
 }
 <signature>
@@ -16,6 +26,10 @@ A is the requestor.
 A sends an interest packet to B.
 B can't satisfy immediately.
 The link may be broken before B retrieves data that can satisfy.
+
+A sends out an RF signal to say "i am here and listening, send back your public key".
+A discovers neigbouring nodes (emulated).
+A does a handshake with all neighbours to get their public keys.
 
 Eg:  
 ```http
