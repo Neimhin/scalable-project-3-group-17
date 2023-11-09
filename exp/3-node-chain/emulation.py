@@ -31,7 +31,7 @@ async def main():
     parser.add_argument("--nodes-can-die",      help="Whether or not nodes can die at random",                      action="store_true")
     args = parser.parse_args()
     
-    emulator = ICNEmulator()
+    emulator = ICNEmulator(num_nodes=10)
     emulator_task = asyncio.create_task(emulator.start())
 
     def data_name(i):
@@ -46,10 +46,10 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
-    await asyncio.sleep(2)
-
-    for i,device in enumerate(emulator.devices):
-        print(device.CACHE)
+    while True:
+        await asyncio.sleep(0.2)
+        for i,device in enumerate(emulator.devices):
+            print("cache ", i, device.CACHE)
 
     emulator_task.cancel()
 
