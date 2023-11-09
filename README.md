@@ -17,7 +17,7 @@ Eg:
       "public_key": "slkdjaskldjasldjlas",
       "time_stamp":datetime.now().timestamp(),
       "hop_number":3 # 3 shows that this request has passed 3 devices 
-      "data":None
+      "data": undefined
      }
 ```
 
