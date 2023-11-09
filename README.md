@@ -4,7 +4,7 @@
 ```json
 {
     "data_name": request_type/(location),
-    "public_key": public key value,
+    "requestor_public_key": public key value,
     "time_stamp": timevalue,
     "hop_number": hop number # default as 0, each time this interesting package is passed, value increment.
     "data":data  # the request data, filled by the node who have this data
