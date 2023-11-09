@@ -13,11 +13,11 @@
 
 Eg:  
 ```json
-{"data_name": "tempture/(129,30)" ,
-      "public_key": "slkdjaskldjasldjlas",
-      "time_stamp":datetime.now().timestamp(),
-      "hop_number":3 # 3 shows that this request has passed 3 devices 
-      "data": null
+{
+    "data_name": "tempture/(129,30)" ,
+    "public_key": "slkdjaskldjasldjlas",
+    "time_stamp":datetime.now().timestamp(),
+    "hop_number":3 # 3 shows that this request has passed 3 devices
      }
 ```
 
