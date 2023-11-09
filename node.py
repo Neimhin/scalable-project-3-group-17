@@ -10,6 +10,7 @@ import asyncio
 
 import g17jwt
 from http_server import HTTPServer
+from cache import CACHEStore
 
 
 class G17ICNNODE:
@@ -18,6 +19,7 @@ class G17ICNNODE:
         self.logger = logging.getLogger()
         self.emulation = emulation
         self.HOSTNAME = 'http://localhost:'
+        self.CACHE = CACHEStore()
 
     def discover_neighbours(self):
         '''
@@ -51,11 +53,10 @@ class G17ICNNODE:
             "time_stamp": timevalue,
             "sender_address": sender_address
         '''
-        t = await request.text()
-        # print(t)
-        packet = self.jwt.decode(t)
-        # print(packet)
+        body = await request.text()
+        packet = self.jwt.decode(body)
         return web.Response(text="ok")
+    
         if request['location']==self.location:
             request_type=request['data_name'].split("/")[0]
         pass
@@ -83,9 +84,12 @@ class G17ICNNODE:
             # TODO handle 200 ok response and error responses
     
     # send named data to the network
-    async def sendToNetwork(self):
+    '''
+    Progate the data 
+    '''
+    async def send_to_network(self):
         pass
-    
+
 
     async def start(self):
         self.jwt = g17jwt.JWT()
