@@ -1,6 +1,7 @@
 # tcdicn-17, group 17's implementation of tcdicn
 
 ## Interested Request Format:
+```json
 {
     "data_name": request_type/(location),
     "public_key": public key value,
@@ -8,13 +9,17 @@
     "hop_number": hop number # default as 0, each time this interesting package is passed, value increment.
     "data":data  # the request data, filled by the node who have this data
 }
+```
 
-Eg:  {"data_name": "tempture/(129,30)" ,
+Eg:  
+```json
+{"data_name": "tempture/(129,30)" ,
       "public_key": "slkdjaskldjasldjlas",
       "time_stamp":datetime.now().timestamp(),
       "hop_number":3 # 3 shows that this request has passed 3 devices 
       "data":None
      }
+```
 
 ## Interesting Table Format
 
