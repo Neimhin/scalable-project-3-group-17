@@ -12,12 +12,17 @@ x-tcdicn-hop: 0
 <signature>
 ```
 
+A is the requestor.
+A sends an interest packet to B.
+B can't satisfy immediately.
+The link may be broken before B retrieves data that can satisfy.
+
 Eg:  
 ```http
 x-tcdicn-hop: 3
 {
     "data_name": "tempture/(129,30)" ,
-    "public_key": "slkdjaskldjasldjlas",
+    "requestor_public_key": "slkdjaskldjasldjlas",
     "time_stamp":datetime.now().timestamp(),
 }
 <signature>
