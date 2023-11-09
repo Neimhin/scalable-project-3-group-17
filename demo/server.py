@@ -13,21 +13,26 @@ class HTTPServer:
         web_runner = web.AppRunner(app)
         # TODO handle errors
         await web_runner.setup()
-        site = web.TCPSite(web_runner,'localhost', 0)
+        site = web.TCPSite(web_runner,'localhost', 33000)
         await site.start()
         print(site._server.sockets)
         addr = site._server.sockets[0].getsockname()
         self.host = addr[0]
         self.port = int(addr[1])
         print(type(self.port))
+        print(self.port)
         self.logger.debug(f"started server on port {self.port}")
+        while True:
+            await asyncio.sleep(1)
+            print("still running...")
 
     def set_desires(self, desires):
         self.desires = desires
 
 if __name__ == "__main__":
-    async def handler(self, request):
+    async def handler(request):
+        print("processing request")
         return web.Response(text="ok")
-    httpd = HTTPServer()
+    httpd = HTTPServer(handler)
     asyncio.run(httpd.start())
 
