@@ -1,7 +1,7 @@
 # tcdicn-17, group 17's implementation of tcdicn
 
 ## Interest Packet Format (HTTP with plain text mime consisting of a JWT):
-```json
+```http
 x-tcdicn-hop: 0
 {
     "data_name": request_type/(location),
