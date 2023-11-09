@@ -45,7 +45,8 @@ class JWT:
     def decode(self, token):
         if self.public_key:
             tok = jwt.decode(token, options={"verify_signature": False}, algorithms=["RS256"])
-            jwt.decode(token, bytes(tok["public_key"], 'utf-8'), algorithms=["RS256"])
+            if tok.get("public_key"):
+                jwt.decode(token, bytes(tok["public_key"], 'utf-8'), algorithms=["RS256"])
             return tok
         else:
             raise ValueError("Public key not available. Call init_jwt with a public key.")
