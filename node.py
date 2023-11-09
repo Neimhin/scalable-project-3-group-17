@@ -63,7 +63,7 @@ class G17ICNNODE:
 
     # send interest to data to the network to satisfy interest
     async def get(self,data_name):
-        cached_data = self.CACHE.get(data_name)
+        cached_data = self.CACHE.save_in_CIS(data_name)
         if cached_data:
             return
         for port in self.neigbour_ports:
@@ -113,7 +113,7 @@ class G17ICNNODE:
         # print(self.jwt)
         
         data = self.jwt.encode({data_name: self.server.port})
-        self.CACHE[data_name] = data
+        self.CACHE.CS_store.get_store[data_name] = data
         
         while True:
             self.neigbour_ports = self.discover_neighbours()
