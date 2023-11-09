@@ -7,6 +7,7 @@ import logging
 import aiohttp
 from aiohttp import web
 import asyncio
+import datetime
 
 import g17jwt
 from http_server import HTTPServer
@@ -21,46 +22,10 @@ class G17ICNNODE:
         self.HOSTNAME = 'http://localhost:'
         self.CACHE = CACHEStore()
 
-    def discover_neighbours(self):
-        '''
-        Handle an interest request (whih is a JWT).
-        When we get a request from another node, we will first check the self.PIT to find if we have already received this interest request.
-        If we have, do not pass this request, and sender to list of nodes waiting for that data.
-        When an interest request is received, it should check the time validity, if not valid, discard it.
-        If valid respond to the sender with a 200 OK response code.
-        It will check its` cache, if there is an entry suitable to satisfy the interest request, respond with the data as a JWT.
-        If not, it will use the self.FIB to pass this request to the next hop and save this request to its pit.
-        TO BE CONTINUE lol
-        '''
-        self.neighbour = self.emulation.discover_neighbours(self.task_id)
-        self.logger.debug(f"got neighbours {str(self.neighbour)}")
-        return self.neighbour
-    
-    async def handler(self, request):
-        '''
-        When nodeA gets a request from another nodeB, nodeA will first check the location. 
-        If the location point to nodeA then nodeA will check cache to see whether it has the data. 
-        If nodeA does not satisfy the requirement of location, 
-        it will save this request to its interested table and 
-        send this request to next hop follow the entry of Forwarding Infromation Base(FIB)
-        If there is another same request coming to nodeA, 
-        nodeA will discard this request and put this request sender in waiting list.
-        
-        Parameters:
-            request`s format: disctionary which include:
-            "data_name": request_type/(location),
-            "public_key": public key value,
-            "time_stamp": timevalue,
-        '''
-        t = await request.text()
-        print(t)
-        packet = self.jwt.decode(t)
-        print(packet)
-        web.Response(text="ok")
-        
+    async def handle_interest_packet(self, packet):
         request_interesting=packet['data_name']
         if packet['location']==self.location:
-            request_type=request_interesting.split("/")[0]  # request_type value should be "tempture", "light_intensive" and anything else like this.
+            request_type=request_interesting.split("/")[0]  # request_type value should be "temperature", "light_intensity" and anything else like this.
             packet["data"]=self.CACHE[request_type]
             return self.jwt.encode( packet)
         else:
@@ -100,9 +65,49 @@ class G17ICNNODE:
                 
             else:
                 port = self.FIB[request_interesting]
-                respond=send_interes_to(port,message)
+                respond=self.send_interes_to(port,message)
             
             return response
+
+    def discover_neighbours(self):
+        '''
+        Handle an interest request (whih is a JWT).
+        When we get a request from another node, we will first check the self.PIT to find if we have already received this interest request.
+        If we have, do not pass this request, and sender to list of nodes waiting for that data.
+        When an interest request is received, it should check the time validity, if not valid, discard it.
+        If valid respond to the sender with a 200 OK response code.
+        It will check its` cache, if there is an entry suitable to satisfy the interest request, respond with the data as a JWT.
+        If not, it will use the self.FIB to pass this request to the next hop and save this request to its pit.
+        TO BE CONTINUE lol
+        '''
+        self.neighbour = self.emulation.discover_neighbours(self.task_id)
+        self.logger.debug(f"got neighbours {str(self.neighbour)}")
+        return self.neighbour
+    
+    async def handler(self, request):
+        '''
+        When nodeA gets a request from another nodeB, nodeA will first check the location. 
+        If the location point to nodeA then nodeA will check cache to see whether it has the data. 
+        If nodeA does not satisfy the requirement of location, 
+        it will save this request to its interested table and 
+        send this request to next hop follow the entry of Forwarding Infromation Base(FIB)
+        If there is another same request coming to nodeA, 
+        nodeA will discard this request and put this request sender in waiting list.
+        
+        Parameters:
+            request`s format: disctionary which include:
+            "data_name": request_type/(location),
+            "public_key": public key value,
+            "time_stamp": timevalue,
+        '''
+        t = await request.text()
+        print(t)
+        packet = self.jwt.decode(t)
+        print(packet)
+        # TODO: validate packet format
+        asyncio.create_task(self.handle_interest_packet(packet))
+        return web.Response(text="ok")
+
 
     # send interest to data to the network to satisfy interest
     async def get(self,data_name):

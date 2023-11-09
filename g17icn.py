@@ -12,7 +12,7 @@ from emulator import ICNEmulator
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 logger.debug("hello world")
 
 '''
@@ -20,7 +20,6 @@ Interested party and producer
 Interested party sends interest to network
 Producer sends data to satisfy interest if interest is received
 '''
-
 
 async def main():
     parser = argparse.ArgumentParser(description="Simulate an Information Centric Network")
