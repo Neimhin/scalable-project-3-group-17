@@ -1,5 +1,6 @@
 from aiohttp import web
 import logging
+import asyncio
 
 
 class HTTPServer:
@@ -7,6 +8,7 @@ class HTTPServer:
         self.logger = logging.getLogger()
         self.port = None
         self.handler = handler
+        self.started = asyncio.Event()
 
     async def start(self):
         app = web.Application()
@@ -18,6 +20,7 @@ class HTTPServer:
         await web_runner.setup()
         site = web.TCPSite(web_runner,'localhost', 0)
         await site.start()
+        self.started.set()
         print(site._server.sockets)
         addr = site._server.sockets[0].getsockname()
         self.host = addr[0]

@@ -1,5 +1,5 @@
 import numpy as np
-from node import G17ICNNODE
+from device import Device
 
 # contributors: [atarwa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -15,8 +15,17 @@ class ICNEmulator:
         self.num_nodes = num_nodes
         self.adjacency_matrix = line_adjacency_matrix(self.num_nodes)
         self.node_ids = np.array(list(range(self.num_nodes)))
-        self.nodes = [G17ICNNODE(idx,self) for idx in self.node_ids]
-        self.tasks = [asyncio.create_task(node.start()) for node in self.nodes]
+        self.devices = [Device(idx,self) for idx in self.node_ids]
+        self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
+        self.start_event = asyncio.Event()
+
+    def devices_report(self):
+        return {
+            "total_nodes": len(self.devices),
+            "num_nodes": self.num_nodes,
+            "living_nodes": "NYI", # TODO implement count of living nodes (healthy servers)
+            "task_ids": list(range(self.num_nodes)) # TODO make this more robust
+        }
 
     # contributors: [atarwa-8.11.23, nrobinso-9.11.23]
     def discover_neighbours(self, node_number):
@@ -26,15 +35,7 @@ class ICNEmulator:
         for task_id, connected in enumerate(self.adjacency_matrix[node_number]):
             if connected:
                 neighbors.append(task_id)
-        return [self.nodes[i].server.port for i in neighbors]
-
-    def emulation_loop(self):
-        import asyncio
-        async def loop():
-            while True:
-                await asyncio.sleep(1)
-                self.logger.debug("running emulation loop")
-        return asyncio.create_task(loop())
+        return [self.devices[i].server.port for i in neighbors]
     
     async def start(self):
         import asyncio

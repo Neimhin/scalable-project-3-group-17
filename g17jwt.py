@@ -4,6 +4,8 @@ from cryptography.hazmat.backends import default_backend
 import jwt
 import logging
 
+ALGORITHM="RS256"
+
 
 # contributors: [nrobinso-7.11.23]
 def rs256_keypair(key_size=2048,public_exponent=65537):
@@ -38,15 +40,13 @@ class JWT:
 
     def encode(self, payload):
         if self.private_key:
-            return jwt.encode(payload, self.private_key, algorithm="RS256")
+            return jwt.encode(payload, self.private_key, algorithm=ALGORITHM)
         else:
             raise ValueError("Private key not available. Call init_jwt with a private key.")
 
     def decode(self, token):
         if self.public_key:
-            tok = jwt.decode(token, options={"verify_signature": False}, algorithms=["RS256"])
-            if tok.get("public_key"):
-                jwt.decode(token, bytes(tok["public_key"], 'utf-8'), algorithms=["RS256"])
+            tok = jwt.decode(token, options={"verify_signature": False}, algorithms=[ALGORITHM])
             return tok
         else:
             raise ValueError("Public key not available. Call init_jwt with a public key.")
