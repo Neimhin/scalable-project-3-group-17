@@ -31,7 +31,7 @@ async def main():
     parser.add_argument("--nodes-can-die",      help="Whether or not nodes can die at random",                      action="store_true")
     args = parser.parse_args()
     
-    emulator = ICNEmulator()
+    emulator = ICNEmulator(num_nodes=10)
     emulator_task = asyncio.create_task(emulator.start())
 
     def data_name(i):

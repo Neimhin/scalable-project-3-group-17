@@ -1,6 +1,6 @@
 # tcdicn-17, group 17's implementation of tcdicn
 
-## Interested Request Format:
+## Interest Request Format:
 ```json
 {
     "data_name": request_type/(location),
@@ -15,7 +15,7 @@ Eg:  {"data_name": "tempture/(129,30)" ,
       "timeStamp":timeValue,
       "sender_address": ? }
 
-## Interesting Table Format
+## Interest Table Format
 
 {
     "data_name":request_type/(location),
@@ -32,9 +32,15 @@ neighbour list should include the port number and its location.locals
 self.task_id = task_id  # ?
 self.logger = logging.getLogger()
 self.jwt = g17jwt.JWT().init_jwt(key_size=32)
-self.PIT = {} # 
+self.PIT = {}
 self.FIB = {}
 self.emulation = emulation
 self.location="124.0.0" # represented the node location
 self.server = HTTPServer()
 self.neighbour=[] # represented the node neighbour
+
+## Cache
+
+self.CIS = {}
+self.PIT = {}
+self.FIB = {}

@@ -42,3 +42,41 @@ class Data(Packet):
         super().__init__(data_name, public_key, time_stamp, sender_address)
         self.content = content
 
+
+'''
+Use as:
+
+-------------------------------Create an Interest packet-------------------------------
+
+interest = Interest(data_name="temperature/(129,30)", public_key="slkdjaskldjasldjlas",
+                   time_stamp=time.time(), sender_address="192.168.1.100",
+                   request_type="get", flag=1, waiting_list=[])
+
+# Create a Data packet
+data = Data(data_name="temperature/(129,30)", public_key="slkdjaskldjasldjlas",
+                   time_stamp=time.time(), sender_address="192.168.1.100",
+                   content="25.5")
+
+
+                   
+--------------------------------------Serialise packet-----------------------------------
+
+interest_json = interest.to_json()
+data_json = data.to_json()   
+
+--------------------------------------Deserialise packet-----------------------------------
+
+def deserialize_packet(json_packet):
+    packet_type = json_packet["type"]
+    if packet_type == "interest":
+        return Interest.from_json(json_packet)
+    elif packet_type == "data":
+        return Data.from_json(json_packet)
+    else:
+        raise ValueError("Unknown packet type: {}".format(packet_type))
+
+# Deserialize the JSON packets back to packet objects
+interest_obj = deserialize_packet(interest_json)
+data_obj = deserialize_packet(data_json)
+
+'''
