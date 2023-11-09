@@ -51,15 +51,58 @@ class G17ICNNODE:
             "data_name": request_type/(location),
             "public_key": public key value,
             "time_stamp": timevalue,
-            "sender_address": sender_address
         '''
-        body = await request.text()
-        packet = self.jwt.decode(body)
-        return web.Response(text="ok")
-    
-        if request['location']==self.location:
-            request_type=request['data_name'].split("/")[0]
-        pass
+        t = await request.text()
+        print(t)
+        packet = self.jwt.decode(t)
+        print(packet)
+        web.Response(text="ok")
+        
+        request_interesting=packet['data_name']
+        if packet['location']==self.location:
+            request_type=request_interesting.split("/")[0]  # request_type value should be "tempture", "light_intensive" and anything else like this.
+            packet["data"]=self.CACHE[request_type]
+            return self.jwt.encode( packet)
+        else:
+            if self.PIT[request_interesting]==None:
+                #self.PIT[request_interesting]={}
+                sub_dict={}
+                sub_dict['flag']=flag
+                sub_dict['waiting_list']=[packet['public_key']]
+                self.PIT[request_interesting]=sub_dict
+            else:
+                self.PIT[request_interesting]['waiting_list'].append(packet['public_key'])
+            
+            message=self.jwt.encode({
+                        'data_name':request_interesting,
+                        "public_key":self.jwt.public_key,
+                        "time_stamp":time,
+                        "hop_number":packet['hop_number']+1,
+                        "data":packet["data"]
+                    })
+
+            if self.FIB[request_interesting]==None:
+                min_hop=100000,
+                min_port=-1
+                time=datetime.now().timestamp()
+
+                for neighbor in self.neighbour:
+                    
+                    print(f"send intereseting message to {neighbor}")
+                    response = send_interest_to(neighbor,message)
+                    res=self.jwt.decode(response)
+                    if min_hop>res['hop_number']:
+                        min_port=neighbor
+                port_info={}
+                port_info['time_stamp']=datetime.now().timestamp()
+                port_info['min_hop']=min_port
+                self.FIB[request_interesting]=port_info
+                
+            else:
+                port = self.FIB[request_interesting]
+                respond=send_interes_to(port,message)
+            
+            return response
 
     # send interest to data to the network to satisfy interest
     async def get(self,data_name):
