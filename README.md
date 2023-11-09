@@ -2,13 +2,13 @@
 
 ## Interested Request Format:
 ```json
+x-tcdicn-hop: 0
 {
     "data_name": request_type/(location),
     "requestor_public_key": public key value,
     "time_stamp": timevalue,
-    "hop_number": hop number # default as 0, each time this interesting package is passed, value increment.
-    "data":data  # the request data, filled by the node who have this data
 }
+<signature>
 ```
 
 Eg:  
@@ -18,8 +18,8 @@ x-tcdicn-hop: 3
     "data_name": "tempture/(129,30)" ,
     "public_key": "slkdjaskldjasldjlas",
     "time_stamp":datetime.now().timestamp(),
-    "hop_number":3 # 3 shows that this request has passed 3 devices
 }
+<signature>
 ```
 
 ## Interesting Table Format
