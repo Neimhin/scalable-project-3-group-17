@@ -12,7 +12,7 @@
 ```
 
 Eg:  
-```json
+```http
 x-tcdicn-hop: 3
 {
     "data_name": "tempture/(129,30)" ,
