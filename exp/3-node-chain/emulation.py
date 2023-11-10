@@ -39,8 +39,10 @@ async def main():
 
     for i,device in enumerate(emulator.devices):
         await device.server.started.wait()
-        device.CACHE[data_name(i)] = device.server.port
+        # TODO: use CIS
+        device.CACHE[data_name(i)] = random.randint(0,100)
 
+    # each device gets the same desires
     desires = [data_name(i) for i in range(emulator.num_nodes)]
     desire_queues = [interest_emulation.desire_queue_deterministic(desires,interval=(i+1)*0.1) for i in range(emulator.num_nodes)]
     for desire_queue,device in zip(desire_queues, emulator.devices):
@@ -48,10 +50,16 @@ async def main():
 
     while True:
         await asyncio.sleep(0.2)
+
+        CAN_QUIT = True
         for i,device in enumerate(emulator.devices):
             print("cache ", i, device.CACHE)
+            if len(device.CACHE.items()) < len(emulator.devices):
+                CAN_QUIT = False
+        if CAN_QUIT:
+            break
 
-    emulator_task.cancel()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

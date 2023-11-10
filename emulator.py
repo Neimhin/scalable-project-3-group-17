@@ -40,3 +40,11 @@ class ICNEmulator:
     async def start(self):
         import asyncio
         await asyncio.gather(*self.tasks)
+
+    def generate_trusted_keys_table_all_nodes(self):
+        d = {}
+        for device in self.devices:
+            hash = device.jwt.hash_of_public_key()
+            pub_key = device.jwt.public_key_pem
+            d[hash] = pub_key
+        return d
