@@ -4,6 +4,14 @@ from cryptography.hazmat.backends import default_backend
 import jwt
 import logging
 
+import hashlib
+
+def hash_string_sha3_256(input_bytes):
+    sha3_256_hash = hashlib.sha3_256()
+    sha3_256_hash.update(input_bytes)
+    hashed_string = sha3_256_hash.hexdigest()
+    return hashed_string
+
 ALGORITHM="RS256"
 
 # TODO: use a faster algorithm or one with a smaller key, e.g. ed25519
@@ -35,6 +43,11 @@ class JWT:
         self.public_key = None
         self.logger = logging.getLogger()
 
+    def hash_of_public_key(self):
+        if not self.public_key:
+            raise Exception
+        return hash_string_sha3_256(self.public_key)
+
     def init_jwt(self, key_size=2048):
         # Generate new RSA key pair
         self.private_key, self.public_key = rs256_keypair()
@@ -51,3 +64,8 @@ class JWT:
             return tok
         else:
             raise ValueError("Public key not available. Call init_jwt with a public key.")
+
+if __name__ == "__main__":
+    j = JWT()
+    j.init_jwt()
+    print(j.hash_of_public_key(), j.public_key)

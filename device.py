@@ -35,11 +35,13 @@ class Device:
         self.desire_queue_task = None
         self.desire_queue = None
         self.jwt = JWT.JWT()
-        self.jwt.init_jwt(key_size=32)        
+        self.jwt.init_jwt(key_size=32) 
+        # TODO: define these from seperate class cache       
         self.PIT = {} 
         self.FIB = {}
         self.CACHE = {}
         self.neigbour_ports = []
+        # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
     async def handle_satisfy_packet(self, packet, jwt, hop=None):
         assert type(hop) == int
@@ -71,8 +73,22 @@ class Device:
             return await self.send_to_network(data_name, data)
         
         if self.PIT.get(data_name) is None:
-            self.PIT[data_name] = set()
-        self.PIT[data_name].add(requestor)
+            #self.PIT[data_name] = set()
+            self.PIT[data_name]={} # PIT should be a dictionary of dictionary, instead of a set.
+        # PIT_ENTRY = {
+        #     "what they want": data_name,
+        #     "who wants it": <port>, # TODO: hash of public key, not full public key
+        #     "packet jwt": jwt, # <jwt-headers>.{ "data_name": ..., "requestor_public_key": ..., }.<signature>
+        #     "when did they want it": packet[PACKET_FIELD_CREATED_AT],
+        # }
+
+        #self.PIT[data_name].add(requestor)
+        
+
+        # self.FIB[data_name] = {
+        #     "created_at": <timestamp>, # when was the interest packet generated?
+        #     "who has it": [<port>, <port>, <port>], #TODO don't use ports, use hash of public key
+        # }
 
         await self.propagate_interest(jwt,hop=hop)
 
@@ -93,6 +109,7 @@ class Device:
         jwt = await request.text()
         packet = self.jwt.decode(jwt)
         # TODO: validate packet format
+        # TODO: check if id exists in TRUSTED_IDS
         packet_type = packet.get(PACKET_FIELD_REQUEST_TYPE)
         print(packet_type)
         match packet_type:
@@ -108,7 +125,6 @@ class Device:
         assert type(port) == int
         assert payload is not None
         async with httpx.AsyncClient() as client:
-
             headers = {HOP_HEADER: str(hop)}
             await client.post(self.HOSTNAME + str(port), content=payload, headers=headers)
     
@@ -126,9 +142,7 @@ class Device:
         def port2task(port):
             coroutine = self.send_payload_to(port, payload=payload, hop=0)
             return asyncio.create_task(coroutine)
-        tasks = [port2task(port) for port in current_neighbours]
-        together = asyncio.gather(*tasks)
-        await together
+        [port2task(port) for port in current_neighbours]
 
     def set_desire_queue(self, queue):
         if self.desire_queue_task:
@@ -141,7 +155,9 @@ class Device:
         async def handle():
             while True:
                 item = await queue.get()
-                print(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")  #eg. got item '/foo/bar/2' from desire queue: node 2: port: 2512
+                if self.CACHE.get(item):
+                    continue
+                print(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
                 current_neighbour_ports = self.emulation.discover_neighbours(self.task_id)
                 payload = self.jwt.encode({
                     PACKET_FIELD_REQUEST_TYPE: "interest",

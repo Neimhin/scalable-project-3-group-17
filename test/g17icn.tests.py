@@ -1,6 +1,6 @@
 import sys
 sys.path.append(".")
-import g17jwt
+import JWT
 import emulator
 import unittest
 import tempfile
@@ -13,7 +13,7 @@ import numpy as np
 class TestJWTManager(unittest.TestCase):
     def test_jwt_operations(self):
         with tempfile.TemporaryDirectory() as temp_dir:
-            jwts = g17jwt.JWT()
+            jwts = JWT.JWT()
             jwts.init_jwt()
             payload = {"user_id": 123, "username": "john_doe"}
             encoded_token = jwts.encode(payload)
