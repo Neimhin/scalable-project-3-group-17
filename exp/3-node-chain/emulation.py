@@ -1,6 +1,9 @@
 # script to emulate one network with several nodes
 import sys
-sys.path.append(".")
+from pathlib import Path
+root_directory = Path(__file__).resolve().parents[2]
+sys.path.append(str(root_directory))
+# 获取当前文件的路径，然后找到根目录的路径
 
 import requests
 import argparse
@@ -42,6 +45,7 @@ async def main():
         device.CACHE[data_name(i)] = device.server.port
 
     desires = [data_name(i) for i in range(emulator.num_nodes)]
+    print(f"desires is {desires}")
     desire_queues = [interest_emulation.desire_queue_deterministic(desires,interval=(i+1)*0.1) for i in range(emulator.num_nodes)]
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)

@@ -122,6 +122,7 @@ class Device:
             PACKET_FIELD_SENDER_PUBLIC_KEY: self.jwt.public_key.decode("utf-8"),
             PACKET_FIELD_CREATED_AT: datetime.now().timestamp()
         })
+
         def port2task(port):
             coroutine = self.send_payload_to(port, payload=payload, hop=0)
             return asyncio.create_task(coroutine)
@@ -140,7 +141,7 @@ class Device:
         async def handle():
             while True:
                 item = await queue.get()
-                print(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
+                print(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")  #eg. got item '/foo/bar/2' from desire queue: node 2: port: 2512
                 current_neighbour_ports = self.emulation.discover_neighbours(self.task_id)
                 payload = self.jwt.encode({
                     PACKET_FIELD_REQUEST_TYPE: "interest",
