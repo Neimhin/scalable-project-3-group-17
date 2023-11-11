@@ -18,11 +18,16 @@ Having more realtime data about oceanic temperatures, not only at ocean surfaces
 
 **Notes on `g17icn-0.1`**:
 - The protocol is built on HTTP and JWTs. Devices run HTTP servers that listen for connections and process both `interest` and `satisfy` packets.
+- In version 0.1 we use JSON Web Signatures (JWS) **and not** JSON Web Encryption.
 - Packets are encoded as JWTs, both `interest` and `satisfy` packets, but some additional meta data about the `interest` or `satisfy` packet can be included in HTTP headers.
 - All packets are signed by the producer of the packet. In version 0.1 we are using the RS256 algorithm to sign the JWTs. This prevents tampering, but does encrypt the data or keep it private.
 - The protocol is lazy, in that data is only sent to the network after positive confirmation that there is interest in the data.
-- TODO(optimization): batching. Since a packet is a self-contained JWT, we can actually send multiple packets in a single HTTP request. We should investigate whether this can be leveraged for performance gains or reduced network utilisation.
+- TODO(optimization): batching. Since a packet is a self-contained JWT/JWS, we can actually send multiple packets in a single HTTP request. We should investigate whether this can be leveraged for performance gains or reduced network utilisation.
 - TODO(security): pre-shared list of trusted keys. Whether a packet should be accepted is determined by whether it was signed by a trusted node. In version 0.1 we define a list of trusted nodes at the outset, and nodes can **not** be subsequently added to the list of trusted nodes. Each trusted node has a pub/priv RSA 256 key pair.
+
+
+**interest packet**: An interest packet is just a signed JWT. We do not define any JWT headers in version 0.1. The payload of the JWT contains the mandatory fields: "type", "data_name", "requestor_id".
+The optional fields in the payload are: "created_at", "expires_at"
 
 ## Interest Request Format:
 In version 0.1 of `g17icn` interest requests are send over HTTP POST requests.
