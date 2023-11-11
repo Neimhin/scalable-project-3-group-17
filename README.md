@@ -1,6 +1,18 @@
-# tcdicn-17, group 17's implementation of tcdicn
+# ICN Emulation
+CS7NS1 Project 3 asks us to conceive, design, implement, build and prove a robust, secure, sufficient peer-to-peer networking protocol based (mandatorily!) on ICN principles.
+
+We are also meant to conceive of a highly disconnected scenario in which the network runs and emulate various devices.
+
+**Scenario**: Under water networks for climate and biodiversity monitoring and modelling.
+**Motivation/Application**: Ocean temperatures, currents, El Niño and La Niña phenomena, are hard to predict and have huge implications for the weather experienced around the world. The increased number of rapidly escalating oceanic tornadoes is attributed to rising ocean temperatures; The New York times reported on "The Daily" an example of rapid escalation on 27th Oct. 2023, noting "Hurricane Otis transformed from a tropical storm to a deadly Category 5 hurricane in a day, defying forecasts."
+
+
+> Well, to have a hurricane, you need to have warm water. It has to be 80 degrees Fahrenheit or higher to really give it the energy that it needs. So think of a hurricane as like an engine. and that energy, that warm water, is the fuel that’s fueling the hurricane.
+> — Judson Jones
 
 ## Interest Request Format:
+TODO:
+- use hash of public key instead of full public key
 ```http
 HTTP 1.1
 x-tcdicn-hop: 0
