@@ -61,14 +61,14 @@ class Device:
 
     async def handle_interest_packet(self, packet, jwt, hop=None):
         assert type(hop) == int
-        print(packet)
+        self.logger.debug(packet)
         data_name=packet[PACKET_FIELD_DATA_NAME]
         requestor = packet[PACKET_FIELD_REQUESTOR_PUBLIC_KEY]
         if requestor == self.jwt.public_key:
             return
 
         data = self.CACHE.get(data_name)
-        print("GOT DATA: ", data, self.server.port)
+        self.logger.debug("GOT DATA: ", data, self.server.port)
         if data:
             return await self.send_to_network(data_name, data)
         
@@ -97,24 +97,23 @@ class Device:
     async def handler(self, request):
         hop_count=None
         try:
-            print(request.headers)
+            self.logger.debug(request.headers)
             hop_count = int(request.headers.get(HOP_HEADER))
         except Exception as e:
-            print(e)
-            print(request.headers())
+            self.logger.debug(e)
+            self.logger.debug(request.headers())
             return web.Response(text="failed",status=400)
         jwt = await request.text()
         packet = self.jwt.decode(jwt)
         # TODO: validate packet format
         # TODO: check if id exists in TRUSTED_IDS
         packet_type = packet.get(PACKET_FIELD_REQUEST_TYPE)
-        print(packet_type)
-        match packet_type:
-            case "interest":
+        self.logger.debug(packet_type)
+        if packet_type == "interest":
                 asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count))
-            case "satisfy":
+        elif packet_type == "satisfy":
                 asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count))
-            case _:
+        else:
                 raise Exception("unrecognised packet type: " + packet_type)
         return web.Response(text="ok")
 
@@ -153,7 +152,7 @@ class Device:
                 item = await queue.get()
                 if self.CACHE.get(item):
                     continue
-                print(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
+                self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
                 current_neighbour_ports = self.emulation.discover_neighbours(self.task_id)
                 payload = self.jwt.encode({
                     PACKET_FIELD_REQUEST_TYPE: "interest",
