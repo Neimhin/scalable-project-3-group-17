@@ -2,6 +2,8 @@
 
 We name our protocol g17icn.
 
+This document should describe g17icn version 0.1.
+
 CS7NS1 Project 3 asks us to conceive, design, implement, build and prove a robust, secure, sufficient peer-to-peer networking protocol based (mandatorily!) on ICN principles.
 
 We are also meant to conceive of a highly disconnected scenario in which the network runs and emulate various devices.
@@ -15,7 +17,7 @@ We are also meant to conceive of a highly disconnected scenario in which the net
 Having more realtime data about oceanic temperatures, not only at ocean surfaces but also in the depths, would help meteoroligists such as Judson Jones make more accurate predictions about the escalation of storms. Early warning and accurate prediction can help give vulnerable communities enough time to evacuate, saving lives.
 
 ## Interest Request Format:
-In our protocol 
+In our protocol interest requests are sent over HTTP 1.1.
 TODO:
 - use hash of public key instead of full public key
 ```http
