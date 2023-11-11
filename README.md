@@ -18,7 +18,7 @@ Having more realtime data about oceanic temperatures, not only at ocean surfaces
 
 **Notes on `g17icn-0.1`**:
 - The protocol is built on HTTP and JWTs. Devices run HTTP servers that listen for connections and process both `interest` and `satisfy` packets.
-- In version 0.1 we use JSON Web Signatures (JWS) **and not** JSON Web Encryption.
+- In version 0.1 we use JSON Web Signatures (JWS) **and not** JSON Web Encryption. See the [JWT RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519).
 - Packets are encoded as JWTs, both `interest` and `satisfy` packets, but some additional meta data about the `interest` or `satisfy` packet can be included in HTTP headers.
 - All packets are signed by the producer of the packet. In version 0.1 we are using the RS256 algorithm to sign the JWTs. This prevents tampering, but does encrypt the data or keep it private.
 - The protocol is lazy, in that data is only sent to the network after positive confirmation that there is interest in the data.
