@@ -20,6 +20,7 @@ Define the logic for handling incoming Data packets, including:
 
 '''
 
+# TODO: Update based on packet structure from packet.py
 class InterestPacket:
     def __init__(self, data_name, other_parameters):
         self.data_name = data_name
