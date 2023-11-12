@@ -12,13 +12,14 @@ import random
 import logging
 import JWT
 import interest_emulation
+import vis
 import time
 from emulator import ICNEmulator
 
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.CRITICAL)
 logger.debug("hello world")
 
 '''
@@ -31,15 +32,18 @@ async def main():
     parser = argparse.ArgumentParser(description="Simulate an Information Centric Network")
     parser.add_argument("--num-nodes",          help="How many nodes to emulate in this network.",                  default=5)
     parser.add_argument("--dynamic-topology",   help="Whether the topology of the network should change of time.",  action="store_true")
-    parser.add_argument("--nodes-can-die",      help="Whether or not nodes can die at random",                      action="store_true")
+    parser.add_argument("--nodes-can-die",      help="Whether or not nodes can die at random.",                      action="store_true")
+    parser.add_argument("--vis",                help="Whether to run a visualization web app.",                      action="store_true")
     args = parser.parse_args()
-    
+
+    start_time = time.perf_counter()
+
     emulator = ICNEmulator(num_nodes=int(args.num_nodes))
     emulator_task = asyncio.create_task(emulator.start())
-    start_time = time.perf_counter()
+
     def data_name(i):
         return "/foo/bar/" + str(i)
-
+    
     for i,device in enumerate(emulator.devices):
         await device.server.started.wait()
         # TODO: use CIS
@@ -52,18 +56,21 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
+    vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
+    print("enter loop")
     while True:
-        await asyncio.sleep(0.2)
+        await asyncio.sleep(0.1)
 
         CAN_QUIT = True
+        #print("\n")
         for i,device in enumerate(emulator.devices):
-            print("cache ", i, device.CACHE)
+            print(f"items number is {len(device.CACHE.items())}, devices number is {len(emulator.devices)}")
             if len(device.CACHE.items()) < len(emulator.devices):
                 CAN_QUIT = False
         if CAN_QUIT:
             break
     end_time = time.perf_counter()
-    print("executime is ",end_time-start_time)
+    print(" total time is ",end_time-start_time)
 
 
 

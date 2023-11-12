@@ -10,7 +10,7 @@ def desire_queue_deterministic(list_of_desires: list, interval=1):
 
     async def put_to_queue():
         for item in list_of_desires:
-            await asyncio.sleep(interval)
+            #await asyncio.sleep(interval)
             await queue.put(item)
     
     asyncio.create_task(put_to_queue())
