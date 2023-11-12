@@ -28,7 +28,7 @@ class Device:
         self.logger = logging.getLogger()
         self.emulation = emulation
         self.HOSTNAME = 'http://localhost:'
-        self.CACHE = {} # TODO: use  CACHEStore()
+        self.CACHE = CACHEStore()
         async def handler_async(request):
             return await self.handler(request)
         self.server = HTTPServer(handler_async)
@@ -37,17 +37,21 @@ class Device:
         self.jwt = JWT.JWT()
         self.jwt.init_jwt(key_size=32) 
         # TODO: define these from seperate class cache       
-        self.PIT = {} 
-        self.FIB = {}
-        self.CACHE = {}
+        self.PIT = self.CACHE.get_PIT()
+        self.FIB = self.CACHE.get_FIB()
+        self.CIS = self.CACHE.get_CIS()
         self.neigbour_ports = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
+
+    '''
+    TODO: Shift this send/forward logic to storing and routing
+    '''
 
     async def handle_satisfy_packet(self, packet, jwt, hop=None):
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         # TODO verify packet came from a trusted sender
-        self.CACHE[data_name] = packet.get(PACKET_FIELD_DATA_PLAIN)
+        self.CIS[data_name] = packet.get(PACKET_FIELD_DATA_PLAIN)
 
     async def propagate_interest(self,jwt,hop=None):
         assert type(hop) == int
@@ -67,7 +71,7 @@ class Device:
         if requestor == self.jwt.public_key:
             return
 
-        data = self.CACHE.get(data_name)
+        data = self.CIS.get(data_name)
         self.logger.debug("GOT DATA: ", data, self.server.port)
         if data:
             return await self.send_to_network(data_name, data)
@@ -150,7 +154,7 @@ class Device:
         async def handle():
             while True:
                 item = await queue.get()
-                if self.CACHE.get(item):
+                if self.CIS.get(item):
                     continue
                 self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
                 current_neighbour_ports = self.emulation.discover_neighbours(self.task_id)
