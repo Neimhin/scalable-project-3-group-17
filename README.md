@@ -26,6 +26,10 @@ We are also meant to conceive of a highly disconnected scenario in which the net
 > Well, to have a hurricane, you need to have warm water. It has to be 80 degrees Fahrenheit or higher to really give it the energy that it needs. So think of a hurricane as like an engine. and that energy, that warm water, is the fuel that’s fueling the hurricane.
 > — Judson Jones
 
+
+Incorporating these sensors into an integrated monitoring system would provide a comprehensive set of data crucial for accurate storm prediction. The data collected can feed into predictive models to forecast storm paths, intensities, and potential impacts, thereby aiding in early warning systems and preparedness efforts. Collaboration with meteorological agencies and leveraging advanced computational models for data analysis and simulation can further enhance the accuracy and reliability of storm predictions.
+
+
 Having more realtime data about oceanic temperatures, not only at ocean surfaces but also in the depths, would help meteoroligists such as Judson Jones make more accurate predictions about the escalation of storms. Early warning and accurate prediction can help give vulnerable communities enough time to evacuate, saving lives.
 
 **Notes on `g17icn-0.1`**:
@@ -102,3 +106,7 @@ self.neighbour=[] # represented the node neighbour
 self.CIS = {}
 self.PIT = {}
 self.FIB = {}
+
+## Interfaces (JSON)
+
+We will define all the devices with their particular data. We will also have the port numbers and ip addresses of the RPI on which the device will run on. It will also define all neighbours to the device so we can dynamically parse the information from here when running the devices.
