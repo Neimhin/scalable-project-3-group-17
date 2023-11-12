@@ -1,3 +1,15 @@
+# TODO
+- design devices, enumerate sensors and actuators
+- design the "highly disconnected" scenario and use case to test/evaluate against
+- improve performance
+- improve code
+- handshake to swap identities
+- preshared trusted list of identities
+- metrics and visualization
+- run on the pi
+- interop with Ted's tcdicn
+
+
 # ICN Emulation
 
 We name our protocol g17icn.
