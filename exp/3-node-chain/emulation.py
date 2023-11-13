@@ -61,6 +61,7 @@ async def main():
             print(f"{i}", device.CIS)
             if len(device.CIS.items()) < len(emulator.devices):
                 FINISHED = False
+                
     if vis_task is not None:
         await vis_task
 

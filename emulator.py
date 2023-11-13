@@ -1,5 +1,6 @@
 import numpy as np
 from device import Device
+import logging
 
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -18,6 +19,7 @@ class ICNEmulator:
         self.devices = [Device(idx,self) for idx in self.node_ids]
         self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
         self.start_event = asyncio.Event()
+        self.logger = logging.getLogger()
 
     def devices_report(self):
         return {
@@ -45,6 +47,7 @@ class ICNEmulator:
     
     async def start(self):
         import asyncio
+        self.logger.debug("starting emulator")
         await asyncio.gather(*self.tasks)
 
     def generate_trusted_keys_table_all_nodes(self):

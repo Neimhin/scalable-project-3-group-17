@@ -2,7 +2,6 @@ from aiohttp import web
 import logging
 import asyncio
 
-
 class HTTPServer:
     def __init__(self,handler):
         self.logger = logging.getLogger()
@@ -20,7 +19,7 @@ class HTTPServer:
     # def pause():
     #  ...
 
-    async def start(self,port):
+    async def start(self,port=0):
         app = web.Application()
         app.router.add_post("/", self.handler)
         web_runner = web.AppRunner(app)
