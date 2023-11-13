@@ -1,0 +1,135 @@
+[
+    {
+      "/devices/device1": [
+        {
+          "listen port": 33333,
+          "send port": 33334,
+          "address": "pi-ip-address"
+        },
+        {
+          "neigbours": [
+            "/devices/device4",
+            "/devices/device5",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device1/temperature": [
+        {
+          "listen port": 33334,
+          "send port": 33335,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device1/depth": [
+        {
+          "listen port": 33336,
+          "send port": 33337,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device1/position": [
+        {
+          "listen port": 33338,
+          "send port": 33339,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device1/pressure": [
+        {
+          "listen port": 33340,
+          "send port": 33341,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device1/wave": [
+        {
+          "listen port": 33342,
+          "send port": 33343,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device1/ADCPs": [
+        {
+          "listen port": 33346,
+          "send port": 33347,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device1/radar": [
+        {
+          "listen port": 33348,
+          "send port": 33349,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "devices/device2": [
+        {
+          "listen port": 33350,
+          "send port": 33351,
+          "address": "pi-ip-address"
+        },
+        {
+          "neighnours": [
+            "/devices/device4",
+            "/devices/device5",
+            "/devices/device3",
+            "/devices/device1",
+            "/devices/device6",
+            "/devices/device8"
+          ]
+        }
+      ]
+    }
+  ]

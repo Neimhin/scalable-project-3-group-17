@@ -45,7 +45,7 @@ async def main():
     for i,device in enumerate(emulator.devices):
         await device.server.started.wait()
         # TODO: use CIS
-        device.CACHE[data_name(i)] = random.randint(0,100)
+        device.CIS[data_name(i)] = random.randint(0,100)
 
     # each device gets the same desires
     desires = [data_name(i) for i in range(emulator.num_nodes)]
@@ -54,18 +54,17 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
-    vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
+    # vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
 
-    while True:
+    FINISHED = False
+    while not FINISHED:
         await asyncio.sleep(0.2)
 
-        CAN_QUIT = True
+        FINISHED = True
         for i,device in enumerate(emulator.devices):
-            if len(device.CACHE.items()) < len(emulator.devices):
-                CAN_QUIT = False
-        if CAN_QUIT:
-            break
-
+            print(f"{i}", device.CIS)
+            if len(device.CIS.items()) < len(emulator.devices):
+                FINISHED = False
 
 
 if __name__ == "__main__":

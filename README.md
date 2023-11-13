@@ -1,6 +1,15 @@
 # TODO
 - design devices, enumerate sensors and actuators
 - design the "highly disconnected" scenario and use case to test/evaluate against
+- create gateway emulators to connect between the pis
+- - the master emulator runs a http server on port 34000
+  - slave emulators run a http server on port 34000 or another port between 33000 and 34000 optionally
+  - the slave emulators decide the connectivity of their own network
+  - the slave emulators ask the master emulator about inter-emulator connectivity
+  - e.g. POST `http://<master-emulator-ip>:34000/connectivity?node_adresses=<addr>:<port>:<uuid>,<addr>:<port>:<uuid>`
+  - in English: "to whom can <uuid> (device 1), <uuid> (device 2), and <uuid> (device 3) connect?"
+  - response: `Dict(<uuid>, List(Tuple(<host>,<port>,<uuid>)))`
+  - in English: "the devices with id 'abc' can connect to the device `10.35.70.37, 33000, 'cba')`, and `(10.35.70.17, 33000, 'acb')`, etc.
 - improve performance
 - improve code
 - handshake to swap identities
@@ -9,6 +18,33 @@
 - run on the pi
 - interop with Ted's tcdicn
 
+
+# Secure ICN: Literature Review
+
+> The power of the NDN architecture comes from **naming data hierarchically**
+> with the granularity of network-level packets and sealing named data with public key signatures.
+> Producers use **key names** to indicate which public key
+> a consumer should retrieve to verify signatures of produced data packets.
+> In addition to fetching the specified keys
+> and performing signature verification,
+> consumers also match data and key names to
+> **determine whether the key is authorized to sign**
+> each specific data packet.
+> 
+> — \cite{yu-alexander-clark-schematizing-trust}
+
+A "key name" could be the hash of the public key.
+
+>  Recent growth in e-commerce, digital media, social networking, and smartphone applications has resulted in the Internet primarily being used as a **distribution network**. Distribution networks are fundamentally more general than communication networks and solving distribution problems with a communications network is complex and error prone.
+>
+> — https://named-data.net/project/execsummary/
+
+Further, Named Data Networking is an approach to networking that is
+designed from the outset
+to be conducive to building efficient
+**distribution networks**.
+Our scenario/use-case should ideally be a **distribution network** of some kind,
+rather than a **communication network** (endpoint to endpoint).
 
 # ICN Emulation
 
@@ -25,6 +61,10 @@ We are also meant to conceive of a highly disconnected scenario in which the net
 **Motivation/Application**: Ocean temperatures, currents, El Niño and La Niña phenomena, are hard to predict and have huge implications for the weather experienced around the world. The increased number of rapidly escalating oceanic tornadoes is attributed to rising ocean temperatures; The New York times [reported on "The Daily"](https://www.nytimes.com/2023/10/27/podcasts/the-daily/hurricane-otis.html?showTranscript=1) an example of rapid escalation on 27th Oct. 2023, noting "Hurricane Otis transformed from a tropical storm to a deadly Category 5 hurricane in a day, defying forecasts."
 > Well, to have a hurricane, you need to have warm water. It has to be 80 degrees Fahrenheit or higher to really give it the energy that it needs. So think of a hurricane as like an engine. and that energy, that warm water, is the fuel that’s fueling the hurricane.
 > — Judson Jones
+
+
+Incorporating these sensors into an integrated monitoring system would provide a comprehensive set of data crucial for accurate storm prediction. The data collected can feed into predictive models to forecast storm paths, intensities, and potential impacts, thereby aiding in early warning systems and preparedness efforts. Collaboration with meteorological agencies and leveraging advanced computational models for data analysis and simulation can further enhance the accuracy and reliability of storm predictions.
+
 
 Having more realtime data about oceanic temperatures, not only at ocean surfaces but also in the depths, would help meteoroligists such as Judson Jones make more accurate predictions about the escalation of storms. Early warning and accurate prediction can help give vulnerable communities enough time to evacuate, saving lives.
 
@@ -102,3 +142,7 @@ self.neighbour=[] # represented the node neighbour
 self.CIS = {}
 self.PIT = {}
 self.FIB = {}
+
+## Interfaces (JSON)
+
+We will define all the devices with their particular data. We will also have the port numbers and ip addresses of the RPI on which the device will run on. It will also define all neighbours to the device so we can dynamically parse the information from here when running the devices.
