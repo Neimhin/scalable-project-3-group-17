@@ -9,14 +9,23 @@ class HTTPServer:
         self.port = None
         self.handler = handler
         # an async event that is set after the server has started
+        # TODO: create a more sophisticated _state Queue to query the state of the server
         self.started = asyncio.Event()
 
-    async def start(self):
+    # TODO: an async function to get the port that waits until startup
+    # async def get_port():
+    #  ...
+
+    # TODO: a method to pause the device, i.e. stop it from listening on the TCP socket
+    # def pause():
+    #  ...
+
+    async def start(self,port):
         app = web.Application()
         app.router.add_post("/", self.handler)
         web_runner = web.AppRunner(app)
         await web_runner.setup()
-        site = web.TCPSite(web_runner,'127.0.0.1', 0)
+        site = web.TCPSite(web_runner,'127.0.0.1',port)
         await site.start()
 
         # let outside listener know the server has started:

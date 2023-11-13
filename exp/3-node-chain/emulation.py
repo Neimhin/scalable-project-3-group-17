@@ -14,9 +14,9 @@ import vis.app
 from emulator import ICNEmulator
 
 # TODO: refactor to another file
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(filename)s:%(lineno)d - %(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
-logger.setLevel(logging.CRITICAL)
+logger.setLevel(logging.DEBUG)
 logger.debug("hello world")
 
 '''
