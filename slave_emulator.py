@@ -1,6 +1,7 @@
 import numpy as np
 from device import Device
 import logging
+import asyncio
 
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -60,3 +61,11 @@ class SlaveEmulator:
             pub_key = device.jwt.public_key_pem
             d[hash] = pub_key
         return d
+    
+
+if __name__ == "__main__":
+    # parse options
+    # --num-nodes
+    # etc.
+    se = SlaveEmulator()
+    asyncio.run(se.run())
