@@ -30,7 +30,7 @@ class ICNEmulator:
         }
 
     # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
-    def discover_neighbours(self, node_number):
+    async def discover_neighbours(self, node_number):
         neighbors = []
         if node_number < 0 or node_number >= len(self.adjacency_matrix):
             return neighbors
@@ -38,6 +38,7 @@ class ICNEmulator:
             if connected:
                 neighbors.append(task_id)
 
+        # TODO: return interfaces instead of port numbers
         # interfaces = []
         # for i in neighbors:
         #     host = self.devices[i].server.host

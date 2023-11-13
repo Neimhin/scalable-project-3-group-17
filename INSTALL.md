@@ -1,5 +1,3 @@
-
-
 ### cryptography
 installing the pip `cryptography` library depends on 
 having an installion of the rust compiler

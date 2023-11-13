@@ -56,7 +56,7 @@ class Device:
 
     async def propagate_interest(self,jwt,hop=None):
         assert type(hop) == int
-        current_neighbours = self.emulation.discover_neighbours(self.task_id)
+        current_neighbours = await self.emulation.discover_neighbours(self.task_id)
         # TODO: propagate more conservatively
         def port2task(port):
             return asyncio.create_task(self.send_payload_to(port,payload=jwt,hop=hop+1))
@@ -94,8 +94,8 @@ class Device:
 
         await self.propagate_interest(jwt,hop=hop)
 
-    def discover_neighbours(self):
-        self.neighbour = self.emulation.discover_neighbours(self.task_id)
+    async def discover_neighbours(self):
+        self.neighbour = await self.emulation.discover_neighbours(self.task_id)
         self.logger.debug(f"got neighbours {str(self.neighbour)}")
         return self.neighbour
     
@@ -131,7 +131,7 @@ class Device:
     
     # send named data to the network
     async def send_to_network(self, data_name, data):
-        current_neighbours = self.emulation.discover_neighbours(self.task_id)
+        current_neighbours = await self.emulation.discover_neighbours(self.task_id)
         payload = self.jwt.encode({
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
             PACKET_FIELD_DATA_NAME: data_name,
@@ -158,7 +158,7 @@ class Device:
                 if self.CIS.get(item):
                     continue
                 self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
-                current_neighbour_ports = self.emulation.discover_neighbours(self.task_id)
+                current_neighbour_ports = await self.emulation.discover_neighbours(self.task_id)
                 
                 # TODO: Use packet class {NA task}
                 payload = self.jwt.encode({
