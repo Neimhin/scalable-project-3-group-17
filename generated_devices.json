@@ -1,0 +1,1247 @@
+{
+  "/devices/device1": [
+    {
+      "temperature": [
+        {
+          "listen port": 33000,
+          "send port": 33001,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6",
+            "/devices/device2",
+            "/devices/device5",
+            "/devices/device8",
+            "/devices/device4",
+            "/devices/device7",
+            "/devices/device3",
+            "/devices/device9"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33002,
+          "send port": 33003,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device10",
+            "/devices/device6",
+            "/devices/device3",
+            "/devices/device5",
+            "/devices/device8",
+            "/devices/device9",
+            "/devices/device4",
+            "/devices/device2",
+            "/devices/device7"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33004,
+          "send port": 33005,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device3",
+            "/devices/device5",
+            "/devices/device10",
+            "/devices/device7",
+            "/devices/device9",
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33006,
+          "send port": 33007,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9",
+            "/devices/device3",
+            "/devices/device10",
+            "/devices/device6",
+            "/devices/device2",
+            "/devices/device5",
+            "/devices/device8",
+            "/devices/device7",
+            "/devices/device4"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33008,
+          "send port": 33009,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device4",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33010,
+          "send port": 33011,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device2",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33012,
+          "send port": 33013,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device3"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device2": [
+    {
+      "temperature": [
+        {
+          "listen port": 33014,
+          "send port": 33015,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device1",
+            "/devices/device9",
+            "/devices/device8",
+            "/devices/device3",
+            "/devices/device10",
+            "/devices/device4",
+            "/devices/device6",
+            "/devices/device5"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33016,
+          "send port": 33017,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": []
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33018,
+          "send port": 33019,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device10",
+            "/devices/device9",
+            "/devices/device8",
+            "/devices/device4"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33020,
+          "send port": 33021,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device10",
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33022,
+          "send port": 33023,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device4",
+            "/devices/device8",
+            "/devices/device1",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33024,
+          "send port": 33025,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device8",
+            "/devices/device5"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33026,
+          "send port": 33027,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device3": [
+    {
+      "temperature": [
+        {
+          "listen port": 33028,
+          "send port": 33029,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9",
+            "/devices/device8",
+            "/devices/device4",
+            "/devices/device1",
+            "/devices/device5",
+            "/devices/device10",
+            "/devices/device2"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33030,
+          "send port": 33031,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device4",
+            "/devices/device10",
+            "/devices/device5",
+            "/devices/device8",
+            "/devices/device6",
+            "/devices/device2"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33032,
+          "send port": 33033,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device10",
+            "/devices/device7",
+            "/devices/device1",
+            "/devices/device9"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33034,
+          "send port": 33035,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device5",
+            "/devices/device9",
+            "/devices/device1",
+            "/devices/device6",
+            "/devices/device8",
+            "/devices/device2",
+            "/devices/device7",
+            "/devices/device10"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33036,
+          "send port": 33037,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33038,
+          "send port": 33039,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33040,
+          "send port": 33041,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device9",
+            "/devices/device7",
+            "/devices/device4"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device4": [
+    {
+      "temperature": [
+        {
+          "listen port": 33042,
+          "send port": 33043,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": []
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33044,
+          "send port": 33045,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device8",
+            "/devices/device3",
+            "/devices/device6",
+            "/devices/device9",
+            "/devices/device5",
+            "/devices/device1",
+            "/devices/device10"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33046,
+          "send port": 33047,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device3",
+            "/devices/device9",
+            "/devices/device10",
+            "/devices/device8",
+            "/devices/device5",
+            "/devices/device2",
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33048,
+          "send port": 33049,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": []
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33050,
+          "send port": 33051,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device8",
+            "/devices/device5",
+            "/devices/device6",
+            "/devices/device2",
+            "/devices/device3",
+            "/devices/device1",
+            "/devices/device7",
+            "/devices/device9",
+            "/devices/device10"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33052,
+          "send port": 33053,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9",
+            "/devices/device6",
+            "/devices/device10",
+            "/devices/device3",
+            "/devices/device5",
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33054,
+          "send port": 33055,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device8",
+            "/devices/device6",
+            "/devices/device10",
+            "/devices/device9",
+            "/devices/device5",
+            "/devices/device2",
+            "/devices/device3"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device5": [
+    {
+      "temperature": [
+        {
+          "listen port": 33056,
+          "send port": 33057,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device4",
+            "/devices/device8",
+            "/devices/device10",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33058,
+          "send port": 33059,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33060,
+          "send port": 33061,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device4",
+            "/devices/device3",
+            "/devices/device10",
+            "/devices/device9",
+            "/devices/device1",
+            "/devices/device8",
+            "/devices/device6",
+            "/devices/device2"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33062,
+          "send port": 33063,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device2",
+            "/devices/device6",
+            "/devices/device3",
+            "/devices/device8"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33064,
+          "send port": 33065,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6",
+            "/devices/device8"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33066,
+          "send port": 33067,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device2",
+            "/devices/device9"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33068,
+          "send port": 33069,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device10",
+            "/devices/device8"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device6": [
+    {
+      "temperature": [
+        {
+          "listen port": 33070,
+          "send port": 33071,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33072,
+          "send port": 33073,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device9",
+            "/devices/device2",
+            "/devices/device10",
+            "/devices/device4",
+            "/devices/device8"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33074,
+          "send port": 33075,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device10"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33076,
+          "send port": 33077,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33078,
+          "send port": 33079,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device10",
+            "/devices/device2",
+            "/devices/device8",
+            "/devices/device4",
+            "/devices/device9",
+            "/devices/device1",
+            "/devices/device5",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33080,
+          "send port": 33081,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device2",
+            "/devices/device10",
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33082,
+          "send port": 33083,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device4"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device7": [
+    {
+      "temperature": [
+        {
+          "listen port": 33084,
+          "send port": 33085,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device10",
+            "/devices/device8",
+            "/devices/device2",
+            "/devices/device9",
+            "/devices/device4",
+            "/devices/device1",
+            "/devices/device5",
+            "/devices/device3",
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33086,
+          "send port": 33087,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device2",
+            "/devices/device3",
+            "/devices/device9"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33088,
+          "send port": 33089,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9",
+            "/devices/device1",
+            "/devices/device8",
+            "/devices/device2",
+            "/devices/device3",
+            "/devices/device5",
+            "/devices/device4"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33090,
+          "send port": 33091,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33092,
+          "send port": 33093,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33094,
+          "send port": 33095,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": []
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33096,
+          "send port": 33097,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9",
+            "/devices/device10",
+            "/devices/device1",
+            "/devices/device4"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device8": [
+    {
+      "temperature": [
+        {
+          "listen port": 33098,
+          "send port": 33099,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33100,
+          "send port": 33101,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6",
+            "/devices/device5",
+            "/devices/device2",
+            "/devices/device7",
+            "/devices/device9",
+            "/devices/device4"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33102,
+          "send port": 33103,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device2",
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33104,
+          "send port": 33105,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device3",
+            "/devices/device2",
+            "/devices/device5",
+            "/devices/device4",
+            "/devices/device9",
+            "/devices/device1",
+            "/devices/device10",
+            "/devices/device6"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33106,
+          "send port": 33107,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": []
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33108,
+          "send port": 33109,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device9",
+            "/devices/device3",
+            "/devices/device2",
+            "/devices/device10",
+            "/devices/device7"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33110,
+          "send port": 33111,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device2",
+            "/devices/device5",
+            "/devices/device6",
+            "/devices/device10"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device9": [
+    {
+      "temperature": [
+        {
+          "listen port": 33112,
+          "send port": 33113,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device4",
+            "/devices/device8",
+            "/devices/device6",
+            "/devices/device10",
+            "/devices/device5"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33114,
+          "send port": 33115,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device3",
+            "/devices/device4",
+            "/devices/device1",
+            "/devices/device7"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33116,
+          "send port": 33117,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device10",
+            "/devices/device1",
+            "/devices/device6",
+            "/devices/device8",
+            "/devices/device4",
+            "/devices/device2",
+            "/devices/device7",
+            "/devices/device3",
+            "/devices/device5"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33118,
+          "send port": 33119,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device5",
+            "/devices/device3",
+            "/devices/device10",
+            "/devices/device4"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33120,
+          "send port": 33121,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6",
+            "/devices/device3"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33122,
+          "send port": 33123,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device3",
+            "/devices/device1",
+            "/devices/device6",
+            "/devices/device8",
+            "/devices/device4",
+            "/devices/device2"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33124,
+          "send port": 33125,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device6",
+            "/devices/device10",
+            "/devices/device1"
+          ]
+        }
+      ]
+    }
+  ],
+  "/devices/device10": [
+    {
+      "temperature": [
+        {
+          "listen port": 33126,
+          "send port": 33127,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device1",
+            "/devices/device5",
+            "/devices/device6",
+            "/devices/device4",
+            "/devices/device8",
+            "/devices/device9",
+            "/devices/device7",
+            "/devices/device2"
+          ]
+        }
+      ]
+    },
+    {
+      "depth": [
+        {
+          "listen port": 33128,
+          "send port": 33129,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device7",
+            "/devices/device9",
+            "/devices/device8",
+            "/devices/device4",
+            "/devices/device6",
+            "/devices/device5",
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "position": [
+        {
+          "listen port": 33130,
+          "send port": 33131,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device3",
+            "/devices/device9",
+            "/devices/device5",
+            "/devices/device8",
+            "/devices/device1",
+            "/devices/device2",
+            "/devices/device7"
+          ]
+        }
+      ]
+    },
+    {
+      "pressure": [
+        {
+          "listen port": 33132,
+          "send port": 33133,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9",
+            "/devices/device3",
+            "/devices/device1",
+            "/devices/device7",
+            "/devices/device8",
+            "/devices/device2"
+          ]
+        }
+      ]
+    },
+    {
+      "wave": [
+        {
+          "listen port": 33134,
+          "send port": 33135,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device4",
+            "/devices/device8",
+            "/devices/device7",
+            "/devices/device1",
+            "/devices/device3",
+            "/devices/device6",
+            "/devices/device2"
+          ]
+        }
+      ]
+    },
+    {
+      "ADCPs": [
+        {
+          "listen port": 33136,
+          "send port": 33137,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device9",
+            "/devices/device6",
+            "/devices/device8",
+            "/devices/device7",
+            "/devices/device3",
+            "/devices/device1"
+          ]
+        }
+      ]
+    },
+    {
+      "radar": [
+        {
+          "listen port": 33138,
+          "send port": 33139,
+          "address": "192.168.0.10"
+        },
+        {
+          "neigbours": [
+            "/devices/device5",
+            "/devices/device4",
+            "/devices/device3",
+            "/devices/device8",
+            "/devices/device7",
+            "/devices/device9",
+            "/devices/device6",
+            "/devices/device1",
+            "/devices/device2"
+          ]
+        }
+      ]
+    }
+  ]
+}
