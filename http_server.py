@@ -16,13 +16,14 @@ class HTTPServer:
         app.router.add_post("/", self.handler)
         web_runner = web.AppRunner(app)
         await web_runner.setup()
-        site = web.TCPSite(web_runner,'localhost', 0)
+        site = web.TCPSite(web_runner,'127.0.0.1', 0)
         await site.start()
 
         # let outside listener know the server has started:
         # usage: await server.started.wait()
         self.started.set()
         addr = site._server.sockets[0].getsockname()
+        # TODO make sure this is correct
         self.host = addr[0]
         self.port = int(addr[1])
         self.logger.debug(f"started server on port {self.port}")

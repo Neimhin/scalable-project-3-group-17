@@ -35,6 +35,12 @@ class ICNEmulator:
         for task_id, connected in enumerate(self.adjacency_matrix[node_number]):
             if connected:
                 neighbors.append(task_id)
+
+        # interfaces = []
+        # for i in neighbors:
+        #     host = self.devices[i].server.host
+        #     port = self.devices[i].server.port
+        #     interfaces.append((host,port))
         return [self.devices[i].server.port for i in neighbors]
     
     async def start(self):

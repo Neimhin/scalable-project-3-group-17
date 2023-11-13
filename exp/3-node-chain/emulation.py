@@ -9,7 +9,7 @@ import random
 import logging
 import JWT
 import interest_emulation
-import vis
+import vis.app
 
 from emulator import ICNEmulator
 
@@ -50,8 +50,8 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
-    # vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
 
+    vis_task = asyncio.create_task(vis.app.emulator_vis(emulator,debug=True)) if args.vis else None
     FINISHED = False
     while not FINISHED:
         await asyncio.sleep(0.2)
@@ -61,7 +61,8 @@ async def main():
             print(f"{i}", device.CIS)
             if len(device.CIS.items()) < len(emulator.devices):
                 FINISHED = False
-
+    if vis_task is not None:
+        await vis_task
 
 if __name__ == "__main__":
     asyncio.run(main())
