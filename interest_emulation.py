@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # TODO move this to unit test in ./test
     # demo a simple queue
     async def main():
-        queue = desire_queue_deterministic(["a","b","c"],0.3)
+        queue = desire_queue_deterministic(["a","b","c"],1)
         for i in range(3):
             item = await queue.get()
             print(i,item)

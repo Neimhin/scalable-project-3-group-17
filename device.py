@@ -36,7 +36,6 @@ class Device:
         self.desire_queue = None
         self.jwt = JWT.JWT()
         self.jwt.init_jwt(key_size=32) 
-        # TODO: define these from seperate class cache       
         self.PIT = self.CACHE.get_PIT()
         self.FIB = self.CACHE.get_FIB()
         self.CIS = self.CACHE.get_CIS()
@@ -158,6 +157,8 @@ class Device:
                     continue
                 self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
                 current_neighbour_ports = self.emulation.discover_neighbours(self.task_id)
+                
+                # TODO: Use packet class {NA task}
                 payload = self.jwt.encode({
                     PACKET_FIELD_REQUEST_TYPE: "interest",
                     PACKET_FIELD_DATA_NAME: item,
