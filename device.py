@@ -2,6 +2,9 @@
 G17 ICN Node
 '''
 
+from __future__ import annotations
+from typing import Optional
+import emulator
 import httpx
 import logging
 import aiohttp
@@ -11,6 +14,7 @@ from datetime import datetime
 import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
+from typing import Tuple
 
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
@@ -23,11 +27,10 @@ HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, task_id, emulation):
+    def __init__(self, task_id, emulation: Optional[emulator.ICNEmulator]):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
-        self.HOSTNAME = 'http://localhost:'
         self.CACHE = {} # TODO: use  CACHEStore()
         async def handler_async(request):
             return await self.handler(request)
@@ -42,6 +45,10 @@ class Device:
         self.FIB = {}
         self.CACHE = {}
         self.neigbour_ports = []
+
+        self.payloads_sent = 0
+        self.interest_packets_handled = 0
+        self.satisfy_packets_handled = 0
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
     def create_FIB_entry(self,data_name, hop,port):
@@ -51,8 +58,8 @@ class Device:
         entry['created_at']=datetime.now().timestamp()
         self.FIB[data_name]=entry
 
-
     async def handle_satisfy_packet(self, packet, jwt, hop=None):
+        self.satisfy_packets_handled = self.satisfy_packets_handled + 1
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         #_list = self.PIT[data_name]['waiting_list']
@@ -60,9 +67,9 @@ class Device:
         if data_entry:
             _list = data_entry.get('waiting_list')
             if _list==None:
-                _list=[packet[PACKET_FIELD_PORT_NUMBER]]
+                _list=[packet[PACKET_FIELD_SENDER_PUBLIC_KEY]]
         else:
-            _list=[packet[PACKET_FIELD_PORT_NUMBER]]
+            _list=[packet[PACKET_FIELD_SENDER_PUBLIC_KEY]]
 
         #print(f"now the {self.task_id} node has a waiting list {_list} for {data_name}")
 
@@ -88,18 +95,19 @@ class Device:
         current_neighbours = self.emulation.discover_neighbours(self.task_id)
         packet[PACKET_FIELD_PORT_NUMBER]=self.server.port
         # TODO: propagate more conservatively
-        def port2task(port):
-            return asyncio.create_task(self.send_payload_to(port,payload=self.jwt.encode(packet),hop=hop+1))
+        def device_descriptor2task(device_descriptor):
+            return asyncio.create_task(self.send_payload_to(device_descriptor,payload=self.jwt.encode(packet),hop=hop+1))
         
         next_port = self.FIB.get(packet[PACKET_FIELD_DATA_NAME],None)
-        if next_port:
-            tasks=[port2task(next_port)]
+        if False and next_port:
+            tasks=[device_descriptor2task(next_port)]
         else:
-            tasks = [port2task(port) for port in current_neighbours]
+            tasks = [device_descriptor2task(device_descriptor) for device_descriptor in current_neighbours]
         together = asyncio.gather(*tasks)
         await together
 
     async def handle_interest_packet(self, packet, jwt, hop=None,):
+        self.interest_packets_handled = self.interest_packets_handled + 1
         assert type(hop) == int
         self.logger.debug(packet)
         data_name=packet[PACKET_FIELD_DATA_NAME]
@@ -108,7 +116,7 @@ class Device:
             return
 
         data = self.CACHE.get(data_name)
-        self.logger.debug("GOT DATA: ", data, self.server.port)
+        self.logger.debug(f"GOT DATA: {data} {self.jwt.key_name[:10]}")
         if data:
             #print(f"get data {self.task_id}")
             return await self.send_to_network(data_name, data,hop, [packet[PACKET_FIELD_PORT_NUMBER]] )
@@ -180,36 +188,51 @@ class Device:
                 raise Exception("unrecognised packet type: " + packet_type)
         return web.Response(text="ok")
 
-    async def send_payload_to(self,port,payload=None,hop=0):
+    async def send_payload_to(self,device_descriptor: Tuple(str,str,int),payload: str=None,hop=0):
+        print(device_descriptor)
+        key_name, host, port = (None,None,None)
+        try:
+            key_name, host, port = device_descriptor
+        except Exception as e:
+            print(device_descriptor, payload)
+            print(f"bad format device descriptor: {e}")
+            exit()
+        self.logger.debug(f"sending payload {key_name}, {host}, {port}, {payload[:20]}")
         assert type(port) == int
         assert payload is not None
-        request = self.jwt.decode(payload)
-        data_name = request[PACKET_FIELD_DATA_NAME]
-
-        #print(f"{self.task_id} node is sending request to {port} for {data_name}")
-
         async with httpx.AsyncClient() as client:
             headers = {HOP_HEADER: str(hop)}
-            await client.post(self.HOSTNAME + str(port), content=payload, headers=headers)
+            await client.post(f"http://{host}:{port}", content=payload, headers=headers)
+            self.payloads_sent = self.payloads_sent + 1
+            print(f"PAYLOADS SENT: from {self.server.port} {self.payloads_sent}")
     
     # send named data to the network
-    async def send_to_network(self, data_name, data,hop,ports):
-        #current_neighbours = self.emulation.discover_neighbours(self.task_id)
+    async def send_to_network(self, data_name, data,hop,forward_to_key_names):
+        current_neighbours = self.emulation.discover_neighbours(self.task_id)
+        neighbour_dict = {d[0]: d for d in current_neighbours}
+        forward_to = []
+        for name in forward_to_key_names:
+            device = neighbour_dict.get(name)
+            if device:
+                forward_to.append(device)
+
+
         payload = self.jwt.encode({
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
             PACKET_FIELD_DATA_NAME: data_name,
             PACKET_FIELD_DATA_PLAIN: data,
-            PACKET_FIELD_SENDER_PUBLIC_KEY: self.jwt.public_key.decode("utf-8"),
+            PACKET_FIELD_SENDER_PUBLIC_KEY: self.jwt.key_name,
             PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
             PACKET_FIELD_PORT_NUMBER:self.server.port
         })
 
-        def port2task(port):
-            coroutine = self.send_payload_to(port, hop=hop,payload=payload, )
+        def device_descriptor2task(device_descriptor):
+            coroutine = self.send_payload_to(device_descriptor, hop=hop,payload=payload, )
             return asyncio.create_task(coroutine)
         
         #[port2task(port) for port in current_neighbours]
-        [port2task(port) for port in ports] # directly pass the data to the requestor, the reason that do not need to use neighbour is we just want to pass the data to the node who needs it.
+        together = asyncio.gather(*[device_descriptor2task(dd) for dd in forward_to]) # directly pass the data to the requestor, the reason that do not need to use neighbour is we just want to pass the data to the node who needs it.
+        await together
 
     def set_desire_queue(self, queue):
         if self.desire_queue_task:
@@ -228,15 +251,16 @@ class Device:
 
                 self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
 
-                current_neighbour_ports = self.emulation.discover_neighbours(self.task_id)
+                current_neighbours = self.emulation.discover_neighbours(self.task_id)
+                self.logger.debug(str(current_neighbours))
                 payload = self.jwt.encode({
                     PACKET_FIELD_REQUEST_TYPE: "interest",
                     PACKET_FIELD_DATA_NAME: item,
-                    PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
+                    PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.key_name,
                     PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
                     PACKET_FIELD_PORT_NUMBER:self.server.port
                 })
-                tasks = [asyncio.create_task(self.send_payload_to(port, payload)) for port in current_neighbour_ports]
+                tasks = [asyncio.create_task(self.send_payload_to(device_descriptor, payload)) for device_descriptor in current_neighbours]
                 await asyncio.gather(*tasks)
                 
 
@@ -244,5 +268,6 @@ class Device:
         self.desire_queue_task = asyncio.create_task(handle())
 
     async def start(self):
+        print("STARTING DEVICE")
         self.logger.debug(f"starting node {self.task_id}")
         await self.server.start()

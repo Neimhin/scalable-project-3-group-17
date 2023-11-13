@@ -51,6 +51,7 @@ class JWT:
     def init_jwt(self, key_size=2048):
         # Generate new RSA key pair
         self.private_key, self.public_key = rs256_keypair()
+        self.key_name = self.hash_of_public_key()
 
     def encode(self, payload):
         if self.private_key:

@@ -19,7 +19,7 @@ from emulator import ICNEmulator
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
-logger.setLevel(logging.CRITICAL)
+logger.setLevel(logging.DEBUG)
 logger.debug("hello world")
 
 '''
@@ -59,7 +59,7 @@ async def main():
     vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
     print("enter loop")
     while True:
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
 
         CAN_QUIT = True
         #print("\n")
@@ -76,3 +76,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
