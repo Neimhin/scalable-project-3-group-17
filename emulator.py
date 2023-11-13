@@ -1,7 +1,7 @@
 import numpy as np
 from device import Device
 
-# contributors: [atarwa-8.11.23, nrobinso-9.11.23]
+# contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
     adj_matrix = [[0] * n for _ in range(n)]
     for i in range(n-1):
@@ -27,7 +27,7 @@ class ICNEmulator:
             "task_ids": list(range(self.num_nodes)) # TODO make this more robust
         }
 
-    # contributors: [atarwa-8.11.23, nrobinso-9.11.23]
+    # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
     def discover_neighbours(self, node_number):
         neighbors = []
         if node_number < 0 or node_number >= len(self.adjacency_matrix):
