@@ -269,7 +269,7 @@ class Device:
                 if self.CIS.get(item):
                     continue
                 self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
-                current_neighbour_ports = await self.emulation.discover_neighbours(self.task_id)
+                current_neighbour = await self.emulation.discover_neighbours(self.task_id)
                 
                 # TODO: Use packet class {NARORA task}
                 payload = self.jwt.encode({
@@ -278,8 +278,7 @@ class Device:
                     PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
                     PACKET_FIELD_TASK_ID: self.task_id,
                     PACKET_FIELD_CREATED_AT: datetime.now().timestamp()
-                }
-                payload = self.jwt.encode(context)
+                })
                 tasks = [asyncio.create_task(self.send_payload_to(value, payload)) for value in current_neighbour.values()]
                 together = asyncio.gather(*tasks)
                 await together
