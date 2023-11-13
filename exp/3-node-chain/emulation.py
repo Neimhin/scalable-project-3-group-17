@@ -11,7 +11,7 @@ import JWT
 import interest_emulation
 import vis.app
 
-from emulator import SlaveEmulator
+from slave_emulator import SlaveEmulator
 
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(filename)s:%(lineno)d - %(asctime)s - %(name)s - %(levelname)s - %(message)s')

@@ -4,9 +4,9 @@ import pandas as pd
 import random
 import asyncio
 from typing import Optional
-import emulator
+import slave_emulator 
 
-async def emulator_vis(emulator: Optional[emulator.SlaveEmulator], *args, **kwargs):
+async def emulator_vis(emulator: Optional[slave_emulator.SlaveEmulator], *args, **kwargs):
     app = Quart(__name__)
     @app.route('/' ,methods=['GET'])
     async def index():

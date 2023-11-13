@@ -2,7 +2,7 @@
 G17 ICN Node
 '''
 from __future__ import annotations
-import emulator
+import slave_emulator
 import httpx
 import logging
 import aiohttp
@@ -24,7 +24,7 @@ PACKET_FIELD_DATA_PLAIN =               "data"
 HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
-    def __init__(self, task_id, emulation: Optional[emulator.SlaveEmulator], gateway=False):
+    def __init__(self, task_id, emulation: Optional[slave_emulator.SlaveEmulator], gateway=False):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
