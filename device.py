@@ -1,13 +1,15 @@
 '''
 G17 ICN Node
 '''
-
+from __future__ import annotations
+import emulator
 import httpx
 import logging
 import aiohttp
 from aiohttp import web
 import asyncio
 from datetime import datetime
+from typing import Optional
 
 import JWT
 from http_server import HTTPServer
@@ -23,7 +25,7 @@ HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, task_id, emulation):
+    def __init__(self, task_id, emulation: Optional[emulator.ICNEmulator]):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
