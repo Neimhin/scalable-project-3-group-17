@@ -1,6 +1,13 @@
 # TODO
 - design devices, enumerate sensors and actuators
 - design the "highly disconnected" scenario and use case to test/evaluate against
+- create gateway emulators to connect between the pis
+- - the master emulator runs a http server on port 34000
+  - slave emulators run a http server on port 34000 or another port between 33000 and 34000 optionally
+  - the slave emulators decide the connectivity of their own network
+  - the slave emulators ask the master emulator about inter-emulator connectivity
+  - e.g. POST "http://<master-emulator-ip>:34000/connectivity?node_adresses=<addr>:<port>:<uuid>,<addr>:<port>:<uuid>"
+  - in English: "to whom can <uuid> (device 1), <uuid> (device 2), and <uuid> (device 3) connect
 - improve performance
 - improve code
 - handshake to swap identities
