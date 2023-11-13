@@ -26,6 +26,17 @@
 
 A "key name" could be the hash of the public key.
 
+>  Recent growth in e-commerce, digital media, social networking, and smartphone applications has resulted in the Internet primarily being used as a **distribution network**. Distribution networks are fundamentally more general than communication networks and solving distribution problems with a communications network is complex and error prone.
+>
+> — https://named-data.net/project/execsummary/
+
+Further, Named Data Networking is an approach to networking that is
+designed from the outset
+to be conducive to building efficient
+**distribution networks**.
+Our scenario/use-case should ideally be a **distribution network** of some kind,
+rather than a **communication network** (endpoint to endpoint).
+
 # ICN Emulation
 
 We name our protocol g17icn.
