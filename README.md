@@ -6,7 +6,7 @@ DEVICE_INTERFACE
   "host": <host>,
   "port": <port>,
 }
-``
+```
 
 - master server
   - listen on 33000
