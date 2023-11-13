@@ -1,3 +1,7 @@
+'''
+contributor: Naman Arora
+'''
+
 import json
 import random
 import argparse
