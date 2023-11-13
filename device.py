@@ -95,12 +95,11 @@ class Device:
         # TODO: validate packet format
         packet_type = packet.get(PACKET_FIELD_REQUEST_TYPE)
         print(packet_type)
-        match packet_type:
-            case "interest":
+        if packet_type == "interest":
                 asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count))
-            case "satisfy":
+        elif packet_type == "satisfy":
                 asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count))
-            case _:
+        else:
                 raise Exception("unrecognised packet type: " + packet_type)
         return web.Response(text="ok")
 
