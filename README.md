@@ -1,3 +1,47 @@
+#### TODO 13th November 2023
+DEVICE_INTERFACE
+```json
+{
+  "key_name": <hash of key name>,
+  "host": <host>,
+  "port": <port>,
+}
+``
+
+- master server
+  - listen on 33000
+  - GET "/pause?key_name=<hash of public key>"
+  - POST JSON "/register"
+    - ```json
+      {
+        "emulator_interface": {
+          "host": "10.35.70.37",
+          "port": 34000
+        },
+        "devices": [
+          {
+            "key_name": <hash of public key>,
+            "public_key": <public key PEM format>, 
+            "host": "10.35.70.37",
+            "port": 33001,
+        ]
+      }
+      ```
+- slave server (naarora)
+  - listen on 34000
+  - `python slave_server.py --master-host 10.35.70.35` (default --master-host to 127.0.01)
+  - on startup make "/register" request to master
+  - needs a "/update_topology" endpoint
+  - POST JSON" "/update_topology"
+    ```json
+      [{
+    "key_name": <hash of pk>,
+    "host": <host>,
+    "port": <port>,
+    "neighbours": [DEVICE_INTERFACE, DEVICE_INTERFACE]
+    }]
+    ```
+
 # TODO
 - design devices, enumerate sensors and actuators
 - design the "highly disconnected" scenario and use case to test/evaluate against
