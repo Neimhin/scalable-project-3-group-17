@@ -10,6 +10,22 @@
 - interop with Ted's tcdicn
 
 
+# Secure ICN: Literature Review
+
+> The power of the NDN architecture comes from **naming data hierarchically**
+> with the granularity of network-level packets and sealing named data with public key signatures.
+> Producers use **key names** to indicate which public key
+> a consumer should retrieve to verify signatures of produced data packets.
+> In addition to fetching the specified keys
+> and performing signature verification,
+> consumers also match data and key names to
+> **determine whether the key is authorized to sign**
+> each specific data packet.
+> 
+> — \cite{yu-alexander-clark-schematizing-trust}
+
+A "key name" could be the hash of the public key.
+
 # ICN Emulation
 
 We name our protocol g17icn.
@@ -25,6 +41,10 @@ We are also meant to conceive of a highly disconnected scenario in which the net
 **Motivation/Application**: Ocean temperatures, currents, El Niño and La Niña phenomena, are hard to predict and have huge implications for the weather experienced around the world. The increased number of rapidly escalating oceanic tornadoes is attributed to rising ocean temperatures; The New York times [reported on "The Daily"](https://www.nytimes.com/2023/10/27/podcasts/the-daily/hurricane-otis.html?showTranscript=1) an example of rapid escalation on 27th Oct. 2023, noting "Hurricane Otis transformed from a tropical storm to a deadly Category 5 hurricane in a day, defying forecasts."
 > Well, to have a hurricane, you need to have warm water. It has to be 80 degrees Fahrenheit or higher to really give it the energy that it needs. So think of a hurricane as like an engine. and that energy, that warm water, is the fuel that’s fueling the hurricane.
 > — Judson Jones
+
+
+Incorporating these sensors into an integrated monitoring system would provide a comprehensive set of data crucial for accurate storm prediction. The data collected can feed into predictive models to forecast storm paths, intensities, and potential impacts, thereby aiding in early warning systems and preparedness efforts. Collaboration with meteorological agencies and leveraging advanced computational models for data analysis and simulation can further enhance the accuracy and reliability of storm predictions.
+
 
 Having more realtime data about oceanic temperatures, not only at ocean surfaces but also in the depths, would help meteoroligists such as Judson Jones make more accurate predictions about the escalation of storms. Early warning and accurate prediction can help give vulnerable communities enough time to evacuate, saving lives.
 
@@ -102,3 +122,7 @@ self.neighbour=[] # represented the node neighbour
 self.CIS = {}
 self.PIT = {}
 self.FIB = {}
+
+## Interfaces (JSON)
+
+We will define all the devices with their particular data. We will also have the port numbers and ip addresses of the RPI on which the device will run on. It will also define all neighbours to the device so we can dynamically parse the information from here when running the devices.

@@ -42,7 +42,7 @@ async def main():
     for i,device in enumerate(emulator.devices):
         await device.server.started.wait()
         # TODO: use CIS
-        device.CACHE[data_name(i)] = random.randint(0,100)
+        device.CIS[data_name(i)] = random.randint(0,100)
 
     # each device gets the same desires
     desires = [data_name(i) for i in range(emulator.num_nodes)]
@@ -57,7 +57,7 @@ async def main():
 
         CAN_QUIT = True
         for i,device in enumerate(emulator.devices):
-            if len(device.CACHE.items()) < len(emulator.devices):
+            if len(device.CIS.items()) < len(emulator.devices):
                 CAN_QUIT = False
         if CAN_QUIT:
             break
