@@ -11,7 +11,7 @@ import JWT
 import interest_emulation
 import vis.app
 
-from emulator import ICNEmulator
+from emulator import SlaveEmulator
 
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(filename)s:%(lineno)d - %(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -33,7 +33,7 @@ async def main():
     # parser.add_argument("--nodes-can-die",      help="Whether or not nodes can die at random.",                      action="store_true")
     args = parser.parse_args()
     
-    emulator = ICNEmulator(num_nodes=int(args.num_nodes))
+    emulator = SlaveEmulator(num_nodes=int(args.num_nodes))
     emulator_task = asyncio.create_task(emulator.start())
 
     def data_name(i):

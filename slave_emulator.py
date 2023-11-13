@@ -10,7 +10,7 @@ def line_adjacency_matrix(n):
         adj_matrix[i][i+1] = 1
     return adj_matrix
 
-class ICNEmulator:
+class SlaveEmulator:
     def __init__(self,num_nodes=3):
         import asyncio
         self.num_nodes = num_nodes
@@ -20,6 +20,8 @@ class ICNEmulator:
         self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
         self.start_event = asyncio.Event()
         self.logger = logging.getLogger()
+
+        # TODO: start slave http server
 
     def devices_report(self):
         return {

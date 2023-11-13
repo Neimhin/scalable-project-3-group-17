@@ -24,8 +24,7 @@ PACKET_FIELD_DATA_PLAIN =               "data"
 HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
-    # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, task_id, emulation: Optional[emulator.ICNEmulator]):
+    def __init__(self, task_id, emulation: Optional[emulator.SlaveEmulator], gateway=False):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation

@@ -6,7 +6,7 @@ import asyncio
 from typing import Optional
 import emulator
 
-async def emulator_vis(emulator: Optional[emulator.ICNEmulator], *args, **kwargs):
+async def emulator_vis(emulator: Optional[emulator.SlaveEmulator], *args, **kwargs):
     app = Quart(__name__)
     @app.route('/' ,methods=['GET'])
     async def index():
