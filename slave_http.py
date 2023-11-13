@@ -1,12 +1,10 @@
 from __future__ import annotations
-from quart import Quart, request, jsonify, render_template
-import pandas as pd
-import random
-import asyncio
+from quart import Quart
 from typing import Optional
 import slave_emulator
+import gateway_port
 
-async def emulator_vis(emulator: Optional[slave_emulator.SlaveEmulator], *args, **kwargs):
+def slave_server(emulator: Optional[slave_emulator.SlaveEmulator], *args, **kwargs):
     app = Quart(__name__)
     @app.route('/update_topology' ,methods=['POST'])
     async def update_topology():
@@ -14,4 +12,5 @@ async def emulator_vis(emulator: Optional[slave_emulator.SlaveEmulator], *args, 
 
         # update emulator adjacency/topology
         pass
-    await app.run_task(*args, **kwargs)
+    emulator.port = gateway_port.find_free_gateway_port()
+    return app.run_task(port=emulator.port, *args, **kwargs), emulator.port

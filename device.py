@@ -14,6 +14,7 @@ from typing import Optional
 import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
+import get_ip_address
 
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
@@ -42,6 +43,7 @@ class Device:
         self.CIS = self.CACHE.get_CIS()
         self.neigbour_ports = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
+
 
     '''
     TODO: Shift this send/forward logic to storing and routing
@@ -72,7 +74,7 @@ class Device:
             return
 
         data = self.CIS.get(data_name)
-        self.logger.debug("GOT DATA: ", data, self.server.port)
+        self.logger.debug(f"GOT DATA: {data} {self.server.port}")
         if data:
             return await self.send_to_network(data_name, data)
         
