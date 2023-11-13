@@ -8,6 +8,10 @@ def line_adjacency_matrix(n):
         adj_matrix[i+1][i] = 1 
         adj_matrix[i][i+1] = 1
     return adj_matrix
+class NeighbourInterface:
+    def __init__(self,ip,port) -> None:
+        self.ip=ip
+        self.port=port
 
 class ICNEmulator:
     def __init__(self,num_nodes=3):
@@ -35,7 +39,14 @@ class ICNEmulator:
         for task_id, connected in enumerate(self.adjacency_matrix[node_number]):
             if connected:
                 neighbors.append(task_id)
-        return [self.devices[i].server.port for i in neighbors]
+        neighbors_dict = {}
+        for i in neighbors:
+            sub_dict = {}
+            sub_dict['ip'] = self.devices[i].server.host
+            sub_dict['port'] = self.devices[i].server.port
+            neighbors_dict[i] = sub_dict
+
+        return [neighbors_dict]
     
     async def start(self):
         import asyncio

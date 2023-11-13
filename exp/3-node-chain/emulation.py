@@ -59,10 +59,10 @@ async def main():
     FINISHED = False
     while not FINISHED:
         await asyncio.sleep(0.2)
-
+        print("\n")
         FINISHED = True
         for i,device in enumerate(emulator.devices):
-            print(f"{i}", device.CIS)
+            print(f"device.CIS.items() {len(device.CIS.items())}, len(emulator.devices) is {len(emulator.devices)} ")
             if len(device.CIS.items()) < len(emulator.devices):
                 FINISHED = False
 
