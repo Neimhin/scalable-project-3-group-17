@@ -50,18 +50,17 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
-    vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
+    # vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
 
-    while True:
+    FINISHED = False
+    while not FINISHED:
         await asyncio.sleep(0.2)
 
-        CAN_QUIT = True
+        FINISHED = True
         for i,device in enumerate(emulator.devices):
+            print(f"{i}", device.CIS)
             if len(device.CIS.items()) < len(emulator.devices):
-                CAN_QUIT = False
-        if CAN_QUIT:
-            break
-
+                FINISHED = False
 
 
 if __name__ == "__main__":
