@@ -1,6 +1,7 @@
 '''
-G17 ICN Node
+G17 ICN Node Implemenation
 '''
+
 from __future__ import annotations
 import emulator
 import httpx
@@ -15,6 +16,7 @@ import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
 
+
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
 PACKET_FIELD_SENDER_PUBLIC_KEY =        "sender_public_key"
@@ -22,6 +24,7 @@ PACKET_FIELD_REQUEST_TYPE =             "type"
 PACKET_FIELD_CREATED_AT =               "created_at"
 PACKET_FIELD_DATA_PLAIN =               "data"
 HOP_HEADER =                            "x-tcdicn-hop"
+
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
@@ -44,16 +47,26 @@ class Device:
         self.neigbour_ports = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
-    '''
-    TODO: Shift this send/forward logic to storing and routing
-    '''
+    #--------------------------------------------------COMMENTS BY NAARORA----------------------------------------------------#
 
+
+    #-------------------TODO: Shift this following send/forward logic to storing_and_routing script :TODO---------------------#
+    #NA TASK
+
+
+    '''
+    Data packet has been received, now we store it in our CIS
+    '''
     async def handle_satisfy_packet(self, packet, jwt, hop=None):
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         # TODO verify packet came from a trusted sender
         self.CIS[data_name] = packet.get(PACKET_FIELD_DATA_PLAIN)
 
+
+    '''
+    Send Interest packets further to neighbours as there is no matching entry in CIS
+    '''
     async def propagate_interest(self,jwt,hop=None):
         assert type(hop) == int
         current_neighbours = await self.emulation.discover_neighbours(self.task_id)
@@ -64,6 +77,12 @@ class Device:
         together = asyncio.gather(*tasks)
         await together
 
+    '''
+    When we recieve an interest packet, 
+    if we have the data in CIS we return it to the device requesting for it
+    If we don't have it we make an netry in the PIT and 
+    then propagate the interest further as just above
+    '''
     async def handle_interest_packet(self, packet, jwt, hop=None):
         assert type(hop) == int
         self.logger.debug(packet)
@@ -94,11 +113,20 @@ class Device:
 
         await self.propagate_interest(jwt,hop=hop)
 
+
+    '''
+    Receive list of neighbours from Emulator
+    '''
     async def discover_neighbours(self):
         self.neighbour = await self.emulation.discover_neighbours(self.task_id)
         self.logger.debug(f"got neighbours {str(self.neighbour)}")
         return self.neighbour
     
+
+    '''
+    Check to see the pakcet type - interest or data
+    Handle accordingly
+    '''
     async def handler(self, request):
         hop_count=None
         try:
@@ -122,6 +150,10 @@ class Device:
                 raise Exception("unrecognised packet type: " + packet_type)
         return web.Response(text="ok")
 
+
+    '''
+    Sendind packet to device with HOSTNAME at port
+    '''
     async def send_payload_to(self,port,payload=None,hop=0):
         assert type(port) == int
         assert payload is not None
@@ -129,7 +161,13 @@ class Device:
             headers = {HOP_HEADER: str(hop)}
             await client.post(self.HOSTNAME + str(port), content=payload, headers=headers)
     
-    # send named data to the network
+
+    '''
+    Create packet encoding it via jwt
+    send named data to the network
+    Publishing ACTUAL DATA PACKET to another device
+    WHAT IS HOP ????
+    '''
     async def send_to_network(self, data_name, data):
         current_neighbours = await self.emulation.discover_neighbours(self.task_id)
         payload = self.jwt.encode({
@@ -144,6 +182,11 @@ class Device:
             return asyncio.create_task(coroutine)
         [port2task(port) for port in current_neighbours]
 
+
+    '''
+    Set the desire or requests for data for current simulation
+    Send interest packet to neighbours to get the desired data
+    '''
     def set_desire_queue(self, queue):
         if self.desire_queue_task:
             self.desire_queue_task.cancel()
@@ -160,7 +203,7 @@ class Device:
                 self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
                 current_neighbour_ports = await self.emulation.discover_neighbours(self.task_id)
                 
-                # TODO: Use packet class {NA task}
+                # TODO: Use packet class {NARORA task}
                 payload = self.jwt.encode({
                     PACKET_FIELD_REQUEST_TYPE: "interest",
                     PACKET_FIELD_DATA_NAME: item,
@@ -174,6 +217,10 @@ class Device:
         self.desire_queue = queue
         self.desire_queue_task = asyncio.create_task(handle())
 
+
+    '''
+    Start the async server for the device
+    '''
     async def start(self):
         self.logger.debug(f"starting node {self.task_id}")
         await self.server.start()
