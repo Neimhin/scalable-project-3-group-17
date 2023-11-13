@@ -26,12 +26,12 @@ Producer sends data to satisfy interest if interest is received
 
 async def main():
     parser = argparse.ArgumentParser(description="Simulate an Information Centric Network")
-    parser.add_argument("--num-nodes",          help="How many nodes to emulate in this network.",                  default=5)
+    parser.add_argument("--num-nodes",          help="How many nodes to emulate in this network.",  type=int,                default=5)
     parser.add_argument("--dynamic-topology",   help="Whether the topology of the network should change of time.",  action="store_true")
     parser.add_argument("--nodes-can-die",      help="Whether or not nodes can die at random",                      action="store_true")
     args = parser.parse_args()
     
-    emulator = ICNEmulator(num_nodes=10)
+    emulator = ICNEmulator(num_nodes=args.num_nodes)
     emulator_task = asyncio.create_task(emulator.start())
 
     def data_name(i):
@@ -46,10 +46,15 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
-    while True:
+    finished = False
+    while not finished:
         await asyncio.sleep(0.2)
+        finished = True
         for i,device in enumerate(emulator.devices):
+            if len(device.CACHE) < args.num_nodes:
+                finished = False
             print("cache ", i, device.CACHE)
+
 
     emulator_task.cancel()
 
