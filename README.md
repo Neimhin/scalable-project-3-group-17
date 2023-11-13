@@ -15,8 +15,12 @@
 > The power of the NDN architecture comes from nam-
 ing data hierarchically with the granularity of network-level
 packets and sealing named data with public key signatures.
->
+> Producers use key names to indicate which public key a con-
+sumer should retrieve to verify signatures of produced data
+packets.
 > — \cite{yu-alexander-clark-schematizing-trust}
+
+A "key name" could be the hash of the public key.
 
 # ICN Emulation
 
