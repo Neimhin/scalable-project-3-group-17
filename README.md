@@ -10,6 +10,13 @@
 - interop with Ted's tcdicn
 
 
+# Secure ICN: Literature Review
+
+> The power of the NDN architecture comes from nam-
+ing data hierarchically with the granularity of network-level
+packets and sealing named data with public key signatures.
+> \cite{yu-alexander-clark-schematizing-trust}
+
 # ICN Emulation
 
 We name our protocol g17icn.
