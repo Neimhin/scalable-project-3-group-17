@@ -12,16 +12,15 @@
 
 # Secure ICN: Literature Review
 
-> The power of the NDN architecture comes from nam-
-ing data hierarchically with the granularity of network-level
-packets and sealing named data with public key signatures.
-> Producers use key names to indicate which public key a con-
-sumer should retrieve to verify signatures of produced data
-packets.
->  In addition to fetching the specified keys and per-
-forming signature verification, consumers also match data
-and key names to determine whether the key is authorized
-to sign each specific data packet.
+> The power of the NDN architecture comes from **naming data hierarchically**
+> with the granularity of network-level packets and sealing named data with public key signatures.
+> Producers use **key names** to indicate which public key
+> a consumer should retrieve to verify signatures of produced data packets.
+> In addition to fetching the specified keys
+> and performing signature verification,
+> consumers also match data and key names to
+> **determine whether the key is authorized to sign**
+> each specific data packet.
 > 
 > — \cite{yu-alexander-clark-schematizing-trust}
 
