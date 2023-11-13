@@ -6,9 +6,9 @@
   - slave emulators run a http server on port 34000 or another port between 33000 and 34000 optionally
   - the slave emulators decide the connectivity of their own network
   - the slave emulators ask the master emulator about inter-emulator connectivity
-  - e.g. POST "http://<master-emulator-ip>:34000/connectivity?node_adresses=<addr>:<port>:<uuid>,<addr>:<port>:<uuid>"
+  - e.g. POST `http://<master-emulator-ip>:34000/connectivity?node_adresses=<addr>:<port>:<uuid>,<addr>:<port>:<uuid>`
   - in English: "to whom can <uuid> (device 1), <uuid> (device 2), and <uuid> (device 3) connect?"
-  - response: Dict(<uuid>, List(Tuple(<host>,<port>,<uuid>)))
+  - response: `Dict(<uuid>, List(Tuple(<host>,<port>,<uuid>)))`
   - in English: "the devices with id 'abc' can connect to the device (10.35.70.37, 33000, 'cba'), and (10.35.70.17, 33000, 'acb'), etc.
 - improve performance
 - improve code
