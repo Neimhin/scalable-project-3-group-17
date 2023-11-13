@@ -24,6 +24,7 @@ DEVICE_INTERFACE
             "public_key": <public key PEM format>, 
             "host": "10.35.70.37",
             "port": 33001,
+          }
         ]
       }
       ```
