@@ -18,7 +18,7 @@ from slave_emulator import SlaveEmulator
 import JWT
 
 # TODO: refactor to another file
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(filename)s:%(lineno)d %(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger()
 logger.setLevel(logging.CRITICAL)
 logger.debug("hello world")
@@ -42,14 +42,7 @@ async def main():
     
     print("JWT ALG", args.jwt_algorithm)
     emulator = SlaveEmulator(num_nodes=int(args.num_nodes),jwt_algorithm=args.jwt_algorithm)
-    emulator_task = asyncio.create_task(emulator.start())
-    def emulator_done(t):
-        if t.done():
-            e = t.exception()
-            if e:
-                print(f"{e}")
-            
-    emulator_task.add_done_callback(emulator_done)
+    emulator_task = emulator.start()
 
     def data_name(i):
         return "/foo/bar/" + str(i)
