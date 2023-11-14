@@ -9,13 +9,12 @@ import hashlib
 
 ALGORITHM = os.environ.get("JWT_ALGORITHM") or "RS256"
 
+# contributors: [agrawasa-12.11.23, nrobinso-12.11.23]
 def hash_string_sha3_256(input_bytes):
     sha3_256_hash = hashlib.sha3_256()
     sha3_256_hash.update(input_bytes)
     hashed_string = sha3_256_hash.hexdigest()
     return hashed_string
-
-
 
 # TODO: use a faster algorithm or one with a smaller key, e.g. ed25519
 

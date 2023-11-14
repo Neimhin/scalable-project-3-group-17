@@ -51,7 +51,6 @@ class SlaveEmulator:
             },
             "devices": devices
         }
-        print("REGISTERING NOW")
         async with httpx.AsyncClient() as client:
             headers = {"content-type": "application/json"}
             print(body)
