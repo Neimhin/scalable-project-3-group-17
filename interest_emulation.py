@@ -10,7 +10,7 @@ def desire_queue_deterministic(list_of_desires: list, interval=1):
 
     async def put_to_queue():
         for item in list_of_desires:
-            await asyncio.sleep(interval)
+            #await asyncio.sleep(interval)
             await queue.put(item)
     
     asyncio.create_task(put_to_queue())
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # TODO move this to unit test in ./test
     # demo a simple queue
     async def main():
-        queue = desire_queue_deterministic(["a","b","c"],1)
+        queue = desire_queue_deterministic(["a","b","c"],0.3)
         for i in range(3):
             item = await queue.get()
             print(i,item)
