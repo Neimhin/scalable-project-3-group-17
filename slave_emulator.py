@@ -36,7 +36,8 @@ class SlaveEmulator:
             devices.append({
                 "key_name": device.jwt.key_name,
                 "host": host,
-                "port": device.server.port
+                "port": device.server.port,
+                "public_key": device.jwt.public_key.decode("utf-8")
             })
 
         body = {
@@ -81,12 +82,10 @@ class SlaveEmulator:
     async def start(self):
         import asyncio
         self.logger.debug("starting emulator")
-        together = asyncio.gather(*self.tasks)
+        together = asyncio.gather(*self.tasks, return_exceptions=True)
         self.logger.debug("registering")
         self.server_task, self.port = slave_http.slave_server(self)
         await self.register_with_master()
-        await self.server_task
-        await together
 
     def generate_trusted_keys_table_all_nodes(self):
         d = {}
@@ -97,9 +96,11 @@ class SlaveEmulator:
         return d
     
 
-if __name__ == "__main__":
-    # parse options
-    # --num-nodes
-    # etc.
+async def main():
     se = SlaveEmulator()
-    asyncio.run(se.run())
+    t1 = se.start()
+    await asyncio.create_task(t1)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

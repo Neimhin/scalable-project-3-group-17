@@ -2,19 +2,15 @@
 G17 ICN Node
 '''
 from __future__ import annotations
-import slave_emulator
 import httpx
 import logging
-import aiohttp
 from aiohttp import web
 import asyncio
 from datetime import datetime
-from typing import Optional
 
 import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
-import get_ip_address
 
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
@@ -25,7 +21,7 @@ PACKET_FIELD_DATA_PLAIN =               "data"
 HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
-    def __init__(self, task_id, emulation: Optional[slave_emulator.SlaveEmulator], gateway=False):
+    def __init__(self, task_id, emulation, gateway=False):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation

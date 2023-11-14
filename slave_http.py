@@ -3,6 +3,7 @@ from quart import Quart
 from typing import Optional
 import slave_emulator
 import gateway_port
+import asyncio
 
 def slave_server(emulator: Optional[slave_emulator.SlaveEmulator], *args, **kwargs):
     app = Quart(__name__)
@@ -13,4 +14,7 @@ def slave_server(emulator: Optional[slave_emulator.SlaveEmulator], *args, **kwar
         # update emulator adjacency/topology
         pass
     emulator.port = gateway_port.find_free_gateway_port()
-    return app.run_task(port=emulator.port, *args, **kwargs), emulator.port
+    port = emulator.port
+    assert type(port) == int
+    task = asyncio.create_task(app.run_task(port=port, *args, **kwargs))
+    return task, port

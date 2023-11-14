@@ -44,6 +44,7 @@ class JWT:
         self.logger = logging.getLogger()
         # Generate new RSA key pair
         self.private_key, self.public_key = rs256_keypair()
+        self.public_key_pem = self.public_key.decode("utf-8")
         self.key_name = self.hash_of_public_key()
 
     def hash_of_public_key(self):
