@@ -5,19 +5,7 @@ import httpx
 import signal
 import socket
 import asyncio
-
-async def is_port_open(host, port, timeout=0.5):
-    conn = asyncio.open_connection(host, port)
-    try:
-        reader, writer = await asyncio.wait_for(conn, timeout=timeout)
-        writer.close()
-        await writer.wait_closed()
-        return True
-    except asyncio.TimeoutError:
-        return False
-    except Exception as e:
-        print(f"Error checking port {port} on {host}: {e}")
-        return False
+import is_port_open
 
 class MasterEmulator:
     def __init__(self):
@@ -44,7 +32,7 @@ class MasterEmulator:
                     port = ei["port"]
                     print("heartbeat", host, port)
                     # Usage in your heartbeat loop
-                    if not await is_port_open(host, port):
+                    if not await is_port_open.is_port_open(host, port):
                         print(f"Server {host}:{port} is not reachable")
                         dead_interfaces.append(s)
                         # TODO: safely remove interface from list
