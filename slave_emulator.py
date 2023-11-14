@@ -1,5 +1,10 @@
 import numpy as np
 from device import Device
+import logging
+import asyncio
+import get_ip_address
+import httpx
+import slave_http
 
 # contributors: [atarwa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -9,7 +14,7 @@ def line_adjacency_matrix(n):
         adj_matrix[i][i+1] = 1
     return adj_matrix
 
-class ICNEmulator:
+class SlaveEmulator:
     def __init__(self,num_nodes=3):
         import asyncio
         self.num_nodes = num_nodes
@@ -18,6 +23,35 @@ class ICNEmulator:
         self.devices = [Device(idx,self) for idx in self.node_ids]
         self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
         self.start_event = asyncio.Event()
+
+        # TODO: start slave http server
+
+    async def register_with_master(self, master_host='127.0.0.1', master_port=33000):
+        print("in register_with_master")
+        host = get_ip_address.get_ip_address()
+        devices = []
+        for device in self.devices:
+            await device.server.started.wait()
+            devices.append({
+                "key_name": device.jwt.key_name,
+                "host": host,
+                "port": device.server.port,
+                "public_key": device.jwt.public_key.decode("utf-8")
+            })
+
+        body = {
+            "emulator_interface": {
+                "host": host,
+                "port": self.port, # TODO
+            },
+            "devices": devices
+        }
+        print("REGISTERING NOW")
+        async with httpx.AsyncClient() as client:
+            headers = {"content-type": "application/json"}
+            print(body)
+            res = await client.post(f"http://{master_host}:{master_port}/register", json=body, headers=headers)
+            print("REGISTER RES:", res)
 
     def devices_report(self):
         return {
@@ -39,7 +73,12 @@ class ICNEmulator:
     
     async def start(self):
         import asyncio
-        await asyncio.gather(*self.tasks)
+        self.logger.debug("starting emulator")
+        together = asyncio.gather(*self.tasks, return_exceptions=True)
+        self.logger.debug("registering")
+        self.server_task, self.port = slave_http.slave_server(self)
+        await self.register_with_master()
+        # MERGE await asyncio.gather(*self.tasks)
 
     def generate_trusted_keys_table_all_nodes(self):
         d = {}
@@ -48,3 +87,13 @@ class ICNEmulator:
             pub_key = device.jwt.public_key_pem
             d[hash] = pub_key
         return d
+    
+
+async def main():
+    se = SlaveEmulator()
+    t1 = se.start()
+    await asyncio.create_task(t1)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

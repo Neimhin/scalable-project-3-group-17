@@ -1,10 +1,9 @@
 '''
 G17 ICN Node
 '''
-
+from __future__ import annotations
 import httpx
 import logging
-import aiohttp
 from aiohttp import web
 import asyncio
 from datetime import datetime
@@ -51,6 +50,9 @@ class Device:
         entry['created_at']=datetime.now().timestamp()
         self.FIB[data_name]=entry
 
+    '''
+    TODO: Shift this send/forward logic to storing and routing
+    '''
 
     async def handle_satisfy_packet(self, packet, jwt, hop=None):
         assert type(hop) == int
@@ -108,7 +110,7 @@ class Device:
             return
 
         data = self.CACHE.get(data_name)
-        self.logger.debug("GOT DATA: ", data, self.server.port)
+        self.logger.debug(f"GOT DATA: {data} {self.server.port}")
         if data:
             #print(f"get data {self.task_id}")
             return await self.send_to_network(data_name, data,hop, [packet[PACKET_FIELD_PORT_NUMBER]] )

@@ -1,12 +1,11 @@
 from __future__ import annotations
 from quart import Quart, request, jsonify, render_template
-import pandas as pd
-import random
 import asyncio
 from typing import Optional
-import emulator
+import master_emulator
+import numpy as np
 
-async def emulator_vis(emulator: Optional[emulator.ICNEmulator], *args, **kwargs):
+def emulator_vis(emulator: Optional[master_emulator.MasterEmulator], *args, **kwargs) -> asyncio.Task:
     app = Quart(__name__)
     @app.route('/' ,methods=['GET'])
     async def index():
@@ -15,7 +14,7 @@ async def emulator_vis(emulator: Optional[emulator.ICNEmulator], *args, **kwargs
     @app.route('/new_adjacency_matrix', methods=['GET'])
     async def new_adjacency_matrix():
         if not emulator:
-            return jsonify(np.ones((10,10)).to_array())
+            return jsonify("no emulator"), 500
         return jsonify(emulator.adjacency_matrix)
 
-    await app.run_task(*args, **kwargs)
+    return asyncio.create_task(app.run_task(*args, **kwargs))

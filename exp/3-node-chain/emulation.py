@@ -14,7 +14,7 @@ import JWT
 import interest_emulation
 import vis
 import time
-from emulator import ICNEmulator
+from slave_emulator import SlaveEmulator
 
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -37,9 +37,16 @@ async def main():
     args = parser.parse_args()
 
     start_time = time.perf_counter()
-
-    emulator = ICNEmulator(num_nodes=int(args.num_nodes))
+    
+    emulator = SlaveEmulator(num_nodes=int(args.num_nodes))
     emulator_task = asyncio.create_task(emulator.start())
+    def emulator_done(t):
+        if t.done():
+            e = t.exception()
+            if e:
+                print(f"{e}")
+            
+    emulator_task.add_done_callback(emulator_done)
 
     def data_name(i):
         return "/foo/bar/" + str(i)
@@ -56,8 +63,7 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
-    vis_task = asyncio.create_task(vis.run_vis(emulator)) if args.vis else None
-    print("enter loop")
+
     FINISHED = False
     while not FINISHED:
         await asyncio.sleep(0.1)
@@ -69,9 +75,6 @@ async def main():
             if len(device.CACHE.items()) < len(emulator.devices):
                 FINISHED = False
     end_time = time.perf_counter()
-    print(" total time is ",end_time-start_time)
-
-
 
 if __name__ == "__main__":
     asyncio.run(main())
