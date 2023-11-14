@@ -45,10 +45,10 @@ class Device:
         self.neighbours = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
-    def create_FIB_entry(self,data_name, hop,device_interface_dict):
+    def create_FIB_entry(self,data_name, hop,device_interface: DeviceInterface):
         entry = {}
         entry['hop']=hop
-        entry['port']=device_interface_dict
+        entry['device_interface']=device_interface
         entry['created_at']=datetime.now().timestamp()
         self.FIB[data_name]=entry
 
@@ -61,11 +61,12 @@ class Device:
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         #_list = self.PIT[data_name]['waiting_list']
         pit_entry = self.PIT.get(data_name)
+        di = DeviceInterface.from_dict(packet[PACKET_FIELD_DEVICE_INTERFACE])
         _list = None
         if pit_entry:
             _list = pit_entry.get('waiting_list')
         if _list is None:
-            _list=[DeviceInterface.from_dict(packet[PACKET_FIELD_DEVICE_INTERFACE])]
+            _list=[di]
 
         #print(f"now the {self.task_id} node has a waiting list {_list} for {data_name}")
 
@@ -75,11 +76,11 @@ class Device:
 
         entry_fib = self.FIB.get(data_name)
         if entry_fib==None:
-            self.create_FIB_entry(data_name,hop,packet[PACKET_FIELD_DEVICE_INTERFACE])
+            self.create_FIB_entry(data_name,hop,di)
         else:
             if entry_fib['hop']>hop:
                 # TODO: rename to "device_interface"
-                entry_fib['port']=packet[PACKET_FIELD_DEVICE_INTERFACE]
+                entry_fib['device_interface']=di
 
         # TODO verify packet came from a trusted sender
         # TODO delete entry that time is invalid
@@ -114,9 +115,11 @@ class Device:
 
         data = self.CACHE.get(data_name)
         self.logger.debug(f"GOT DATA: {data} {self.server.port}")
+        di_dict = packet[PACKET_FIELD_DEVICE_INTERFACE]
+        di = DeviceInterface.from_dict(di_dict)
         if data:
             #print(f"get data {self.task_id}")
-            return await self.send_to_network(data_name, data,hop, [packet[PACKET_FIELD_DEVICE_INTERFACE]] )
+            return await self.send_to_network(data_name, data,hop, [di] )
         
         is_the_first=True  # true represented this request is the first request for some interst
 
@@ -125,13 +128,13 @@ class Device:
             self.PIT[data_name]={} # PIT should be a dictionary of dictionary, instead of a set.
             sub_dict={}
             sub_dict['waiting_list']=[]
-            sub_dict['waiting_list'].append(packet[PACKET_FIELD_DEVICE_INTERFACE])
+            sub_dict['waiting_list'].append(di)
             sub_dict['time_stamp']= datetime.now().timestamp()  # mark the time intersted entry created
             self.PIT[data_name]=sub_dict
             await self.propagate_interest(packet,hop=hop+1)       
         else:
             
-            self.PIT[data_name]['waiting_list'].append(packet[PACKET_FIELD_DEVICE_INTERFACE])
+            self.PIT[data_name]['waiting_list'].append(di)
             
 
             
@@ -185,15 +188,12 @@ class Device:
     async def send_payload_to(self,di: DeviceInterface, payload=None,hop=0):
         try:
             print("device interface", di)
-            assert type(di) == DeviceInterface or di["host"] and di["port"] and di["key_name"]
+            assert type(di) == DeviceInterface
         except AssertionError as e:
             print("device interface is wrong type:", di)
             print(str(Exception()),str(e))
         assert payload is not None
-        request = self.jwt.decode(payload)
-
-        url = "http://" + di["host"] + ":" + str(di["port"]) if type(di) is not DeviceInterface else di.url()
-
+        url = di.url()
         async with httpx.AsyncClient() as client:
             headers = {HOP_HEADER: str(hop)}
             await client.post(url, content=payload, headers=headers)
