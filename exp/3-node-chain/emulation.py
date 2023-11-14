@@ -59,7 +59,6 @@ async def main():
     for desire_queue,device in zip(desire_queues, emulator.devices):
         device.set_desire_queue(desire_queue)
 
-
     FINISHED = False
     while not FINISHED:
         await asyncio.sleep(0.1)
@@ -71,6 +70,8 @@ async def main():
             if len(device.CACHE.items()) < len(emulator.devices):
                 FINISHED = False
     end_time = time.perf_counter()
+
+    print("time taken:", end_time - start_time)
 
 if __name__ == "__main__":
     asyncio.run(main())
