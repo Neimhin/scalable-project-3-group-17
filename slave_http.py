@@ -11,6 +11,8 @@ def slave_server(emulator: Optional[slave_emulator.SlaveEmulator], *args, **kwar
     app = Quart(__name__)
     @app.route('/update_topology' ,methods=['POST'])
     async def update_topology():
+        # ------------ NA TASK ------------- #
+
         # get body of post request, parse as json
 
         # update emulator adjacency/topology
