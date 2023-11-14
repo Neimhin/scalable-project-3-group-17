@@ -22,7 +22,6 @@ class MasterEmulator:
     def heartbeat(self) -> asyncio.Task:
         # periodically send a heartbeat request to each slave
         async def loop():
-            timeout = httpx.Timeout(0.5, connect=0.5)  # Set a short timeout
             while True:
                 await asyncio.sleep(1)
                 print("running heartbeat")
@@ -52,13 +51,6 @@ class MasterEmulator:
                 self.registered_slaves[i] = registration_form
                 return
         self.registered_slaves.append(registration_form)
-
-    async def shutdown(self):
-        print("Shutting down...")
-        # Cancel all running tasks
-        for task in asyncio.all_tasks():
-            task.cancel()
-        print("Shutdown complete.")
 
 async def main():
     emulator = MasterEmulator()
