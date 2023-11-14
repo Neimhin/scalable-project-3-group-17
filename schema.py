@@ -62,6 +62,7 @@ def create_ring_topology(devices):
     for i in range(num_devices):
         source = devices[i]["key_name"]
         target = devices[(i + 1) % num_devices]["key_name"]
+        source,target = sorted([source, target])
         topology["connections"].append({"source": source, "target": target})
 
     return topology
