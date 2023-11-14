@@ -15,8 +15,9 @@ class HTTPServer:
         app = web.Application()
         app.router.add_post("/", self.handler)
         web_runner = web.AppRunner(app)
+        import get_ip_address
         await web_runner.setup()
-        site = web.TCPSite(web_runner,'localhost', 0)
+        site = web.TCPSite(web_runner,get_ip_address.get_ip_address(), 0)
         await site.start()
 
         # let outside listener know the server has started:

@@ -1,0 +1,46 @@
+class DeviceInterface:
+    def __init__(self, host,port,key_name):
+        self.host = host
+        self.port = port
+        self.key_name = key_name
+
+    
+    def url(self):
+        return f"http://{self.host}:{self.port}"
+    
+    def to_dict(self):
+        return {
+            "host": self.host,
+            "port": self.port,
+            "key_name": self.key_name,
+        }
+    
+
+    @staticmethod
+    def from_dict(d: dict):
+        host = d["host"]
+        ip = host.split(".")
+        try:
+            assert len(ip) == 4
+            assert int(ip[0]) and int(ip[1]) and int(ip[2]) and int(ip[3])
+        except AssertionError:
+            print("host is not an ip address", host)
+            exit()
+        port = d["port"]
+        key_name = d["key_name"]
+        return DeviceInterface(host,port,key_name)
+
+    @staticmethod
+    # param device: DeviceInterface
+    def from_device(device):
+        host = device.server.host
+        ip = host.split(".")
+        try:
+            assert len(ip) == 4
+            assert int(ip[0]) and int(ip[1]) and int(ip[2]) and int(ip[3])
+        except AssertionError:
+            print("host is not an ip address", host)
+            exit()
+        port = device.server.port
+        key_name = device.jwt.key_name
+        return DeviceInterface(host,port,key_name)
