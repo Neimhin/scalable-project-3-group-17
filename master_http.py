@@ -16,6 +16,7 @@ async def master_emulator(emulator: Optional[master_emulator.MasterEmulator], *a
         print(request_data)
         try:
             jsonschema.validate(instance=request_data, schema=my_schema)
+            emulator.register_slave(request_data)
             return quart.jsonify({"message": "registratior successful"}), 200
         except jsonschema.ValidationError as e:
             print(str(e))
