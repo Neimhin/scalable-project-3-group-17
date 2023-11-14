@@ -5,14 +5,11 @@ root_directory = Path(__file__).resolve().parents[2]
 sys.path.append(str(root_directory))
 # 获取当前文件的路径，然后找到根目录的路径
 
-import requests
 import argparse
 import asyncio
 import random
 import logging
-import JWT
 import interest_emulation
-import vis
 import time
 from slave_emulator import SlaveEmulator
 import JWT
@@ -32,14 +29,14 @@ Producer sends data to satisfy interest if interest is received
 async def main():
     parser = argparse.ArgumentParser(description="Simulate an Information Centric Network")
     parser.add_argument("--num-nodes",          help="How many nodes to emulate in this network.",                   default=5)
-    parser.add_argument("--jwt-algorithm",                help="Which cryptographic algorithm to use.", type=str, default='none')
+    parser.add_argument("--jwt-algorithm",      help="Which cryptographic algorithm to use.", type=str, default='none')
     args = parser.parse_args()
 
     start_time = time.perf_counter()
     
     print("JWT ALG", args.jwt_algorithm)
     emulator = SlaveEmulator(num_nodes=int(args.num_nodes),jwt_algorithm=args.jwt_algorithm)
-    emulator_task = emulator.start()
+    emulator_tasks = emulator.start()
 
     def data_name(i):
         return "/foo/bar/" + str(i)
