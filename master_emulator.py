@@ -6,17 +6,19 @@ import signal
 import socket
 import asyncio
 import is_port_open
+import vis.app
 
 class MasterEmulator:
     def __init__(self):
         self.registered_slaves = []
         self.dead_interfaces = []
+        self.adjacency_matrix = []
 
     async def run(self):
         server_task = master_http.master_emulator(self,port=33000)
         heartbeat_task = self.heartbeat()
-
-        await asyncio.gather(server_task, heartbeat_task, return_exceptions=True)
+        vis_task = vis.app.emulator_vis(self)
+        await asyncio.gather(server_task, heartbeat_task, vis_task, return_exceptions=True)
 
     def heartbeat(self) -> asyncio.Task:
         # periodically send a heartbeat request to each slave
