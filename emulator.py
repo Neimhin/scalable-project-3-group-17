@@ -48,7 +48,7 @@ class ICNEmulator:
             sub_dict['port'] = self.devices[i].server.port
             neighbors_dict[i] = sub_dict
 
-        return [neighbors_dict]
+        return neighbors_dict
     
     async def start(self):
         import asyncio

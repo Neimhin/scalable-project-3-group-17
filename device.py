@@ -139,9 +139,10 @@ class Device:
             return
 
         data = self.CIS.get(data_name)
-        self.logger.debug("GOT DATA: ", data, self.server.port)
+
         if data:
             print(f"get data {self.task_id}")
+            self.logger.debug("GOT DATA: ", data, self.server.port)
             return await self.send_to_network(data_name, data,hop, [self.neighbour(packet[PACKET_FIELD_TASK_ID])] )
         
         is_the_first=True  # true represented this request is the first request for some interst
@@ -209,7 +210,7 @@ class Device:
         packet_type = packet.get(PACKET_FIELD_REQUEST_TYPE)
         self.logger.debug(packet_type)
         if packet_type == "interest":
-                asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count))
+                asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1))
         elif packet_type == "satisfy":
                 asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count))
         else:
@@ -220,17 +221,17 @@ class Device:
     '''
     Sendind packet to device with HOSTNAME at port
     '''
-    async def send_payload_to(self,value,payload=None,hop=0):
+    async def send_payload_to(self, value, payload=None, hop=0):
         assert type(value['port']) == int
         assert payload is not None
         request = self.jwt.decode(payload)
         data_name = request[PACKET_FIELD_DATA_NAME]
 
-        #print(f"{self.task_id} node is sending request to {port} for {data_name}")
+        print(f"{self.task_id} node is sending request to {value['port']} for {data_name}")
 
         async with httpx.AsyncClient() as client:
             headers = {HOP_HEADER: str(hop)}
-            await client.post(value['ip'] + str(value['port']), content=payload, headers=headers)
+            await client.post(self.HOSTNAME + str(value['port']), content=payload, headers=headers)
     
 
     '''
@@ -276,10 +277,14 @@ class Device:
                     PACKET_FIELD_REQUEST_TYPE: "interest",
                     PACKET_FIELD_DATA_NAME: item,
                     PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
-                    PACKET_FIELD_TASK_ID: self.task_id,
+                    PACKET_FIELD_TASK_ID: int(self.task_id),
                     PACKET_FIELD_CREATED_AT: datetime.now().timestamp()
                 })
-                tasks = [asyncio.create_task(self.send_payload_to(value, payload)) for value in current_neighbour.values()]
+                print("hahahha\n")
+                tasks=[]
+                for value in current_neighbour.values():
+                    tasks.append(asyncio.create_task(self.send_payload_to(value, payload)))
+                #tasks = [asyncio.create_task(self.send_payload_to(value, payload)) for value in current_neighbour.values()]
                 together = asyncio.gather(*tasks)
                 await together
 
