@@ -1,21 +1,13 @@
 from __future__ import annotations
-
-import master_http
 import asyncio
-import master_http
 import httpx
 import signal
 import asyncio
 import is_port_open
-
 import quart
 import asyncio
-from typing import Optional
-import master_emulator
 import schema
 import jsonschema
-
-
 
 class MasterEmulator:
     def __init__(self):
@@ -68,54 +60,55 @@ class MasterEmulator:
             task.cancel()
         print("Shutdown complete.")
 
+async def main():
+    emulator = MasterEmulator()
+    emulator_tasks = emulator.run()
+    app = quart.Quart(__name__)
+    @app.route('/register' ,methods=['POST'])
+    async def register():
+        print("run register")
+        my_schema = schema.register_slave
+        request_data = await quart.request.get_json()
+        print(request_data)
+        try:
+            jsonschema.validate(instance=request_data, schema=my_schema)
+            emulator.register_slave(request_data)
+            return quart.jsonify({"message": "registratior successful"}), 200
+        except jsonschema.ValidationError as e:
+            print(str(e))
+            return quart.jsonify({"error": str(e)}), 400
+        
+    @app.route('/' ,methods=['GET'])
+    async def index():
+        return await quart.render_template('index.html')
+        
+    @app.route('/new_adjacency_matrix', methods=['GET'])
+    async def new_adjacency_matrix():
+        if not emulator:
+            return quart.jsonify("no emulator"), 500
+        return quart.jsonify(emulator.adjacency_matrix)
+    
+    @app.after_serving
+    async def shutdown():
+        print("shuttting down...")
+        for task in emulator_tasks:
+            task.cancel()
+        
+    def signal_handler():
+        print("interruption signal received")
+        for t in emulator_tasks:
+            t.cancel()
+        
+    asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
+    try:
+        import get_ip_address
+        await asyncio.gather(*([app.run_task(host=get_ip_address.get_ip_address(), port=34000,debug=True)] + emulator_tasks))
+    except asyncio.exceptions.CancelledError:
+        pass
+
 # This script instantiates master emulator
 # optionally starts vis server
 # start master_http
 if __name__ == "__main__":
-    async def main():
-        emulator = MasterEmulator()
-        emulator_tasks = emulator.run()
-        app = quart.Quart(__name__)
-        @app.route('/register' ,methods=['POST'])
-        async def register():
-            print("run register")
-            my_schema = schema.register_slave
-            request_data = await quart.request.get_json()
-            print(request_data)
-            try:
-                jsonschema.validate(instance=request_data, schema=my_schema)
-                emulator.register_slave(request_data)
-                return quart.jsonify({"message": "registratior successful"}), 200
-            except jsonschema.ValidationError as e:
-                print(str(e))
-                return quart.jsonify({"error": str(e)}), 400
-            
-        @app.route('/' ,methods=['GET'])
-        async def index():
-            return await quart.render_template('index.html')
-            
-        @app.route('/new_adjacency_matrix', methods=['GET'])
-        async def new_adjacency_matrix():
-            if not emulator:
-                return quart.jsonify("no emulator"), 500
-            return quart.jsonify(emulator.adjacency_matrix)
-        
-        @app.after_serving
-        async def shutdown():
-            print("shuttting down...")
-            for task in emulator_tasks:
-                task.cancel()
-            
-        def signal_handler():
-            print("interruption signal received")
-            for t in emulator_tasks:
-                t.cancel()
-            
-        asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
-        try:
-            import get_ip_address
-            await asyncio.gather(*([app.run_task(host=get_ip_address.get_ip_address(), port=34000,debug=True)] + emulator_tasks))
-        except asyncio.exceptions.CancelledError:
-            pass
-
+   
     asyncio.run(main())
