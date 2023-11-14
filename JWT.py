@@ -20,7 +20,7 @@ ALGORITHM="RS256"
 def rs256_keypair(key_size=2048,public_exponent=65537):
     private_key = rsa.generate_private_key(
         public_exponent=65537,
-        key_size=2048,
+        key_size=key_size,
         backend=default_backend()
     )
     private_key_pem = private_key.private_bytes(
@@ -50,7 +50,7 @@ class JWT:
 
     def init_jwt(self, key_size=2048):
         # Generate new RSA key pair
-        self.private_key, self.public_key = rs256_keypair()
+        self.private_key, self.public_key = rs256_keypair(key_size=key_size)
 
     def encode(self, payload):
         if self.private_key:

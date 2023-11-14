@@ -35,7 +35,7 @@ class Device:
         self.desire_queue_task = None
         self.desire_queue = None
         self.jwt = JWT.JWT()
-        self.jwt.init_jwt(key_size=32)
+        self.jwt.init_jwt(key_size=512)
         self.debug_flag=False
         # TODO: define these from seperate class cache       
         self.PIT = {} 
