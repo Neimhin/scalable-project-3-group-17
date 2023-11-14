@@ -14,7 +14,7 @@ function create_graph(matrix) {
     d3.select('#graph').selectAll("*").remove()
 
     // Set up the SVG
-    const width = '100%', height = '100%';
+    const width = '600', height = '600';
     const svg = d3.select('#graph')
         .append('svg')
         .attr('width', width)
@@ -123,9 +123,14 @@ function updateGraph(newMatrix) {
 
 function new_adjacency_matrix() {
     fetch('/new_adjacency_matrix')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                window.alert(response.status, response.body())
+                return [[1,1],[1,1]]
+            }
+            return response.json()
+        })
         .then(matrix => {
-            console.log(matrix)
             create_graph(matrix)
         });
 }

@@ -35,6 +35,13 @@ async def main():
     
     emulator = SlaveEmulator(num_nodes=int(args.num_nodes))
     emulator_task = asyncio.create_task(emulator.start())
+    def emulator_done(t):
+        if t.done():
+            e = t.exception()
+            if e:
+                print(f"{e}")
+            
+    emulator_task.add_done_callback(emulator_done)
 
     def data_name(i):
         return "/foo/bar/" + str(i)
@@ -51,7 +58,6 @@ async def main():
         device.set_desire_queue(desire_queue)
 
 
-    vis_task = asyncio.create_task(vis.app.emulator_vis(emulator,debug=True)) if args.vis else None
     FINISHED = False
     while not FINISHED:
         await asyncio.sleep(0.2)
@@ -61,9 +67,6 @@ async def main():
             print(f"{i}", device.CIS)
             if len(device.CIS.items()) < len(emulator.devices):
                 FINISHED = False
-                
-    if vis_task is not None:
-        await vis_task
 
 if __name__ == "__main__":
     asyncio.run(main())

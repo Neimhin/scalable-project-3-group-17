@@ -42,6 +42,10 @@ class JWT:
         self.private_key = None
         self.public_key = None
         self.logger = logging.getLogger()
+        # Generate new RSA key pair
+        self.private_key, self.public_key = rs256_keypair()
+        self.public_key_pem = self.public_key.decode("utf-8")
+        self.key_name = self.hash_of_public_key()
 
     def hash_of_public_key(self):
         if not self.public_key:
@@ -49,8 +53,7 @@ class JWT:
         return hash_string_sha3_256(self.public_key)
 
     def init_jwt(self, key_size=2048):
-        # Generate new RSA key pair
-        self.private_key, self.public_key = rs256_keypair()
+        pass
 
     def encode(self, payload):
         if self.private_key:

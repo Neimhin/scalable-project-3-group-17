@@ -2,6 +2,9 @@ import numpy as np
 from device import Device
 import logging
 import asyncio
+import get_ip_address
+import httpx
+import slave_http
 
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -23,6 +26,33 @@ class SlaveEmulator:
         self.logger = logging.getLogger()
 
         # TODO: start slave http server
+
+    async def register_with_master(self, master_host='127.0.0.1', master_port=33000):
+        print("in register_with_master")
+        host = get_ip_address.get_ip_address()
+        devices = []
+        for device in self.devices:
+            await device.server.started.wait()
+            devices.append({
+                "key_name": device.jwt.key_name,
+                "host": host,
+                "port": device.server.port,
+                "public_key": device.jwt.public_key.decode("utf-8")
+            })
+
+        body = {
+            "emulator_interface": {
+                "host": host,
+                "port": self.port, # TODO
+            },
+            "devices": devices
+        }
+        print("REGISTERING NOW")
+        async with httpx.AsyncClient() as client:
+            headers = {"content-type": "application/json"}
+            print(body)
+            res = await client.post(f"http://{master_host}:{master_port}/register", json=body, headers=headers)
+            print("REGISTER RES:", res)
 
     def devices_report(self):
         return {
@@ -52,7 +82,10 @@ class SlaveEmulator:
     async def start(self):
         import asyncio
         self.logger.debug("starting emulator")
-        await asyncio.gather(*self.tasks)
+        together = asyncio.gather(*self.tasks, return_exceptions=True)
+        self.logger.debug("registering")
+        self.server_task, self.port = slave_http.slave_server(self)
+        await self.register_with_master()
 
     def generate_trusted_keys_table_all_nodes(self):
         d = {}
@@ -63,9 +96,11 @@ class SlaveEmulator:
         return d
     
 
-if __name__ == "__main__":
-    # parse options
-    # --num-nodes
-    # etc.
+async def main():
     se = SlaveEmulator()
-    asyncio.run(se.run())
+    t1 = se.start()
+    await asyncio.create_task(t1)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

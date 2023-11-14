@@ -10,12 +10,16 @@ async def master_emulator(emulator: Optional[master_emulator.MasterEmulator], *a
     app = quart.Quart(__name__)
     @app.route('/register' ,methods=['POST'])
     async def register():
+        print("run register")
         my_schema = schema.register_slave
         request_data = await quart.request.get_json()
+        print(request_data)
         try:
             jsonschema.validate(instance=request_data, schema=my_schema)
+            emulator.register_slave(request_data)
             return quart.jsonify({"message": "registratior successful"}), 200
         except jsonschema.ValidationError as e:
+            print(str(e))
             return quart.jsonify({"error": str(e)}), 400
         
 

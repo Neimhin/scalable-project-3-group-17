@@ -2,14 +2,11 @@
 G17 ICN Node
 '''
 from __future__ import annotations
-import slave_emulator
 import httpx
 import logging
-import aiohttp
 from aiohttp import web
 import asyncio
 from datetime import datetime
-from typing import Optional
 
 import JWT
 from http_server import HTTPServer
@@ -24,7 +21,7 @@ PACKET_FIELD_DATA_PLAIN =               "data"
 HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
-    def __init__(self, task_id, emulation: Optional[slave_emulator.SlaveEmulator], gateway=False):
+    def __init__(self, task_id, emulation, gateway=False):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
@@ -42,6 +39,7 @@ class Device:
         self.CIS = self.CACHE.get_CIS()
         self.neigbour_ports = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
+
 
     '''
     TODO: Shift this send/forward logic to storing and routing
@@ -72,7 +70,7 @@ class Device:
             return
 
         data = self.CIS.get(data_name)
-        self.logger.debug("GOT DATA: ", data, self.server.port)
+        self.logger.debug(f"GOT DATA: {data} {self.server.port}")
         if data:
             return await self.send_to_network(data_name, data)
         
