@@ -22,6 +22,16 @@ async def master_emulator(emulator: Optional[master_emulator.MasterEmulator], *a
             print(str(e))
             return quart.jsonify({"error": str(e)}), 400
         
+    @app.route('/' ,methods=['GET'])
+    async def index():
+        return await quart.render_template('index.html')
+        
+    @app.route('/new_adjacency_matrix', methods=['GET'])
+    async def new_adjacency_matrix():
+        if not emulator:
+            return quart.jsonify("no emulator"), 500
+        return quart.jsonify(emulator.adjacency_matrix)
+        
 
     await app.run_task(*args, **kwargs)
 
