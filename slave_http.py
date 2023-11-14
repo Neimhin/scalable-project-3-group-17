@@ -6,17 +6,29 @@ import gateway_port
 import asyncio
 import json
 import get_ip_address
+import jsonschema
+from quart import jsonify, request
+import schema
 
 def slave_server(emulator: Optional[slave_emulator.SlaveEmulator], *args, **kwargs):
     app = Quart(__name__)
-    @app.route('/update_topology' ,methods=['POST'])
+    
+    
+    @app.route('/update_topology' ,methods=['GET'])
     async def update_topology():
-        # ------------ NA TASK ------------- #
+        print("update topology")
+        my_schema = schema.update_topology
+        request_data = await request.get_json()
+        print(request_data)
+        try:
+            jsonschema.validate(instance=request_data, schema=my_schema)
+            emulator.get_updated_topology(request_data)
+            return jsonify({"message": "topology updated successfully"}), 200
+        except jsonschema.ValidationError as e:
+            print(str(e))
+            return jsonify({"error": str(e)}), 400 
+    
 
-        # get body of post request, parse as json
-
-        # update emulator adjacency/topology
-        pass
     emulator.port = gateway_port.find_free_gateway_port()
     emulator.host = get_ip_address.get_ip_address()
     host = emulator.host

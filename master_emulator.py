@@ -6,6 +6,7 @@ import signal
 import asyncio
 import is_port_open
 
+
 class MasterEmulator:
     def __init__(self):
         self.registered_slaves = []
@@ -52,6 +53,15 @@ class MasterEmulator:
                 self.registered_slaves[i] = registration_form
                 return
         self.registered_slaves.append(registration_form)
+
+
+    async def send_topology_to_slave(self):
+        # TODO: By Naman Arora
+        # have to send to slave
+        # need the address of slave requesting updated topology
+        # or send updated topology from control center
+        return self.adjacency_matrix
+
 
     async def shutdown(self):
         print("Shutting down...")

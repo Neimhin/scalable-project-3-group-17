@@ -18,6 +18,7 @@ def line_adjacency_matrix(n):
         adj_matrix[i][i+1] = 1
     return adj_matrix
 
+
 class SlaveEmulator:
     def __init__(self,num_nodes=3,jwt_algorithm=None):
         import asyncio
@@ -44,17 +45,9 @@ class SlaveEmulator:
                 "public_key": device.jwt.public_key.decode("utf-8")
             })
 
-        body = {
-            "emulator_interface": {
-                "host": host,
-                "port": self.port, # TODO
-            },
-            "devices": devices
-        }
         async with httpx.AsyncClient() as client:
             headers = {"content-type": "application/json"}
-            print(body)
-            res = await client.post(f"http://{master_host}:{master_port}/register", json=body, headers=headers)
+            res = await client.post(f"http://{master_host}:{master_port}/register", headers=headers)
             print("REGISTER RES:", res)
 
     def devices_report(self):
@@ -84,7 +77,7 @@ class SlaveEmulator:
         await self.register_with_master()
         # MERGE await asyncio.gather(*self.tasks)
 
-    def generate_trusted_keys_table_all_nodes(self):
+    async def generate_trusted_keys_table_all_nodes(self):
         d = {}
         for device in self.devices:
             hash = device.jwt.hash_of_public_key()
@@ -92,6 +85,21 @@ class SlaveEmulator:
             d[hash] = pub_key
         return d
     
+    async def get_updated_topology(self, master_host='127.0.0.1', master_port=33000):
+        print("Receiving Updated Device Topology from Master")
+        host = get_ip_address.get_ip_address()
+    
+        body = {
+            "emulator_interface": {
+                "host": host,
+                "port": self.port # TODO
+            }
+        }
+        async with httpx.AsyncClient() as client:
+            headers = {"content-type": "application/json"}
+            print(body)
+            res = await client.post(f"http://{master_host}:{master_port}/new_device_topology", json=body, headers=headers)
+            print("DEVICE TOPOLOGY UPDATED? ", res)        
 
 async def main():
     se = SlaveEmulator()
