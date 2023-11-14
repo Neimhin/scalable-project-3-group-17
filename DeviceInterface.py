@@ -44,3 +44,14 @@ class DeviceInterface:
         port = device.server.port
         key_name = device.jwt.key_name
         return DeviceInterface(host,port,key_name)
+
+    @staticmethod
+    def from_dict(d):
+        try:
+            host = d["host"]
+            port = d["port"]
+            key_name = d["key_name"]
+            return DeviceInterface(host=host,port=port,key_name=key_name)
+        except:
+            print("failed to create DeviceInterface from dict:", d)
+            exit()

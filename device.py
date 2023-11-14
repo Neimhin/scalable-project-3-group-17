@@ -95,10 +95,10 @@ class Device:
         def di2task(di: DeviceInterface):
             return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1))
         
-        next_port = self.FIB.get(packet[PACKET_FIELD_DATA_NAME],None)
-        print("NEXT PORT", next_port)
-        if next_port:
-            tasks=[di2task(next_port)]
+        next_device = self.FIB.get(packet[PACKET_FIELD_DATA_NAME],None)
+        print("NEXT DEVICE", next_device)
+        if next_device:
+            tasks=[di2task(next_device)]
         else:
             tasks = [di2task(port) for port in current_neighbours]
         together = asyncio.gather(*tasks)

@@ -10,7 +10,6 @@ import device
 from DeviceInterface import DeviceInterface
 from typing import List
 
-
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
     adj_matrix = [[0] * n for _ in range(n)]
