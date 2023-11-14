@@ -15,6 +15,7 @@ import interest_emulation
 import vis
 import time
 from slave_emulator import SlaveEmulator
+import JWT
 
 # TODO: refactor to another file
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -30,15 +31,17 @@ Producer sends data to satisfy interest if interest is received
 
 async def main():
     parser = argparse.ArgumentParser(description="Simulate an Information Centric Network")
-    parser.add_argument("--num-nodes",          help="How many nodes to emulate in this network.",                  default=5)
-    parser.add_argument("--dynamic-topology",   help="Whether the topology of the network should change of time.",  action="store_true")
+    parser.add_argument("--num-nodes",          help="How many nodes to emulate in this network.",                   default=5)
+    parser.add_argument("--dynamic-topology",   help="Whether the topology of the network should change of time.",   action="store_true")
     parser.add_argument("--nodes-can-die",      help="Whether or not nodes can die at random.",                      action="store_true")
     parser.add_argument("--vis",                help="Whether to run a visualization web app.",                      action="store_true")
+    parser.add_argument("--jwt-algorithm",                help="Which cryptographic algorithm to use.", type=str, default='none')
     args = parser.parse_args()
 
     start_time = time.perf_counter()
     
-    emulator = SlaveEmulator(num_nodes=int(args.num_nodes))
+    print("JWT ALG", args.jwt_algorithm)
+    emulator = SlaveEmulator(num_nodes=int(args.num_nodes),jwt_algorithm=args.jwt_algorithm)
     emulator_task = asyncio.create_task(emulator.start())
     def emulator_done(t):
         if t.done():

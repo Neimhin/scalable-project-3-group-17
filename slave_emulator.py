@@ -19,12 +19,12 @@ def line_adjacency_matrix(n):
     return adj_matrix
 
 class SlaveEmulator:
-    def __init__(self,num_nodes=3):
+    def __init__(self,num_nodes=3,jwt_algorithm=None):
         import asyncio
         self.num_nodes = num_nodes
         self.adjacency_matrix = line_adjacency_matrix(self.num_nodes)
         self.node_ids = np.array(list(range(self.num_nodes)))
-        self.devices = [Device(idx,self) for idx in self.node_ids]
+        self.devices = [Device(idx,self,jwt_algorithm=jwt_algorithm) for idx in self.node_ids]
         self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
         self.start_event = asyncio.Event()
         self.logger = logging.getLogger()

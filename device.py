@@ -26,7 +26,7 @@ HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, task_id, emulation):
+    def __init__(self, task_id, emulation,jwt_algorithm=None):
         self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
@@ -37,7 +37,7 @@ class Device:
         self.server = HTTPServer(handler_async)
         self.desire_queue_task = None
         self.desire_queue = None
-        self.jwt = JWT.JWT()
+        self.jwt = JWT.JWT(algorithm=jwt_algorithm)
         self.jwt.init_jwt(key_size=512)
         self.debug_flag=False
         # TODO: define these from seperate class cache       

@@ -3,8 +3,11 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend
 import jwt
 import logging
+import os
 
 import hashlib
+
+ALGORITHM = os.environ.get("JWT_ALGORITHM") or "RS256"
 
 def hash_string_sha3_256(input_bytes):
     sha3_256_hash = hashlib.sha3_256()
@@ -12,7 +15,7 @@ def hash_string_sha3_256(input_bytes):
     hashed_string = sha3_256_hash.hexdigest()
     return hashed_string
 
-ALGORITHM="RS256"
+
 
 # TODO: use a faster algorithm or one with a smaller key, e.g. ed25519
 
@@ -38,7 +41,9 @@ def rs256_keypair(key_size=2048,public_exponent=65537):
 
 # contributors: [nrobinso-7.11.23]
 class JWT:
-    def __init__(self):
+    def __init__(self,algorithm=ALGORITHM):
+        self.algorithm = algorithm
+        print("ALGORITHM", self.algorithm)
         self.private_key = None
         self.public_key = None
         self.logger = logging.getLogger()
@@ -56,21 +61,25 @@ class JWT:
         # Generate new RSA key pair
         self.private_key, self.public_key = rs256_keypair(key_size=key_size)
         self.key_name = self.hash_of_public_key()
+        if self.algorithm == 'none':
+            self.private_key=None
+    
 
     def encode(self, payload):
-        if self.private_key:
-            return jwt.encode(payload, self.private_key, algorithm=ALGORITHM)
-        else:
-            raise ValueError("Private key not available. Call init_jwt with a private key.")
+        return jwt.encode(payload, self.private_key, algorithm=self.algorithm)
 
     def decode(self, token):
         if self.public_key:
-            tok = jwt.decode(token, options={"verify_signature": False}, algorithms=[ALGORITHM])
+            tok = jwt.decode(token, options={"verify_signature": False}, algorithms=[self.algorithm])
             return tok
         else:
             raise ValueError("Public key not available. Call init_jwt with a public key.")
 
 if __name__ == "__main__":
-    j = JWT()
+    j = JWT(algorithm='none')
     j.init_jwt()
     print(j.hash_of_public_key(), j.public_key)
+    for i in range(100):
+        jwtt = j.encode({"hello": "world"})
+        print(len(jwtt.split(".")))
+        print(j.decode(jwtt))
