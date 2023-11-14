@@ -5,6 +5,7 @@ import asyncio
 import get_ip_address
 import httpx
 import slave_http
+import logging
 
 # contributors: [atarwa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -23,6 +24,7 @@ class SlaveEmulator:
         self.devices = [Device(idx,self) for idx in self.node_ids]
         self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
         self.start_event = asyncio.Event()
+        self.logger = logging.getLogger()
 
         # TODO: start slave http server
 
