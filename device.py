@@ -19,6 +19,8 @@ PACKET_FIELD_REQUEST_TYPE =             "type"
 PACKET_FIELD_CREATED_AT =               "created_at"
 PACKET_FIELD_DATA_PLAIN =               "data"
 #PACKET_FIELD_PORT_NUMBER=               "port"
+
+# TODO: just send key_name in packet, not device_interface
 PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
 HOP_HEADER =                            "x-tcdicn-hop"
 
