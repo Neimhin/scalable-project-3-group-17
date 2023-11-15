@@ -92,14 +92,11 @@ class MasterEmulator:
         self.current_topology = schema.create_ring_topology(devices)
 
     def register_slave(self, registration_form):
-        for i,s in enumerate(self.registered_slaves):
-            f = registration_form
-            fei = f["emulator_interface"]
-            sei = s["emulator_interface"]
-            if fei["host"] == sei["host"] and fei["port"] == sei["port"]:
+        for i, slave in enumerate(self.registered_slaves):
+            if (registration_form["emulator_interface"]["host"] == slave["emulator_interface"]["host"] and
+                    registration_form["emulator_interface"]["port"] == slave["emulator_interface"]["port"]):
                 self.registered_slaves[i] = registration_form
-                self.should_propagate.set()
-                return
+                return "Slave Updated"
         self.registered_slaves.append(registration_form)
         self.create_ring_topology()
         print("setting should_propagate")
@@ -108,6 +105,9 @@ class MasterEmulator:
         except Exception as e:
             print(str(e))
             raise e
+
+        
+        return "New Slave Registered"
 
 
 async def main():
