@@ -1,4 +1,5 @@
-import subprocess
+import socket
+import netifaces
 
 IP_ADDRESS = None
 
@@ -6,20 +7,21 @@ def get_ip_address():
     global IP_ADDRESS
     if IP_ADDRESS:
         return IP_ADDRESS
-    try:
-        # run the ip addr command and capture the output
-        result = subprocess.run(["ip", "addr"], stdout=subprocess.PIPE, text=True)
-        # gilter lines that contain 'inet' but not 'inet6' (to exclude IPv6 addresses)
-        lines = [line.strip() for line in result.stdout.split('\n') if 'inet ' in line and 'inet6' not in line]
-        # extract the IP addresses
-        ip_addresses = [line.split(' ')[1].split('/')[0] for line in lines]
-        IP_ADDRESS = ip_addresses[1]
-        return IP_ADDRESS
-    except Exception as e:
-        # Handle exceptions (e.g., command not found, permission denied)
-        return str(e)
 
+    try:
+        interfaces = netifaces.interfaces()
+        for interface in interfaces:
+            addrs = netifaces.ifaddresses(interface)
+            if netifaces.AF_INET in addrs:
+                ipv4s = addrs[netifaces.AF_INET]
+                for ipv4 in ipv4s:
+                    ip = ipv4['addr']
+                    if ip != "127.0.0.1":  # Exclude localhost
+                        IP_ADDRESS = ip
+                        return IP_ADDRESS
+
+        return "No public IPv4 address found"
+    except Exception as e:
+        return str(e)
 if __name__ == "__main__":
-    print(get_ip_address())
-    print(get_ip_address())
     print(get_ip_address())

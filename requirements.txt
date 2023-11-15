@@ -6,3 +6,4 @@ aiohttp
 quart
 cryptography
 jsonschema
+netifaces
