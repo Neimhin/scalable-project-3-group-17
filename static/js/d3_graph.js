@@ -1,17 +1,23 @@
-function create_graph(matrix) {
+function create_graph(topology) {
     // Convert adjacency matrix to nodes and links
-    let nodes = matrix.map((_, i) => ({ id: i }));
-    let links = [];
+    let nodes = topology.devices.map(d => ({id: d.key_name}));
 
-    matrix.forEach((row, i) => {
-        row.forEach((cell, j) => {
-            if (cell === 1 && i < j) { // To avoid duplicates
-                links.push({ source: i, target: j });
+    function find_node(key_name) {
+        for(const node of nodes) {
+            console.log(node)
+            if (node.id === key_name){
+                console.log("found:", nodes)
+                return node
             }
-        });
-    });
+        }
+        window.alert("node not not found")
+    }
+    let links = topology.connections.map(d => ({source: find_node(d.source), target: find_node(d.target)}))
+    console.log(nodes)
+    console.log(links)
 
-    d3.select('#graph').selectAll("*").remove()
+    
+    // sd3.select('#graph').selectAll("*").remove()
 
     // Set up the SVG
     const width = '600', height = '600';
@@ -122,15 +128,15 @@ function updateGraph(newMatrix) {
 }
 
 function new_adjacency_matrix() {
-    fetch('/new_adjacency_matrix')
+    fetch('/current_topology')
         .then(response => {
             if (!response.ok) {
                 window.alert(response.status, response.body())
-                return [[1,1],[1,1]]
+                return {devices: [{key_name: "a"}, {key_name: "b"}], connections: [{source: "a", target: "b"}]}
             }
             return response.json()
         })
-        .then(matrix => {
-            create_graph(matrix)
+        .then(topology => {
+            create_graph(topology)
         });
 }
