@@ -24,7 +24,7 @@ class MasterEmulator:
     def run(self):
         heartbeat_task = self.heartbeat()
         topology_propagation_task = self.propagate_topology()
-        return [heartbeat_task]
+        return [heartbeat_task, topology_propagation_task]
 
     def heartbeat(self) -> asyncio.Task:
         # periodically send a heartbeat request to each slave
