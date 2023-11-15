@@ -36,7 +36,7 @@ class Device:
             return await self.handler(request)
         self.server = HTTPServer(handler_async)
         self.desire_queue_task = None
-        self.desire_queue = None
+        self.desire_queue = asyncio.Queue()
         self.jwt = JWT.JWT(algorithm=jwt_algorithm)
         self.jwt.init_jwt(key_size=512)
         self.debug_flag=False
@@ -92,15 +92,15 @@ class Device:
 
     async def propagate_interest(self,packet,hop=None):
         assert type(hop) == int
-        current_neighbours = self.emulation.discover_neighbours(self.task_id)
+        current_neighbours = self.discover_neighbours()
         packet[PACKET_FIELD_DEVICE_INTERFACE]=self.device_interface_dict()
         # TODO: propagate more conservatively
         def di2task(di: DeviceInterface):
             return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1))
         
         next_device = self.FIB.get(packet[PACKET_FIELD_DATA_NAME],None)
-        print("NEXT DEVICE", next_device)
         if next_device:
+            print("NEXT DEVICE", next_device)
             tasks=[di2task(next_device)]
         else:
             tasks = [di2task(port) for port in current_neighbours]
@@ -159,7 +159,7 @@ class Device:
              
 
     def discover_neighbours(self):
-        self.neighbours = self.emulation.discover_neighbours(self.task_id)
+        self.neighbours = self.emulation.discover_neighbours(self.jwt.key_name)
         self.logger.debug(f"got neighbours {str(self.neighbours)}")
         return self.neighbours
     
@@ -189,7 +189,7 @@ class Device:
 
     async def send_payload_to(self,di: DeviceInterface, payload=None,hop=0):
         try:
-            print("device interface", di)
+            print(f"from {self.device_interface_dict()} to device interface", di)
             assert type(di) == DeviceInterface
         except AssertionError as e:
             print("device interface is wrong type:", di)
@@ -202,7 +202,6 @@ class Device:
     
     # send named data to the network
     async def send_to_network(self, data_name, data, hop, neighbours):
-        #current_neighbours = self.emulation.discover_neighbours(self.task_id)
         payload = self.jwt.encode({
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
             PACKET_FIELD_DATA_NAME: data_name,
@@ -222,26 +221,21 @@ class Device:
     def device_interface_dict(self):
         return DeviceInterface.from_device(self).to_dict()
     
-    def set_desire_queue(self, queue):
-        if self.desire_queue_task:
-            self.desire_queue_task.cancel()
-            # TODO: 
-            # try:
-            #   await self.desire_queue_task
-            # except Exception as e:
-            #   pass # handle exceptions
+    def start_queue_handler(self):
         async def handle():
             while True:
-                item = await queue.get()
-                if self.CACHE.get(item):
+                data_name = await self.desire_queue.get()
+                print("processing new desire:", data_name)
+                if self.CACHE.get(data_name):
                     continue
 
-                self.logger.debug(f"got item '{item}' from desire queue: node {self.task_id}: port: {self.server.port}")
+                self.logger.debug(f"got item '{data_name}' from desire queue: node {self.task_id}: port: {self.server.port}")
 
                 current_neighbours = self.discover_neighbours()
+                print("sending to neighbours:", current_neighbours)
                 d = {
                     PACKET_FIELD_REQUEST_TYPE: "interest",
-                    PACKET_FIELD_DATA_NAME: item,
+                    PACKET_FIELD_DATA_NAME: data_name,
                     PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
                     PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
                     PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
@@ -250,14 +244,13 @@ class Device:
                 payload = self.jwt.encode(d)
                 tasks = [asyncio.create_task(self.send_payload_to(di, payload)) for di in current_neighbours]
                 await asyncio.gather(*tasks)
-                
 
-        self.desire_queue = queue
         self.desire_queue_task = asyncio.create_task(handle())
         return self.desire_queue_task
 
     async def start(self):
         self.logger.debug(f"starting node {self.task_id}")
+        self.start_queue_handler()
         await self.server.start()
 
 

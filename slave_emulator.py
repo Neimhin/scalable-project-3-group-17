@@ -84,7 +84,7 @@ class SlaveEmulator:
         }
 
     # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
-    def discover_neighbours(self, device_key_name):
+    def discover_neighbours(self, device_key_name) -> List(DeviceInterface):
         neighbour_key_names = []
         for connection in self.current_topology['connections']:
             if connection['source'] == connection['target']:
@@ -93,7 +93,9 @@ class SlaveEmulator:
                 neighbour_key_names.append(connection['target'])
             elif connection['target'] == device_key_name:
                 neighbour_key_names.append(connection['source'])
-        return list(map( self.key_name_to_device_interface,    neighbour_key_names))
+        raw = map( self.key_name_to_device_interface,    neighbour_key_names)
+        dis = map( DeviceInterface.from_dict, raw)
+        return list(dis)
     
     def key_name_to_device_interface(self,key_name):
         for device in self.current_topology['devices']:
@@ -138,15 +140,13 @@ import argparse
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
     
-    # Define the --port argument
     parser.add_argument(
         '--port', 
         type=int, 
-        default=34000, 
+        default=None, 
         help='Port number for the slave emulator (default: 34000)'
     )
     
-    # Define the --master-port argument
     parser.add_argument(
         '--master-port', 
         type=int, 
@@ -154,9 +154,23 @@ def parse_arguments():
         help='Port number for the master emulator (default: 33000)'
     )
     
-    # Define the --master-host argument
     parser.add_argument(
         '--master-host', 
+        type=str, 
+        default=None, 
+        help='Host address for the master emulator (default: None)'
+    )
+
+    parser.add_argument(
+        '--num-nodes', 
+        type=int, 
+        default=5, 
+        help='Host address for the master emulator (default: None)'
+    )
+
+
+    parser.add_argument(
+        '--random-desires', 
         type=str, 
         default=None, 
         help='Host address for the master emulator (default: None)'
@@ -171,8 +185,10 @@ async def main():
     if args.master_host is None:
         args.master_host = get_ip_address.get_ip_address()
     port = args.port
-    print("PORT:", port)
-    emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port)
+    print("PORT IS:", port)
+    if port is None:
+        port = gateway_port.find_free_gateway_port_reverse()
+    emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port,num_nodes=args.num_nodes)
     emulator_tasks = emulator.start()
 
     app = Quart(__name__)
@@ -185,6 +201,20 @@ async def main():
             return quart.jsonify({"message": "bad topology", "error": str(e)}), 400
         return quart.jsonify({"message": "topology updated"}), 200
     
+    @app.route('/set_desire_for_all' ,methods=['GET'])
+    async def set_desire_for_all():
+        # give each device a new desire
+        data_name = quart.request.args.get('data_name', default=None, type=str)
+        if data_name is None:
+            return 'please provide data_name', 400
+        for device in emulator.devices:
+            await device.desire_queue.put(data_name)
+        return f'set desire {data_name} for {len(emulator.devices)} devices', 200
+    
+    @app.route('/give_data_to_random_device', methods=['GET'])
+    async def give_data_to_random_device():
+        return "nyi", 500
+
     @app.route('/debug/topology' ,methods=['GET'])
     async def debug_topology():
         return quart.jsonify(emulator.current_topology), 200
@@ -197,6 +227,15 @@ async def main():
             neighbours.append(emulator.discover_neighbours(device.jwt.key_name))
         print(neighbours)
         return quart.jsonify(neighbours), 200
+    
+    @app.route('/debug/interest' ,methods=['GET'])
+    async def debug_interest():
+        PITTable = []
+        for device in emulator.devices:
+            print(device)
+            PITTable.append(list(map(lambda x: [x[0],str(x[1])], device.PIT.items())))
+        print(PITTable)
+        return quart.jsonify(PITTable), 200
     
     def signal_handler():
         print("interruption signal received")

@@ -13,6 +13,13 @@
     <button onclick="new_adjacency_matrix()">refresh</button>
     <div id="graph"></div>
     <script src="{{ url_for('static', filename='js/d3_graph.js') }}"></script>
+
+    <div>
+      <h1>devices</h1>
+      <button onclick="new_adjacency_matrix()">refresh</button>
+      <div id="devices"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/device_list.js') }}"></script>
   </body>
 </html>
 

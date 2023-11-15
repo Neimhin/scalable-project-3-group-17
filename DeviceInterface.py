@@ -30,6 +30,10 @@ class DeviceInterface:
         key_name = d["key_name"]
         return DeviceInterface(host,port,key_name)
 
+    def __name__(self):
+        import json
+        return json.dumps(self.to_dict())
+
     @staticmethod
     # param device: DeviceInterface
     def from_device(device):
@@ -55,3 +59,6 @@ class DeviceInterface:
         except:
             print("failed to create DeviceInterface from dict:", d)
             exit()
+
+    def __str__(self):
+        return self.host + ":" + str(self.port) + "  " + self.key_name[:10]

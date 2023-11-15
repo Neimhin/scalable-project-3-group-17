@@ -23,5 +23,6 @@ def get_ip_address():
         return "No public IPv4 address found"
     except Exception as e:
         return str(e)
+
 if __name__ == "__main__":
     print(get_ip_address())
