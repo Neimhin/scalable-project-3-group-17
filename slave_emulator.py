@@ -16,6 +16,7 @@ import logging
 import schema
 import jsonschema
 import JWT
+import argparse
 
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -136,7 +137,7 @@ class SlaveEmulator:
             res = await client.post(f"http://{master_host}:{master_port}/new_device_topology", json=body, headers=headers)
             print("DEVICE TOPOLOGY UPDATED? ", res)        
 
-import argparse
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
     
@@ -168,7 +169,6 @@ def parse_arguments():
         help='Host address for the master emulator (default: None)'
     )
 
-
     parser.add_argument(
         '--random-desires', 
         type=str, 
@@ -191,7 +191,10 @@ async def main():
     emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port,num_nodes=args.num_nodes)
     emulator_tasks = emulator.start()
 
+    # instantiate app
     app = Quart(__name__)
+
+
     @app.route('/update_topology' ,methods=['POST'])
     async def update_topology():
         body = await quart.request.get_json()

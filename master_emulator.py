@@ -59,16 +59,18 @@ class MasterEmulator:
 
         return asyncio.create_task(loop())
     
+    ##### contributor: naarora #####
+
     async def send_topology_to_slave(self, slave):
-        i = slave["emulator_interface"]
+        slave_emulator_interface = slave["emulator_interface"]
         timeout = httpx.Timeout(0.5)
         async with httpx.AsyncClient(timeout=timeout) as client:
             try:
                 headers = {"content-type": "application/json"}
-                await client.post(f"http://{i['host']}:{i['port']}/update_topology", json=self.current_topology, headers=headers)
+                await client.post(f"http://{slave_emulator_interface['host']}:{i['port']}/update_topology", json=self.current_topology, headers=headers)
                 return True
             except Exception as e:
-                print(f"failed to send topology to {i['host']}:{i['port']}", str(e))
+                print(f"failed to send topology to {slave_emulator_interface['host']}:{slave_emulator_interface['port']}", str(e))
                 return False
     
     def propagate_topology(self) -> asyncio.Task:
