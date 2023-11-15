@@ -65,11 +65,14 @@ class MasterEmulator:
         async def task():
             while True:
                 await self.should_propagate.wait()
-                self.should_propagate.clear()
-                tasks = [asyncio.create_task(self.send_topology_to_slave(s)) for s in self.registered_slaves]
-                together = asyncio.gather(*tasks,return_exceptions=True)
-                results = await together
-                print(results)
+                try:
+                    self.should_propagate.clear()
+                    tasks = [asyncio.create_task(self.send_topology_to_slave(s)) for s in self.registered_slaves]
+                    together = asyncio.gather(*tasks,return_exceptions=True)
+                    results = await together
+                    print(results)
+                except Exception as e:
+                    print("exception while propagating topology", str(e))
         return asyncio.create_task(task())
 
     def create_ring_topology(self):
@@ -85,10 +88,16 @@ class MasterEmulator:
             sei = s["emulator_interface"]
             if fei["host"] == sei["host"] and fei["port"] == sei["port"]:
                 self.registered_slaves[i] = registration_form
+                self.should_propagate.set()
                 return
         self.registered_slaves.append(registration_form)
         self.create_ring_topology()
-        self.should_propagate.set()
+        print("setting should_propagate")
+        try:
+            self.should_propagate.set()
+        except Exception as e:
+            print(str(e))
+            raise e
 
 
 async def main():
