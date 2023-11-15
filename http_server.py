@@ -16,8 +16,10 @@ class HTTPServer:
         app.router.add_post("/", self.handler)
         web_runner = web.AppRunner(app)
         import get_ip_address
+        import gateway_port
         await web_runner.setup()
-        site = web.TCPSite(web_runner,get_ip_address.get_ip_address(), 0)
+        self.port = gateway_port.find_free_gateway_port()
+        site = web.TCPSite(web_runner,get_ip_address.get_ip_address(), self.port)
         await site.start()
 
         # let outside listener know the server has started:

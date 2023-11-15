@@ -1,6 +1,6 @@
 import socket
 
-START_PORT = 33000
+START_PORT = 33100
 END_PORT = 34000
 start_port = START_PORT
 

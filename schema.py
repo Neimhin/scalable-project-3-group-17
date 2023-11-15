@@ -30,7 +30,7 @@ register_slave = {
     "required": ["emulator_interface", "devices"]
 }
 
-{
+device_topology = {
   "type": "object",
   "properties": {
     "devices": {
@@ -64,6 +64,9 @@ def create_ring_topology(devices):
         target = devices[(i + 1) % num_devices]["key_name"]
         source,target = sorted([source, target])
         topology["connections"].append({"source": source, "target": target})
+
+    import jsonschema
+    jsonschema.validate(instance=topology, schema=device_topology)
 
     return topology
 

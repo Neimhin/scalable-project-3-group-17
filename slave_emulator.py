@@ -1,14 +1,21 @@
-import numpy as np
+from __future__ import annotations
+from quart import Quart
+import quart
+from typing import List
 from device import Device
+from DeviceInterface import DeviceInterface
+import gateway_port
+import asyncio
+import get_ip_address
+import numpy as np
 import logging
 import asyncio
 import get_ip_address
 import httpx
-import slave_http
 import logging
-import device
-from DeviceInterface import DeviceInterface
-from typing import List
+import schema
+import jsonschema
+import JWT
 
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -20,19 +27,24 @@ def line_adjacency_matrix(n):
 
 
 class SlaveEmulator:
-    def __init__(self,num_nodes=3,jwt_algorithm=None):
-        import asyncio
+    def __init__(self,num_nodes=3,jwt_algorithm=JWT.ALGORITHM,port=34000, master_port=33000, master_host=None):
+        self.port = port
         self.num_nodes = num_nodes
         self.adjacency_matrix = line_adjacency_matrix(self.num_nodes)
         self.node_ids = np.array(list(range(self.num_nodes)))
         self.devices = [Device(idx,self,jwt_algorithm=jwt_algorithm) for idx in self.node_ids]
-        self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
         self.start_event = asyncio.Event()
         self.logger = logging.getLogger()
+        self.master_host = master_host or get_ip_address.get_ip_address()
+        self.master_port = master_port or 33000
+        self.current_topology = {
+            "devices": [],
+            "connections": [],
+        }
 
         # TODO: start slave http server
 
-    async def register_with_master(self, master_host='127.0.0.1', master_port=33000):
+    async def register_with_master(self):
         print("in register_with_master")
         host = get_ip_address.get_ip_address()
         devices = []
@@ -45,10 +57,23 @@ class SlaveEmulator:
                 "public_key": device.jwt.public_key.decode("utf-8")
             })
 
+        body = {
+            "emulator_interface": {
+                "host": host,
+                "port": self.port, # TODO
+            },
+            "devices": devices
+        }
+
         async with httpx.AsyncClient() as client:
             headers = {"content-type": "application/json"}
-            res = await client.post(f"http://{master_host}:{master_port}/register", headers=headers)
-            print("REGISTER RES:", res)
+            print(body)
+            try:
+                res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
+                print("REGISTER RES:", res)
+            except Exception as e:
+                print(str(e))
+                print("failed to register")
 
     def devices_report(self):
         return {
@@ -68,14 +93,15 @@ class SlaveEmulator:
                 neighbors.append(task_id)
         return [DeviceInterface.from_device(self.devices[i]) for i in neighbors]
     
-    async def start(self):
+    def set_topology(self, topology):
+        jsonschema.validate(topology, schema=schema.device_topology)
+        self.current_topology=topology
+    
+    def start(self) -> List(asyncio.Task):
         import asyncio
-        self.logger.debug("starting emulator")
-        together = asyncio.gather(*self.tasks, return_exceptions=True)
-        self.logger.debug("registering")
-        self.server_task, self.port = slave_http.slave_server(self)
-        await self.register_with_master()
-        # MERGE await asyncio.gather(*self.tasks)
+        self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
+        register_task = asyncio.create_task(self.register_with_master())
+        return [*self.tasks, register_task]
 
     async def generate_trusted_keys_table_all_nodes(self):
         d = {}
@@ -101,10 +127,76 @@ class SlaveEmulator:
             res = await client.post(f"http://{master_host}:{master_port}/new_device_topology", json=body, headers=headers)
             print("DEVICE TOPOLOGY UPDATED? ", res)        
 
+import argparse
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
+    
+    # Define the --port argument
+    parser.add_argument(
+        '--port', 
+        type=int, 
+        default=34000, 
+        help='Port number for the slave emulator (default: 34000)'
+    )
+    
+    # Define the --master-port argument
+    parser.add_argument(
+        '--master-port', 
+        type=int, 
+        default=33000, 
+        help='Port number for the master emulator (default: 33000)'
+    )
+    
+    # Define the --master-host argument
+    parser.add_argument(
+        '--master-host', 
+        type=str, 
+        default=None, 
+        help='Host address for the master emulator (default: None)'
+    )
+
+    args = parser.parse_args()
+    return args
+
 async def main():
-    se = SlaveEmulator()
-    t1 = se.start()
-    await asyncio.create_task(t1)
+    import get_ip_address
+    args = parse_arguments()
+    if args.master_host is None:
+        args.master_host = get_ip_address.get_ip_address()
+    port = args.port
+    print("PORT:", port)
+    emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port)
+    emulator_tasks = emulator.start()
+
+    app = Quart(__name__)
+    @app.route('/update_topology' ,methods=['POST'])
+    async def update_topology():
+        body = await quart.request.get_json()
+        try:
+            emulator.set_topology(body)
+        except jsonschema.ValidationError as e:
+            return quart.jsonify({"message": "bad topology", "error": str(e)}), 400
+        return quart.jsonify({"message": "topology updated"}), 200
+    
+    @app.route('/debug/topology' ,methods=['GET'])
+    async def debug_topology():
+        return quart.jsonify(emulator.current_topology), 200
+
+    def signal_handler():
+        print("interruption signal received")
+        for t in emulator_tasks:
+            t.cancel()
+    
+    import signal
+    asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
+    try:
+        import get_ip_address
+        await asyncio.gather(*([app.run_task(host=get_ip_address.get_ip_address(), port=port,debug=True)] + emulator_tasks))
+    except asyncio.exceptions.CancelledError:
+        pass
+    except OSError as e:
+        print(str(e))
+        raise e
 
 
 if __name__ == "__main__":
