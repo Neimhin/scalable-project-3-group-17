@@ -136,6 +136,7 @@ async def main():
     if args.master_host is None:
         args.master_host = get_ip_address.get_ip_address()
     port = args.port
+    print("PORT:", port)
     emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port)
     emulator_tasks = emulator.start()
 
@@ -158,7 +159,7 @@ async def main():
     asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
     try:
         import get_ip_address
-        await asyncio.gather(*([app.run_task(host=get_ip_address.get_ip_address(), port=34000,debug=True)] + emulator_tasks))
+        await asyncio.gather(*([app.run_task(host=get_ip_address.get_ip_address(), port=port,debug=True)] + emulator_tasks))
     except asyncio.exceptions.CancelledError:
         pass
     except OSError as e:
