@@ -84,14 +84,21 @@ class SlaveEmulator:
         }
 
     # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
-    def discover_neighbours(self, node_number):
-        neighbors = []
-        if node_number < 0 or node_number >= len(self.adjacency_matrix):
-            return neighbors
-        for task_id, connected in enumerate(self.adjacency_matrix[node_number]):
-            if connected:
-                neighbors.append(task_id)
-        return [DeviceInterface.from_device(self.devices[i]) for i in neighbors]
+    def discover_neighbours(self, device_key_name):
+        neighbour_key_names = []
+        for connection in self.current_topology['connections']:
+            if connection['source'] == connection['target']:
+                raise Exception("source and target of connection cannot be the same")
+            if connection['source'] == device_key_name:
+                neighbour_key_names.append(connection['target'])
+            elif connection['target'] == device_key_name:
+                neighbour_key_names.append(connection['source'])
+        return list(map( self.key_name_to_device_interface,    neighbour_key_names))
+    
+    def key_name_to_device_interface(self,key_name):
+        for device in self.current_topology['devices']:
+            if device['key_name'] == key_name:
+                return device
     
     def set_topology(self, topology):
         jsonschema.validate(topology, schema=schema.device_topology)
@@ -181,7 +188,16 @@ async def main():
     @app.route('/debug/topology' ,methods=['GET'])
     async def debug_topology():
         return quart.jsonify(emulator.current_topology), 200
-
+    
+    @app.route('/debug/neighbours' ,methods=['GET'])
+    async def debug_neighbours():
+        neighbours = []
+        for device in emulator.devices:
+            print(device)
+            neighbours.append(emulator.discover_neighbours(device.jwt.key_name))
+        print(neighbours)
+        return quart.jsonify(neighbours), 200
+    
     def signal_handler():
         print("interruption signal received")
         for t in emulator_tasks:
