@@ -40,12 +40,22 @@ class MasterEmulator:
                     print("heartbeat", host, port)
                     if not await is_port_open.is_port_open(host, port):
                         print(f"Server {host}:{port} is not reachable")
-                        dead_interfaces.append(s)
+                        dead_interfaces.append(s['emulator_interface'])
                         # TODO: safely remove interface from list
                         # watch out for spooky asynchronous goblin data races
                     else:
                         print(f"Server {host} {port} heartbeat ok")
-                self.dead_interfaces = dead_interfaces
+
+                self.registered_slaves = [
+                    s for s in self.registered_slaves if not any(d["host"] == s["emulator_interface"]["host"] and d["port"] == s["emulator_interface"]["port"] for d in dead_interfaces)
+                ]
+                if dead_interfaces:
+                    print(f"Removed {len(dead_interfaces)} dead interfaces.")
+
+                if len(dead_interfaces) > 0:
+                    self.create_ring_topology()
+                    self.should_propagate.set()
+
 
         return asyncio.create_task(loop())
     
@@ -58,7 +68,7 @@ class MasterEmulator:
                 await client.post(f"http://{i['host']}:{i['port']}/update_topology", json=self.current_topology, headers=headers)
                 return True
             except Exception as e:
-                print("failed to send topology to {i.host}:{i.port}", str(e))
+                print(f"failed to send topology to {i['host']}:{i['port']}", str(e))
                 return False
     
     def propagate_topology(self) -> asyncio.Task:

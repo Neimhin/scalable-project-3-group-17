@@ -17,7 +17,7 @@ function create_graph(topology) {
     console.log(links)
 
     
-    // sd3.select('#graph').selectAll("*").remove()
+    d3.select('#graph').selectAll("*").remove()
 
     // Set up the SVG
     const width = '600', height = '600';
@@ -137,6 +137,7 @@ function new_adjacency_matrix() {
             return response.json()
         })
         .then(topology => {
+            console.log(topology)
             create_graph(topology)
         });
 }
