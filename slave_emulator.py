@@ -61,10 +61,10 @@ class SlaveEmulator:
             print(body)
             try:
                 res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
+                print("REGISTER RES:", res)
             except Exception as e:
                 print(str(e))
                 print("failed to register")
-            print("REGISTER RES:", res)
 
     def devices_report(self):
         return {
@@ -98,10 +98,45 @@ class SlaveEmulator:
             d[hash] = pub_key
         return d
     
+import argparse
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
+    
+    # Define the --port argument
+    parser.add_argument(
+        '--port', 
+        type=int, 
+        default=34000, 
+        help='Port number for the slave emulator (default: 34000)'
+    )
+    
+    # Define the --master-port argument
+    parser.add_argument(
+        '--master-port', 
+        type=int, 
+        default=33000, 
+        help='Port number for the master emulator (default: 33000)'
+    )
+    
+    # Define the --master-host argument
+    parser.add_argument(
+        '--master-host', 
+        type=str, 
+        default=None, 
+        help='Host address for the master emulator (default: None)'
+    )
+
+    args = parser.parse_args()
+    return args
 
 async def main():
-    port = 34000
-    emulator = SlaveEmulator(port=port)
+    import get_ip_address
+    args = parse_arguments()
+    if args.master_host is None:
+        args.master_host = get_ip_address.get_ip_address()
+    port = args.port
+    emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port)
     emulator_tasks = emulator.start()
 
     app = Quart(__name__)
