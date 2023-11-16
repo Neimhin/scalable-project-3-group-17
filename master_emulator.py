@@ -106,16 +106,17 @@ class MasterEmulator:
             devices += emulator_form['devices']
         print(emulator_ring)
 
-        for i in range(len(emulator_rings)):
-            orig_ring = emulator_rings[i]
-            next_ring = emulator_rings[(i+1) % len(emulator_rings)]
-            import random
-            random_source_interface = orig_ring['devices'][random.randint(0,len(orig_ring['devices']) - 1)]
-            random_target_interface = next_ring['devices'][random.randint(0,len(next_ring['devices']) - 1)]
-            ring_connections.append({
-                "source": random_source_interface['key_name'],
-                "target": random_target_interface['key_name'],
-            })
+        if len(emulator_rings) > 1:
+            for i in range(len(emulator_rings)):
+                orig_ring = emulator_rings[i]
+                next_ring = emulator_rings[(i+1) % len(emulator_rings)]
+                import random
+                random_source_interface = orig_ring['devices'][random.randint(0,len(orig_ring['devices']) - 1)]
+                random_target_interface = next_ring['devices'][random.randint(0,len(next_ring['devices']) - 1)]
+                ring_connections.append({
+                    "source": random_source_interface['key_name'],
+                    "target": random_target_interface['key_name'],
+                })
         self.current_topology = {
             "devices": devices,
             "connections": ring_connections,
