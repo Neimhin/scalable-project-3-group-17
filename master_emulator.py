@@ -62,16 +62,27 @@ class MasterEmulator:
     ##### contributor: naarora #####
 
     async def send_topology_to_slave(self, slave):
+
         slave_emulator_interface = slave["emulator_interface"]
-        timeout = httpx.Timeout(0.5)
-        async with httpx.AsyncClient(timeout=timeout) as client:
-            try:
-                headers = {"content-type": "application/json"}
-                await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
-                return True
-            except Exception as e:
-                print(f"failed to send topology to {slave_emulator_interface['host']}:{slave_emulator_interface['port']}", str(e))
-                return False
+        host = slave_emulator_interface['host']
+        port = int(slave_emulator_interface['port'])
+        headers = ["Content-Type: application/json"]
+
+        try:
+            import encapsulate_http
+            import json
+            response_raw = encapsulate_http.http_request("/update_topology", host, port, method="POST", headers=headers, body=json.dumps(self.current_topology))
+            response = encapsulate_http.extract_body_from_response(response_raw)
+            print(response)
+        # timeout = httpx.Timeout(0.5)
+        # async with httpx.AsyncClient(timeout=timeout) as client:
+        #         headers = {"content-type": "application/json"}
+        #         await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
+        #         return True
+        except Exception as e:
+            print(f"failed to send topology to {host}:{port}", str(e))
+            raise e
+            return False
     
     def propagate_topology(self) -> asyncio.Task:
         async def task():
@@ -106,16 +117,17 @@ class MasterEmulator:
             devices += emulator_form['devices']
         print(emulator_ring)
 
-        for i in range(len(emulator_rings)):
-            orig_ring = emulator_rings[i]
-            next_ring = emulator_rings[(i+1) % len(emulator_rings)]
-            import random
-            random_source_interface = orig_ring['devices'][random.randint(0,len(orig_ring['devices']) - 1)]
-            random_target_interface = next_ring['devices'][random.randint(0,len(next_ring['devices']) - 1)]
-            ring_connections.append({
-                "source": random_source_interface['key_name'],
-                "target": random_target_interface['key_name'],
-            })
+        if len(emulator_rings) > 1:
+            for i in range(len(emulator_rings)):
+                orig_ring = emulator_rings[i]
+                next_ring = emulator_rings[(i+1) % len(emulator_rings)]
+                import random
+                random_source_interface = orig_ring['devices'][random.randint(0,len(orig_ring['devices']) - 1)]
+                random_target_interface = next_ring['devices'][random.randint(0,len(next_ring['devices']) - 1)]
+                ring_connections.append({
+                    "source": random_source_interface['key_name'],
+                    "target": random_target_interface['key_name'],
+                })
         self.current_topology = {
             "devices": devices,
             "connections": ring_connections,

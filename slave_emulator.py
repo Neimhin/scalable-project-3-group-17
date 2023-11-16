@@ -198,6 +198,8 @@ def parse_arguments():
     )
 
     args = parser.parse_args()
+    if args.host == 'auto':
+        args.host = get_ip_address.get_ip_address()
     return args
 
 async def main():
@@ -209,7 +211,12 @@ async def main():
     print("PORT IS:", port)
     if port is None:
         port = gateway_port.find_free_gateway_port_reverse()
-    emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port,num_nodes=args.num_nodes)
+    emulator = SlaveEmulator(
+        port=port,
+        master_host=args.master_host,
+        master_port=args.master_port,
+        num_nodes=args.num_nodes,
+        host=args.host)
     emulator_tasks = emulator.start()
 
     # instantiate app
@@ -283,9 +290,6 @@ async def main():
         for t in emulator_tasks:
             t.cancel()
     
-    import signal
-    asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
-
     if args.host == 'auto':
         args.host = get_ip_address.get_ip_address()
         print(args.host)
