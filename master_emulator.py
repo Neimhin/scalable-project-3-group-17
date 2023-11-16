@@ -69,16 +69,11 @@ class MasterEmulator:
         headers = ["Content-Type: application/json"]
 
         try:
-            import encapsulate_http
-            import json
-            response_raw = encapsulate_http.http_request("/update_topology", host, port, method="POST", headers=headers, body=json.dumps(self.current_topology))
-            response = encapsulate_http.extract_body_from_response(response_raw)
-            print(response)
-        # timeout = httpx.Timeout(0.5)
-        # async with httpx.AsyncClient(timeout=timeout) as client:
-        #         headers = {"content-type": "application/json"}
-        #         await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
-        #         return True
+            timeout = httpx.Timeout(0.5)
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                    headers = {"content-type": "application/json"}
+                    await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
+                    return True
         except Exception as e:
             print(f"failed to send topology to {host}:{port}", str(e))
             raise e
