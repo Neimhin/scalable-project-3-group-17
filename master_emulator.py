@@ -11,7 +11,8 @@ import jsonschema
 
 
 class MasterEmulator:
-    def __init__(self):
+    def __init__(self,heartbeat=1):
+        self.heartbeat_interval = heartbeat
         self.registered_slaves = []
         self.dead_interfaces = []
         self.adjacency_matrix = []
@@ -30,7 +31,7 @@ class MasterEmulator:
         # periodically send a heartbeat request to each slave
         async def loop():
             while True:
-                await asyncio.sleep(1)
+                await asyncio.sleep(self.heartbeat_interval)
                 print("running heartbeat")
                 dead_interfaces = []
                 for i, s in enumerate(self.registered_slaves):
@@ -109,9 +110,31 @@ class MasterEmulator:
         
         return "New Slave Registered"
 
+import argparse
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
+    
+    parser.add_argument(
+        '--heartbeat', 
+        type=int, 
+        default=1, 
+        help='Interval in seconds between heartbeats.'
+    )
+    parser.add_argument(
+        '--host', 
+        type=str, 
+        default=None, 
+        help='Interval in seconds between heartbeats.'
+    )
+    args = parser.parse_args()
+    return args
 
 async def main():
-    emulator = MasterEmulator()
+    args = parse_arguments()
+    if args.host is None:
+        import get_ip_address
+        args.host = get_ip_address.get_ip_address()
+    emulator = MasterEmulator(heartbeat=args.heartbeat)
     emulator_tasks = emulator.run()
     app = quart.Quart(__name__)
     @app.route('/register' ,methods=['POST'])
@@ -130,6 +153,7 @@ async def main():
         
     @app.route('/' ,methods=['GET'])
     async def index():
+        print("rendering index.html")
         return await quart.render_template('index.html')
     
     @app.route('/new_device_topology', methods=['GET'])
