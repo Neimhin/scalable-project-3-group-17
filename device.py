@@ -188,6 +188,9 @@ class Device:
                 raise Exception("unrecognised packet type: " + str(packet_type))
         return web.Response(text="ok")
 
+    '''
+    Send out directly to a device
+    '''
     async def send_payload_to(self,di: DeviceInterface, payload=None,hop=0):
         try:
             print(f"from {self.device_interface_dict()} to device interface", di)
