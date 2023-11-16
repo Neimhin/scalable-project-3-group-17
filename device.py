@@ -11,6 +11,8 @@ import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
 from DeviceInterface import DeviceInterface
+import interest_emulation
+
 
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
@@ -237,19 +239,18 @@ class Device:
                 while len(current_neighbours) == 0:
                     current_neighbours = self.discover_neighbours()
                     await asyncio.sleep(1)
-                    if len(current_neighbours) > 0:
-                        print("sending to neighbours:", list(map(str,current_neighbours)))
-                        d = {
-                            PACKET_FIELD_REQUEST_TYPE: "interest",
-                            PACKET_FIELD_DATA_NAME: data_name,
-                            PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
-                            PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
-                            PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
-                        }
-                        print(d)
-                        payload = self.jwt.encode(d)
-                        tasks = [asyncio.create_task(self.send_payload_to(di, payload)) for di in current_neighbours]
-                        await asyncio.gather(*tasks)
+                    print("sending to neighbours:", current_neighbours)
+                    data = {
+                        PACKET_FIELD_REQUEST_TYPE: "interest",
+                        PACKET_FIELD_DATA_NAME: data_name,
+                        PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
+                        PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
+                        PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
+                    }
+                    print(data)
+                    payload = self.jwt.encode(data)
+                    tasks = [asyncio.create_task(self.send_payload_to(di, payload)) for di in current_neighbours]
+                    await asyncio.gather(*tasks)
 
         self.desire_queue_task = asyncio.create_task(handle())
         return self.desire_queue_task
@@ -260,26 +261,34 @@ class Device:
         await self.server.start()
 
 
-if __name__ == "__main__":
-    async def main():
-        class Emulation:
-            def __init__(self):
-                pass
-            def discover_neighbours(self,task_id):
-                import get_ip_address
-                return [DeviceInterface.from_dict({
-                    "host": get_ip_address.get_ip_address(),
-                    "port": 34000,
-                    "key_name": "abc",
-                })]
+class Emulation:
+    def __init__(self):
+        pass
 
+    def discover_neighbours(self,task_id):
+        import get_ip_address
+        return [DeviceInterface.from_dict({
+            "host": get_ip_address.get_ip_address(),
+            "port": 34000,
+            "key_name": "abc",
+        })]
+            
+
+async def main():
+        # instantiate emulation
         em = Emulation()
-
+        # instantiate device and pass emulation
         device = Device(0, em)
+        
         await device.start()
-        import interest_emulation
+
+        # create queue for device to send out interest packets
         q = interest_emulation.desire_queue_deterministic(["a","b","c"],interval=1)
+        
         device.set_desire_queue(q)
+        
         await device.send_payload_to(device.device_interface_dict(), payload=device.jwt.encode({"hi": "ok"}), hop=0)
 
+
+if __name__ == "__main__":
     asyncio.run(main())
