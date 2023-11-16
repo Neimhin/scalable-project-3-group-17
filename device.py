@@ -200,9 +200,21 @@ class Device:
             print(str(Exception()),str(e))
         assert payload is not None
         url = di.url()
-        async with httpx.AsyncClient() as client:
-            headers = {HOP_HEADER: str(hop)}
-            await client.post(url, content=payload, headers=headers)
+        import encapsulate_http
+        headers = [
+            f"{HOP_HEADER}: {str(hop)}",
+            f"Content-Type: application/jwt",
+        ]
+        print("encapsulating http request to ", di.host, di.port, headers)
+        response_raw = encapsulate_http.http_request("/", di.host, di.port,method="POST", headers=headers, body=payload)
+        response_body = encapsulate_http.extract_body_from_response(response_raw)
+        print("RESPONSE RAWE:", response_raw)
+        print("RESPONSE BODY:", response_body)
+        # print("ENCAPSULATE HTTP RESPONS BODY:", response_body)
+        # async with httpx.AsyncClient() as client:
+        #     headers = {HOP_HEADER: str(hop)}
+        #     await client.post(url, content=payload, headers=headers)
+
     
     # send named data to the network
     async def send_to_network(self, data_name, data, hop, neighbours):

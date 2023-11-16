@@ -60,7 +60,6 @@ class SlaveEmulator:
                 "public_key": device.jwt.public_key.decode("utf-8")
             })
 
-
         body = {
             "emulator_interface": {
                 "host": host,
@@ -68,16 +67,28 @@ class SlaveEmulator:
             },
             "devices": devices
         }
-
-        async with httpx.AsyncClient() as client:
-            headers = {"content-type": "application/json"}
-            print(body)
-            try:
-                res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
-                print("REGISTER RES:", res)
-            except Exception as e:
-                print(str(e))
-                print("failed to register")
+        try:
+            import encapsulate_http
+            import json
+            body = json.dumps(body)
+            headers=["Content-Type: application/json"]
+            res_raw = encapsulate_http.http_request("/register",self.master_host,self.master_port,method="POST",body=body,headers=headers)
+            print("RES RAW:", res_raw)
+            res_body = encapsulate_http.extract_body_from_response(res_raw)
+            print("RES BODY ENCAPSULATE:", res_body)
+        except Exception as e:
+            print(str(e))
+            exit()
+        # async with httpx.AsyncClient() as client:
+        #     headers = {"content-type": "application/json"}
+        #     print(body)
+        #     try:
+        #         res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
+        #         print("REGISTER RES:", res)
+        #     except Exception as e:
+        #         print(str(e))
+        #         print("failed to register")
+        #         raise e
 
     def devices_report(self):
         return {
@@ -126,7 +137,7 @@ class SlaveEmulator:
     
     async def get_updated_topology(self, master_host='127.0.0.1', master_port=33000):
         print("Receiving Updated Device Topology from Master")
-        host = get_ip_address.get_ip_address()
+        host = self.host
     
         body = {
             "emulator_interface": {
@@ -187,6 +198,8 @@ def parse_arguments():
     )
 
     args = parser.parse_args()
+    if args.host == 'auto':
+        args.host = get_ip_address.get_ip_address()
     return args
 
 async def main():
@@ -198,7 +211,12 @@ async def main():
     print("PORT IS:", port)
     if port is None:
         port = gateway_port.find_free_gateway_port_reverse()
-    emulator = SlaveEmulator(port=port,master_host=args.master_host,master_port=args.master_port,num_nodes=args.num_nodes)
+    emulator = SlaveEmulator(
+        port=port,
+        master_host=args.master_host,
+        master_port=args.master_port,
+        num_nodes=args.num_nodes,
+        host=args.host)
     emulator_tasks = emulator.start()
 
     # instantiate app
@@ -272,11 +290,9 @@ async def main():
         for t in emulator_tasks:
             t.cancel()
     
-    import signal
-    asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
-
     if args.host == 'auto':
         args.host = get_ip_address.get_ip_address()
+        print(args.host)
     try:
         import get_ip_address
         await asyncio.gather(*([app.run_task(host=args.host, port=port,debug=True)] + emulator_tasks))

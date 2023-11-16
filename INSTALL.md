@@ -6,3 +6,5 @@ follow the instructions no the rustup website to [install rust](https://rustup.r
 
 source your .bashrc to make sure rust is on your path:
 `source ~/.bashrc`
+
+`pip install cryptography`
