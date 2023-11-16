@@ -234,15 +234,15 @@ class Device:
 
                 current_neighbours = self.discover_neighbours()
                 print("sending to neighbours:", current_neighbours)
-                d = {
+                data = {
                     PACKET_FIELD_REQUEST_TYPE: "interest",
                     PACKET_FIELD_DATA_NAME: data_name,
                     PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
                     PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
                     PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
                 }
-                print(d)
-                payload = self.jwt.encode(d)
+                print(data)
+                payload = self.jwt.encode(data)
                 tasks = [asyncio.create_task(self.send_payload_to(di, payload)) for di in current_neighbours]
                 await asyncio.gather(*tasks)
 
