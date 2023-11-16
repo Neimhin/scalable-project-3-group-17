@@ -11,6 +11,8 @@ import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
 from DeviceInterface import DeviceInterface
+import interest_emulation
+
 
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
@@ -259,26 +261,34 @@ class Device:
         await self.server.start()
 
 
-if __name__ == "__main__":
-    async def main():
-        class Emulation:
-            def __init__(self):
-                pass
-            def discover_neighbours(self,task_id):
-                import get_ip_address
-                return [DeviceInterface.from_dict({
-                    "host": get_ip_address.get_ip_address(),
-                    "port": 34000,
-                    "key_name": "abc",
-                })]
+class Emulation:
+    def __init__(self):
+        pass
 
+    def discover_neighbours(self,task_id):
+        import get_ip_address
+        return [DeviceInterface.from_dict({
+            "host": get_ip_address.get_ip_address(),
+            "port": 34000,
+            "key_name": "abc",
+        })]
+            
+
+async def main():
+        # instantiate emulation
         em = Emulation()
-
+        # instantiate device and pass emulation
         device = Device(0, em)
+        
         await device.start()
-        import interest_emulation
+
+        # create queue for device to send out interest packets
         q = interest_emulation.desire_queue_deterministic(["a","b","c"],interval=1)
+        
         device.set_desire_queue(q)
+        
         await device.send_payload_to(device.device_interface_dict(), payload=device.jwt.encode({"hi": "ok"}), hop=0)
 
+
+if __name__ == "__main__":
     asyncio.run(main())
