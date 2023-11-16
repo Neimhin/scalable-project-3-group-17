@@ -111,8 +111,28 @@ class MasterEmulator:
             print(str(e))
             raise e
 
+def parse_arguments():
+    import argparse
+    parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
+    
+    parser.add_argument(
+        '--port', 
+        type=int, 
+        default=33000, 
+        help='Port number for the master emulator (default: 33000)'
+    )
+
+    parser.add_argument(
+        '--host',
+        type=str, 
+        default='localhost', 
+        help='Port number for the master emulator (default: 33000)'
+    )
+    args = parser.parse_args()
+    return args
 
 async def main():
+    args = parse_arguments()
     emulator = MasterEmulator()
     emulator_tasks = emulator.run()
     app = quart.Quart(__name__)
@@ -159,9 +179,13 @@ async def main():
             t.cancel()
         
     asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
-    try:
+
+    if args.host == 'auto':
         import get_ip_address
-        await asyncio.gather(*([app.run_task(host=get_ip_address.get_ip_address(), port=33000,debug=True)] + emulator_tasks))
+        args.host = get_ip_address.get_ip_address()
+
+    try:
+        await asyncio.gather(*([app.run_task(host=args.host, port=args.port,debug=True)] + emulator_tasks))
     except asyncio.exceptions.CancelledError:
         pass
 
