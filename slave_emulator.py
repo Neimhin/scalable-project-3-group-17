@@ -158,7 +158,7 @@ def parse_arguments():
     parser.add_argument(
         '--master-host', 
         type=str, 
-        default=None, 
+        default='localhost', 
         help='Host address for the master emulator (default: None)'
     )
 
