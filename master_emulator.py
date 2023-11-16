@@ -69,16 +69,16 @@ class MasterEmulator:
         headers = ["Content-Type: application/json"]
 
         try:
-            import encapsulate_http
-            import json
-            response_raw = encapsulate_http.http_request("/update_topology", host, port, method="POST", headers=headers, body=json.dumps(self.current_topology))
-            response = encapsulate_http.extract_body_from_response(response_raw)
-            print(response)
-        # timeout = httpx.Timeout(0.5)
-        # async with httpx.AsyncClient(timeout=timeout) as client:
-        #         headers = {"content-type": "application/json"}
-        #         await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
-        #         return True
+            # import encapsulate_http
+            # import json
+            # response_raw = encapsulate_http.http_request("/update_topology", host, port, method="POST", headers=headers, body=json.dumps(self.current_topology))
+            # response = encapsulate_http.extract_body_from_response(response_raw)
+            # print(response)
+            timeout = httpx.Timeout(0.5)
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                    headers = {"content-type": "application/json"}
+                    await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
+                    return True
         except Exception as e:
             print(f"failed to send topology to {host}:{port}", str(e))
             raise e
@@ -249,6 +249,10 @@ async def main():
             return quart.jsonify("no emulator"), 500
         return quart.jsonify(emulator.adjacency_matrix)
     
+    @app.route('/slaves', methods=['GET'])
+    async def slave():
+        return quart.jsonify(emulator.registered_slaves)
+    
     @app.route('/disconnect_device', methods=['GET'])
     async def disconnect_device():
         device_key_name = quart.request.args.get('key_name',default=None, type=str)
@@ -264,8 +268,8 @@ async def main():
         import render
         html = ''
         for slave in emulator.registered_slaves:
-            html += render.emulator(slave)
-        html +=     '<script src="{{ url_for(\'static\', filename=\'js/util.js\') }}"></script>'
+            html += await render.emulator(slave)
+        html += '<script src="{{ url_for(\'static\', filename=\'js/util.js\') }}"></script>'
         rendered_html = await quart.render_template_string(html)
         print(rendered_html)
         return rendered_html, 200

@@ -57,7 +57,8 @@ class SlaveEmulator:
                 "key_name": device.jwt.key_name,
                 "host": host,
                 "port": device.server.port,
-                "public_key": device.jwt.public_key.decode("utf-8")
+                "public_key": device.jwt.public_key.decode("utf-8"),
+                "emulator_id":self.port
             })
 
         body = {
@@ -67,28 +68,28 @@ class SlaveEmulator:
             },
             "devices": devices
         }
-        try:
-            import encapsulate_http
-            import json
-            body = json.dumps(body)
-            headers=["Content-Type: application/json"]
-            res_raw = encapsulate_http.http_request("/register",self.master_host,self.master_port,method="POST",body=body,headers=headers)
-            print("RES RAW:", res_raw)
-            res_body = encapsulate_http.extract_body_from_response(res_raw)
-            print("RES BODY ENCAPSULATE:", res_body)
-        except Exception as e:
-            print(str(e))
-            exit()
-        # async with httpx.AsyncClient() as client:
-        #     headers = {"content-type": "application/json"}
-        #     print(body)
-        #     try:
-        #         res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
-        #         print("REGISTER RES:", res)
-        #     except Exception as e:
-        #         print(str(e))
-        #         print("failed to register")
-        #         raise e
+        # try:
+        #     import encapsulate_http
+        #     import json
+        #     body = json.dumps(body)
+        #     headers=["Content-Type: application/json"]
+        #     res_raw = encapsulate_http.http_request("/register",self.master_host,self.master_port,method="POST",body=body,headers=headers)
+        #     print("RES RAW:", res_raw)
+        #     res_body = encapsulate_http.extract_body_from_response(res_raw)
+        #     print("RES BODY ENCAPSULATE:", res_body)
+        # except Exception as e:
+        #     print(str(e))
+        #     exit()
+        async with httpx.AsyncClient() as client:
+            headers = {"content-type": "application/json"}
+            print(body)
+            try:
+                res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
+                print("REGISTER RES:", res)
+            except Exception as e:
+                print(str(e))
+                print("failed to register")
+                raise e
 
     def devices_report(self):
         return {
@@ -242,6 +243,18 @@ async def main():
             await device.desire_queue.put(data_name)
         return f'set desire {data_name} for {len(emulator.devices)} devices', 200
     
+    @app.route('/set_desire' ,methods=['GET'])
+    async def set_desire():
+        # give each device a new desire
+        data_name = quart.request.args.get('data_name', default=None, type=str)
+        device_key_name = quart.request.args.get("key_name", default=None, type=str)
+        if data_name is None or device_key_name is None:
+            return 'please provide data_name and device key_name', 400
+        for device in emulator.devices:
+            if device.jwt.key_name == device_key_name:
+                await device.desire_queue.put(data_name)
+                return f'set desire {data_name} for device {device.jwt.key_name}', 200
+    
     @app.route('/give_data_to_random_device', methods=['GET'])
     async def give_data_to_random_device():
         data_name = quart.request.args.get("data_name", default=None, type=str)
@@ -253,6 +266,17 @@ async def main():
         device = emulator.devices[random_i]
         device.CACHE[data_name] = data
         return f"gave data to device {random_i} {device.host}:{device.server.port}", 200
+    
+    @app.route('/all_dbs', methods=['GET'])
+    async def all_dbs():
+        dbs = []
+        for device in emulator.devices:
+            db_set = {
+                "key_name": device.jwt.key_name,
+                "CACHE": device.CACHE,
+            }
+            dbs.append(db_set)
+        return quart.jsonify(dbs), 200
 
     @app.route('/debug/topology' ,methods=['GET'])
     async def debug_topology():
