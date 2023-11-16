@@ -268,8 +268,8 @@ async def main():
         import render
         html = ''
         for slave in emulator.registered_slaves:
-            html += render.emulator(slave)
-        html +=     '<script src="{{ url_for(\'static\', filename=\'js/util.js\') }}"></script>'
+            html += await render.emulator(slave)
+        html += '<script src="{{ url_for(\'static\', filename=\'js/util.js\') }}"></script>'
         rendered_html = await quart.render_template_string(html)
         print(rendered_html)
         return rendered_html, 200

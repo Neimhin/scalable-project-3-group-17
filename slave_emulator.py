@@ -266,6 +266,17 @@ async def main():
         device = emulator.devices[random_i]
         device.CACHE[data_name] = data
         return f"gave data to device {random_i} {device.host}:{device.server.port}", 200
+    
+    @app.route('/all_dbs', methods=['GET'])
+    async def all_dbs():
+        dbs = []
+        for device in emulator.devices:
+            db_set = {
+                "key_name": device.jwt.key_name,
+                "CACHE": device.CACHE,
+            }
+            dbs.append(db_set)
+        return quart.jsonify(dbs), 200
 
     @app.route('/debug/topology' ,methods=['GET'])
     async def debug_topology():
