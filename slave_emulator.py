@@ -55,7 +55,8 @@ class SlaveEmulator:
                 "key_name": device.jwt.key_name,
                 "host": host,
                 "port": device.server.port,
-                "public_key": device.jwt.public_key.decode("utf-8")
+                "public_key": device.jwt.public_key.decode("utf-8"),
+                "emulator_id": self.host + ":" + str(self.port)
             })
 
         body = {

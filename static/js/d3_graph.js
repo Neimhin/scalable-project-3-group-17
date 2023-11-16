@@ -1,6 +1,7 @@
 function create_graph(topology) {
     // Convert adjacency matrix to nodes and links
-    let nodes = topology.devices.map(d => ({id: d.key_name}));
+    let nodes = topology.devices.map(d => ({id: d.key_name, color: 'blue'}));
+    console.log(topology);
 
     function find_node(key_name) {
         for(const node of nodes) {
@@ -54,7 +55,7 @@ function create_graph(topology) {
         .data(nodes)
         .join('circle')
         .attr('r', 5)
-        .attr('fill', 'blue')
+        .attr('fill', (d)=>d.color)
         .on('click', on_node_click)
 
     // Update positions each tick
