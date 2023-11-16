@@ -140,7 +140,6 @@ class Device:
             
             self.PIT[data_name]['waiting_list'].append(di)
             
-
             
         # PIT_ENTRY = {
         #     "what they want": data_name,
@@ -283,9 +282,9 @@ async def main():
         await device.start()
 
         # create queue for device to send out interest packets
-        q = interest_emulation.desire_queue_deterministic(["a","b","c"],interval=1)
+        interest_queue = interest_emulation.desire_queue_deterministic(["a","b","c"],interval=1)
         
-        device.set_desire_queue(q)
+        device.set_desire_queue(interest_queue)
         
         await device.send_payload_to(device.device_interface_dict(), payload=device.jwt.encode({"hi": "ok"}), hop=0)
 

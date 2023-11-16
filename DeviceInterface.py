@@ -1,3 +1,5 @@
+import ipaddress
+
 class DeviceInterface:
     def __init__(self, host,port,key_name):
         self.host = host
@@ -19,16 +21,20 @@ class DeviceInterface:
     @staticmethod
     def from_dict(d: dict):
         host = d["host"]
-        ip = host.split(".")
+        # ip = host.split(".")
         try:
-            assert len(ip) == 4
-            assert int(ip[0]) and int(ip[1]) and int(ip[2]) and int(ip[3])
-        except AssertionError:
-            print("host is not an ip address", host)
-            exit()
-        port = d["port"]
-        key_name = d["key_name"]
-        return DeviceInterface(host,port,key_name)
+            # Validate IP address
+            ipaddress.ip_address(d["host"])
+            host = d["host"]
+            port = d["port"]
+            key_name = d["key_name"]
+            return DeviceInterface(host=host, port=port, key_name=key_name)
+        except ValueError:
+            print("Invalid IP address:", d["host"])
+            raise
+        except KeyError as e:
+            print("Missing host in devices:", e)
+        raise
 
     def __name__(self):
         import json
