@@ -13,6 +13,11 @@ from cache import CACHEStore
 from DeviceInterface import DeviceInterface
 import interest_emulation
 
+def should_sneak():
+    import os
+    sneak = os.getenv('SNEAK', '0')
+    return sneak != '0'
+
 
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
@@ -205,15 +210,20 @@ class Device:
             f"{HOP_HEADER}: {str(hop)}",
             f"Content-Type: application/jwt",
         ]
-        print("encapsulating http request to ", di.host, di.port, headers)
-        response_raw = encapsulate_http.http_request("/", di.host, di.port,method="POST", headers=headers, body=payload)
-        response_body = encapsulate_http.extract_body_from_response(response_raw)
-        print("RESPONSE RAWE:", response_raw)
-        print("RESPONSE BODY:", response_body)
-        # print("ENCAPSULATE HTTP RESPONS BODY:", response_body)
-        # async with httpx.AsyncClient() as client:
-        #     headers = {HOP_HEADER: str(hop)}
-        #     await client.post(url, content=payload, headers=headers)
+        import os
+        sneak = should_sneak()
+        if sneak:
+            print("encapsulating http request to ", di.host, di.port, headers)
+            res_headers, res_body = await encapsulate_http.async_http_request("/", di.host, di.port,method="POST", headers=headers, body=payload)
+            print("RESPONSE HEADERS:", res_headers)
+            print("RESPONSE BODY:", res_body)
+        else:
+            async with httpx.AsyncClient() as client:
+                headers = {
+                    HOP_HEADER: str(hop),
+                    "User-Agent": "ICN",
+                }
+                await client.post(url, content=payload, headers=headers)
 
     
     # send named data to the network

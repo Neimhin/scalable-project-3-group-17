@@ -103,6 +103,7 @@ class SlaveEmulator:
         neighbour_key_names = []
         for connection in self.current_topology['connections']:
             if connection['source'] == connection['target']:
+                print(self.current_topology)
                 raise Exception("source and target of connection cannot be the same")
             if connection['source'] == device_key_name:
                 neighbour_key_names.append(connection['target'])

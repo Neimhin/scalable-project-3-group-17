@@ -124,10 +124,13 @@ class MasterEmulator:
                 import random
                 random_source_interface = orig_ring['devices'][random.randint(0,len(orig_ring['devices']) - 1)]
                 random_target_interface = next_ring['devices'][random.randint(0,len(next_ring['devices']) - 1)]
-                ring_connections.append({
+                new = {
                     "source": random_source_interface['key_name'],
                     "target": random_target_interface['key_name'],
-                })
+                }
+                if new['source'] == new['target']:
+                    raise Exception("source == target")
+                ring_connections.append(new)
         self.current_topology = {
             "devices": devices,
             "connections": ring_connections,

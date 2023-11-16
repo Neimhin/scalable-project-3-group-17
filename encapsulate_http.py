@@ -1,43 +1,48 @@
 import socket
 import asyncio
+from contextlib import asynccontextmanager
+
 def http_request(path, tcp_host, tcp_port, method='GET',headers=[],body=""):
+    try:
+        if body:
+            headers.append(f"Content-Length: {len(body.encode('utf-8'))}")
+        request_headers = [
+            f"{method} {path} HTTP/1.1",
+            f"Host: {tcp_host}",
+            "Connection: close",
+            *headers,
+            "\r\n"
+        ]
+        request_data = ("\r\n".join(request_headers) + body).encode()
 
-    if body:
-        headers.append(f"Content-Length: {len(body.encode('utf-8'))}")
-    request_headers = [
-        f"{method} {path} HTTP/1.1",
-        f"Host: {tcp_host}",
-        "Connection: close",
-        *headers,
-        "\r\n"
-    ]
-    request_data = ("\r\n".join(request_headers) + body).encode()
+        print(request_data)
+        # create socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((tcp_host, tcp_port))
+        s.sendall(request_data)
 
-    print(request_data)
-    # create socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((tcp_host, tcp_port))
-    s.sendall(request_data)
+        # read headers from tcp stream 
+        response_headers = ''
+        while '\r\n\r\n' not in response_headers:
+            response_headers += s.recv(4096).decode()
 
-    # read headers from tcp stream 
-    response_headers = ''
-    while '\r\n\r\n' not in response_headers:
-        response_headers += s.recv(4096).decode()
+        # content length header
+        content_length = None
+        for header in response_headers.split('\r\n'):
+            if header.lower().startswith('content-length'):
+                content_length = int(header.split(':')[1].strip())
+                break
 
-    # content length header
-    content_length = None
-    for header in response_headers.split('\r\n'):
-        if header.lower().startswith('content-length'):
-            content_length = int(header.split(':')[1].strip())
-            break
+        # read response body according to content-length
+        response_body = ''
+        if content_length:
+            while len(response_body) < content_length:
+                response_body += s.recv(4096).decode()
 
-    # read response body according to content-length
-    response_body = ''
-    if content_length:
-        while len(response_body) < content_length:
-            response_body += s.recv(4096).decode()
-
-    s.close()
+        s.close()
+    except Exception as e:
+        print(str(e))
+        raise e
 
     return response_headers + response_body
 
@@ -53,7 +58,62 @@ def extract_body_from_response(http_response):
         # no body, return an empty string
         return ''
 
-async def async_http_request(path, tcp_host, tcp_port, method='GET', headers=[], body=""):
+# async def async_http_request(path, tcp_host, tcp_port, method='GET', headers=[], body=""):
+#     if body:
+#         headers.append(f"Content-Length: {len(body.encode('utf-8'))}")
+#     request_headers = [
+#         f"{method} {path} HTTP/1.1",
+#         f"Host: {tcp_host}",
+#         "Connection: close",
+#         *headers,
+#         "\r\n"
+#     ]
+#     request_data = ("\r\n".join(request_headers) + body).encode()
+
+#     # create an asynchronous socket
+#     reader, writer = await asyncio.open_connection(tcp_host, tcp_port)
+
+#     # send the request
+#     writer.write(request_data)
+#     await writer.drain()
+
+#     # read headers from the response
+#     response_headers = b''
+#     while b'\r\n\r\n' not in response_headers:
+#         response_headers += await reader.read(4096)
+
+#     # content length header
+#     content_length = None
+#     for header in response_headers.decode().split('\r\n'):
+#         if header.lower().startswith('content-length'):
+#             content_length = int(header.split(':')[1].strip())
+#             break
+
+#     # read response body according to content-length
+#     response_body = b''
+#     if content_length:
+#         while len(response_body) < content_length:
+#             response_body += await reader.read(4096)
+
+#     # close the connection
+#     writer.close()
+#     await writer.wait_closed()
+
+#     return response_headers, response_body
+
+# import asyncio
+# from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def open_async_connection(host, port, timeout):
+    try:
+        reader, writer = await asyncio.wait_for(asyncio.open_connection(host, port), timeout)
+        yield reader, writer
+    finally:
+        writer.close()
+        await writer.wait_closed()
+
+async def async_http_request(path, tcp_host, tcp_port, method='GET', headers=[], body="", timeout=10):
     if body:
         headers.append(f"Content-Length: {len(body.encode('utf-8'))}")
     request_headers = [
@@ -65,44 +125,41 @@ async def async_http_request(path, tcp_host, tcp_port, method='GET', headers=[],
     ]
     request_data = ("\r\n".join(request_headers) + body).encode()
 
-    # create an asynchronous socket
-    reader, writer = await asyncio.open_connection(tcp_host, tcp_port)
+    try:
+        async with open_async_connection(tcp_host, tcp_port, timeout) as (reader, writer):
+            # send the request
+            writer.write(request_data)
+            await writer.drain()
 
-    # send the request
-    writer.write(request_data)
-    await writer.drain()
+            # read headers from the response
+            response_headers = b''
+            while b'\r\n\r\n' not in response_headers:
+                response_headers += await reader.read(4096)
 
-    # read headers from the response
-    response_headers = b''
-    while b'\r\n\r\n' not in response_headers:
-        response_headers += await reader.read(4096)
+            # content length header
+            content_length = None
+            for header in response_headers.decode().split('\r\n'):
+                if header.lower().startswith('content-length'):
+                    content_length = int(header.split(':')[1].strip())
+                    break
 
-    # content length header
-    content_length = None
-    for header in response_headers.decode().split('\r\n'):
-        if header.lower().startswith('content-length'):
-            content_length = int(header.split(':')[1].strip())
-            break
+            # read response body according to content-length
+            response_body = b''
+            if content_length:
+                while len(response_body) < content_length:
+                    response_body += await reader.read(4096)
 
-    # read response body according to content-length
-    response_body = b''
-    if content_length:
-        while len(response_body) < content_length:
-            response_body += await reader.read(4096)
+            return response_headers, response_body
+    except asyncio.TimeoutError:
+        print("Request timed out")
+        return None, None
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None, None
 
-    # close the connection
-    writer.close()
-    await writer.wait_closed()
-
-    return response_headers + response_body
-
-# Example usage
 async def main():
-    response = await async_http_request('/path', 'example.com', 80, method='GET', headers=['User-Agent: MyClient'], body='')
+    response = await async_http_request('/', 'google.com', 80, method='GET', headers=['User-Agent: MyClient'], body='')
     print(response.decode())
-
-# Run the asynchronous function
-#asyncio.run(main())
 
 if __name__ == "__main__":
         response = http_request('/', '10.35.70.37', 33000)
