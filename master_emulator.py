@@ -96,7 +96,39 @@ class MasterEmulator:
         self.current_topology = schema.create_ring_topology(devices)
 
     def create_ocean_demo_topology(self):
-        pass
+        emulator_rings = []
+        ring_connections = []
+        devices = []
+        for emulator_form in self.registered_slaves:
+            emulator_ring = schema.create_ring_topology(emulator_form['devices'])
+            emulator_rings.append(emulator_ring)
+            ring_connections += emulator_ring['connections']
+            devices += emulator_form['devices']
+        print(emulator_ring)
+
+        for i in range(len(emulator_rings)):
+            orig_ring = emulator_rings[i]
+            next_ring = emulator_rings[(i+1) % len(emulator_rings)]
+            import random
+            random_source_interface = orig_ring['devices'][random.randint(0,len(orig_ring['devices']) - 1)]
+            random_target_interface = next_ring['devices'][random.randint(0,len(next_ring['devices']) - 1)]
+            ring_connections.append({
+                "source": random_source_interface['key_name'],
+                "target": random_target_interface['key_name'],
+            })
+        self.current_topology = {
+            "devices": devices,
+            "connections": ring_connections,
+        }
+        self.should_propagate.set()
+        
+    def disconnect_device(self, key_name):
+        connections = []
+        for connection in self.current_topology['connections']:
+            if connection['source'] != key_name and connection['target'] != key_name:
+                connections.append(connection)
+                print("not keeping connection", connection)
+        self.current_topology['connections'] = connections
 
     def register_slave(self, registration_form):
         for i, slave in enumerate(self.registered_slaves):
@@ -105,7 +137,7 @@ class MasterEmulator:
                 self.registered_slaves[i] = registration_form
                 return "Slave Updated"
         self.registered_slaves.append(registration_form)
-        self.create_ring_topology()
+        self.create_ocean_demo_topology()
         print("setting should_propagate")
         try:
             self.should_propagate.set()
@@ -176,11 +208,15 @@ async def main():
     @app.route('/register' ,methods=['POST'])
     async def register():
         print("run register")
-        my_schema = schema.register_slave
+        bytes = await quart.request.get_data()
+        json_str = bytes.decode("utf-8")
+        import json
+        request_data = json.loads(json_str)
+        print(request_data)
         request_data = await quart.request.get_json()
         print(request_data)
         try:
-            jsonschema.validate(instance=request_data, schema=my_schema)
+            jsonschema.validate(instance=request_data, schema=schema.register_slave)
             emulator.register_slave(request_data)
             return quart.jsonify({"message": "registration successful"}), 200
         except jsonschema.ValidationError as e:
@@ -197,6 +233,16 @@ async def main():
         if not emulator:
             return quart.jsonify("no emulator"), 500
         return quart.jsonify(emulator.adjacency_matrix)
+    
+    @app.route('/disconnect_device', methods=['GET'])
+    async def disconnect_device():
+        device_key_name = quart.request.args.get('key_name',default=None, type=str)
+        if device_key_name is None:
+            import random
+            device_key_name = random.choice(emulator.current_topology['devices'])
+        emulator.disconnect_device(device_key_name)
+        emulator.should_propagate.set()
+        return "ok baby", 200
     
     @app.route('/devices', methods=['GET'])
     async def devices_index():

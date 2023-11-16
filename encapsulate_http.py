@@ -1,18 +1,21 @@
 import socket
-def http_request(path, tcp_host, tcp_port, method='GET'):
+def http_request(path, tcp_host, tcp_port, method='GET',headers=[],body=""):
+
+    if body:
+        headers.append(f"Content-Length: {len(body.encode('utf-8'))}")
     request_headers = [
         f"{method} {path} HTTP/1.1",
         f"Host: {tcp_host}",
         "Connection: close",
+        *headers,
         "\r\n"
     ]
+    request_data = ("\r\n".join(request_headers) + body).encode()
 
+    print(request_data)
     # create socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((tcp_host, tcp_port))
-
-    # Send the HTTP request as raw data
-    request_data = "\r\n".join(request_headers).encode()
     s.sendall(request_data)
 
     # read headers from tcp stream 
