@@ -95,6 +95,9 @@ class MasterEmulator:
             devices = devices + form["devices"]
         self.current_topology = schema.create_ring_topology(devices)
 
+    def create_ocean_demo_topology(self):
+        pass
+
     def register_slave(self, registration_form):
         for i, slave in enumerate(self.registered_slaves):
             if (registration_form["emulator_interface"]["host"] == slave["emulator_interface"]["host"] and
@@ -194,6 +197,17 @@ async def main():
         if not emulator:
             return quart.jsonify("no emulator"), 500
         return quart.jsonify(emulator.adjacency_matrix)
+    
+    @app.route('/devices', methods=['GET'])
+    async def devices_index():
+        import render
+        html = ''
+        for slave in emulator.registered_slaves:
+            html += render.emulator(slave)
+        html +=     '<script src="{{ url_for(\'static\', filename=\'js/util.js\') }}"></script>'
+        rendered_html = await quart.render_template_string(html)
+        print(rendered_html)
+        return rendered_html, 200
         
     # for vis
     @app.route('/current_topology', methods=['GET'])
