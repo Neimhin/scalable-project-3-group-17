@@ -246,7 +246,7 @@ async def main():
         device_key_name = quart.request.args.get('key_name',default=None, type=str)
         if device_key_name is None:
             import random
-            device_key_name = random.choice(emulator.current_topology['devices'])
+            device_key_name = random.choice(emulator.current_topology['devices'])['key_name']
         emulator.disconnect_device(device_key_name)
         emulator.should_propagate.set()
         return "ok baby", 200

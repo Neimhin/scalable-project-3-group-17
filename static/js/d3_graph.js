@@ -21,7 +21,7 @@ function create_graph(topology) {
     d3.select('#graph').selectAll("*").remove()
 
     // Set up the SVG
-    const width = '600', height = '600';
+    const width = '2000', height = '2000';
     const svg = d3.select('#graph')
         .append('svg')
         .attr('width', width)
