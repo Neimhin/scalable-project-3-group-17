@@ -11,7 +11,8 @@ import jsonschema
 
 
 class MasterEmulator:
-    def __init__(self):
+    def __init__(self,heartbeat=1):
+        self.heartbeat_interval = heartbeat
         self.registered_slaves = []
         self.dead_interfaces = []
         self.adjacency_matrix = []
@@ -30,7 +31,7 @@ class MasterEmulator:
         # periodically send a heartbeat request to each slave
         async def loop():
             while True:
-                await asyncio.sleep(1)
+                await asyncio.sleep(self.heartbeat_interval)
                 print("running heartbeat")
                 dead_interfaces = []
                 for i, s in enumerate(self.registered_slaves):
@@ -94,14 +95,11 @@ class MasterEmulator:
         self.current_topology = schema.create_ring_topology(devices)
 
     def register_slave(self, registration_form):
-        for i,s in enumerate(self.registered_slaves):
-            f = registration_form
-            fei = f["emulator_interface"]
-            sei = s["emulator_interface"]
-            if fei["host"] == sei["host"] and fei["port"] == sei["port"]:
+        for i, slave in enumerate(self.registered_slaves):
+            if (registration_form["emulator_interface"]["host"] == slave["emulator_interface"]["host"] and
+                    registration_form["emulator_interface"]["port"] == slave["emulator_interface"]["port"]):
                 self.registered_slaves[i] = registration_form
-                self.should_propagate.set()
-                return
+                return "Slave Updated"
         self.registered_slaves.append(registration_form)
         self.create_ring_topology()
         print("setting should_propagate")
@@ -110,6 +108,7 @@ class MasterEmulator:
         except Exception as e:
             print(str(e))
             raise e
+        return "New Slave Registered"
 
 def parse_arguments():
     import argparse
@@ -123,10 +122,43 @@ def parse_arguments():
     )
 
     parser.add_argument(
+        '--heartbeat', 
+        type=int, 
+        default=1, 
+        help='Interval in seconds between heartbeats.'
+    )
+
+    parser.add_argument(
         '--host',
         type=str, 
         default='localhost', 
         help='Port number for the master emulator (default: 33000)'
+    )
+        
+
+import argparse
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
+    
+    parser.add_argument(
+        '--host', 
+        type=str, 
+        default='localhost', 
+        help='Which host to listen on'
+    )
+
+    parser.add_argument(
+        '--port', 
+        type=int, 
+        default=33000, 
+        help='Which host to listen on'
+    )
+
+    parser.add_argument(
+        '--heartbeat', 
+        type=int, 
+        default=1, 
+        help='Interval between heartbeats.'
     )
     args = parser.parse_args()
     return args
@@ -134,6 +166,7 @@ def parse_arguments():
 async def main():
     args = parse_arguments()
     emulator = MasterEmulator()
+    emulator = MasterEmulator(heartbeat=args.heartbeat)
     emulator_tasks = emulator.run()
     app = quart.Quart(__name__)
     @app.route('/register' ,methods=['POST'])
@@ -152,6 +185,7 @@ async def main():
         
     @app.route('/' ,methods=['GET'])
     async def index():
+        print("rendering index.html")
         return await quart.render_template('index.html')
     
     @app.route('/new_device_topology', methods=['GET'])

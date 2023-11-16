@@ -11,6 +11,7 @@ import JWT
 from http_server import HTTPServer
 from cache import CACHEStore
 from DeviceInterface import DeviceInterface
+from storing_and_routing import Routing
 
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
@@ -254,8 +255,7 @@ class Device:
         await self.server.start()
 
 
-if __name__ == "__main__":
-    async def main():
+async def main():
         class Emulation:
             def __init__(self):
                 pass
@@ -276,4 +276,6 @@ if __name__ == "__main__":
         device.set_desire_queue(q)
         await device.send_payload_to(device.device_interface_dict(), payload=device.jwt.encode({"hi": "ok"}), hop=0)
 
+
+if __name__ == "__main__":
     asyncio.run(main())

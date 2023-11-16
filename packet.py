@@ -3,6 +3,8 @@ import json
 '''
 Packet types
 
+Discover: 
+
 Interest: A consumer puts the name of a desired piece of data into an 
 Interest packet and sends it to the network. 
 Routers use this name to forward the Interest toward the data producer(s).

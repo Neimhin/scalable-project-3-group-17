@@ -2,7 +2,7 @@
 All the forwarding logic will go here
 Will absatract away from the Node file
 
-<NamaN ArorA TASK>
+contributor: <NamaN ArorA TASK>
 
 Define the classes for Interest Packet and Data Packet.
 
