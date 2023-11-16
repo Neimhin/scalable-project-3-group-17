@@ -147,12 +147,19 @@ def parse_arguments():
         default=None, 
         help='Port number for the slave emulator (default: 34000)'
     )
-    
+
+    parser.add_argument(
+        '--host', 
+        type=str, 
+        default='localhost', 
+        help='Port number for host (default: localhost)'
+    )
+
     parser.add_argument(
         '--master-port', 
         type=int, 
         default=33000, 
-        help='Port number for the master emulator (default: 33000)'
+        help='Port number for the master emulator (default: find free)'
     )
     
     parser.add_argument(
@@ -216,11 +223,28 @@ async def main():
     
     @app.route('/give_data_to_random_device', methods=['GET'])
     async def give_data_to_random_device():
-        return "nyi", 500
+        data_name = quart.request.args.get("data_name", default=None, type=str)
+        data      = quart.request.args.get("data", default=None, type=str)
+        if data_name is None or data is None:
+            return 'please provide data_name and data', 400
+        import random
+        random_i = random.randint(0,len(emulator.devices)-1)
+        device = emulator.devices[random_i]
+        device.CACHE[data_name] = data
+        return f"gave data to device {random_i} {device.host}:{device.server.port}", 200
 
     @app.route('/debug/topology' ,methods=['GET'])
     async def debug_topology():
         return quart.jsonify(emulator.current_topology), 200
+    
+    @app.route('/debug/cache' ,methods=['GET'])
+    async def debug_cache():
+        neighbours = []
+        for device in emulator.devices:
+            print(device)
+            neighbours.append(device.CACHE)
+        print(neighbours)
+        return quart.jsonify(neighbours), 200
     
     @app.route('/debug/neighbours' ,methods=['GET'])
     async def debug_neighbours():
@@ -247,9 +271,12 @@ async def main():
     
     import signal
     asyncio.get_event_loop().add_signal_handler(signal.SIGINT,signal_handler)
+
+    if args.host == 'auto':
+        args.host = get_ip_address.get_ip_address()
     try:
         import get_ip_address
-        await asyncio.gather(*([app.run_task(host=get_ip_address.get_ip_address(), port=port,debug=True)] + emulator_tasks))
+        await asyncio.gather(*([app.run_task(host=args.host, port=port,debug=True)] + emulator_tasks))
     except asyncio.exceptions.CancelledError:
         pass
     except OSError as e:
