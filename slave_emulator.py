@@ -288,6 +288,7 @@ async def main():
 
     if args.host == 'auto':
         args.host = get_ip_address.get_ip_address()
+        print(args.host)
     try:
         import get_ip_address
         await asyncio.gather(*([app.run_task(host=args.host, port=port,debug=True)] + emulator_tasks))
