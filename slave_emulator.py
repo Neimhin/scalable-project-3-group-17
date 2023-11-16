@@ -68,28 +68,28 @@ class SlaveEmulator:
             },
             "devices": devices
         }
-        try:
-            import encapsulate_http
-            import json
-            body = json.dumps(body)
-            headers=["Content-Type: application/json"]
-            res_raw = encapsulate_http.http_request("/register",self.master_host,self.master_port,method="POST",body=body,headers=headers)
-            print("RES RAW:", res_raw)
-            res_body = encapsulate_http.extract_body_from_response(res_raw)
-            print("RES BODY ENCAPSULATE:", res_body)
-        except Exception as e:
-            print(str(e))
-            exit()
-        # async with httpx.AsyncClient() as client:
-        #     headers = {"content-type": "application/json"}
-        #     print(body)
-        #     try:
-        #         res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
-        #         print("REGISTER RES:", res)
-        #     except Exception as e:
-        #         print(str(e))
-        #         print("failed to register")
-        #         raise e
+        # try:
+        #     import encapsulate_http
+        #     import json
+        #     body = json.dumps(body)
+        #     headers=["Content-Type: application/json"]
+        #     res_raw = encapsulate_http.http_request("/register",self.master_host,self.master_port,method="POST",body=body,headers=headers)
+        #     print("RES RAW:", res_raw)
+        #     res_body = encapsulate_http.extract_body_from_response(res_raw)
+        #     print("RES BODY ENCAPSULATE:", res_body)
+        # except Exception as e:
+        #     print(str(e))
+        #     exit()
+        async with httpx.AsyncClient() as client:
+            headers = {"content-type": "application/json"}
+            print(body)
+            try:
+                res = await client.post(f"http://{self.master_host}:{self.master_port}/register", json=body, headers=headers)
+                print("REGISTER RES:", res)
+            except Exception as e:
+                print(str(e))
+                print("failed to register")
+                raise e
 
     def devices_report(self):
         return {
