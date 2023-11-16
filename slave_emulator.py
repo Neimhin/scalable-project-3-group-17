@@ -57,7 +57,8 @@ class SlaveEmulator:
                 "key_name": device.jwt.key_name,
                 "host": host,
                 "port": device.server.port,
-                "public_key": device.jwt.public_key.decode("utf-8")
+                "public_key": device.jwt.public_key.decode("utf-8"),
+                "emulator_id":self.port
             })
 
         body = {
@@ -241,6 +242,18 @@ async def main():
         for device in emulator.devices:
             await device.desire_queue.put(data_name)
         return f'set desire {data_name} for {len(emulator.devices)} devices', 200
+    
+    @app.route('/set_desire' ,methods=['GET'])
+    async def set_desire():
+        # give each device a new desire
+        data_name = quart.request.args.get('data_name', default=None, type=str)
+        device_key_name = quart.request.args.get("key_name", default=None, type=str)
+        if data_name is None or device_key_name is None:
+            return 'please provide data_name and device key_name', 400
+        for device in emulator.devices:
+            if device.jwt.key_name == device_key_name:
+                await device.desire_queue.put(data_name)
+                return f'set desire {data_name} for device {device.jwt.key_name}', 200
     
     @app.route('/give_data_to_random_device', methods=['GET'])
     async def give_data_to_random_device():

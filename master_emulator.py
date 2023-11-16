@@ -249,6 +249,10 @@ async def main():
             return quart.jsonify("no emulator"), 500
         return quart.jsonify(emulator.adjacency_matrix)
     
+    @app.route('/slaves', methods=['GET'])
+    async def slave():
+        return quart.jsonify(emulator.registered_slaves)
+    
     @app.route('/disconnect_device', methods=['GET'])
     async def disconnect_device():
         device_key_name = quart.request.args.get('key_name',default=None, type=str)
