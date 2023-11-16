@@ -46,9 +46,9 @@ class DeviceInterface:
             except AssertionError:
                 print("host is not an ip address", ip, host)
                 exit()
-            port = device.server.port
-            key_name = device.jwt.key_name
-            return DeviceInterface(host,port,key_name)
+        port = device.server.port
+        key_name = device.jwt.key_name
+        return DeviceInterface(host,port,key_name)
 
     @staticmethod
     def from_dict(d):

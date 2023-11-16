@@ -28,8 +28,10 @@ def line_adjacency_matrix(n):
 
 
 class SlaveEmulator:
-    def __init__(self,num_nodes=3,jwt_algorithm=JWT.ALGORITHM,port=34000, master_port=33000, master_host=None):
+    def __init__(self,num_nodes=3,jwt_algorithm=JWT.ALGORITHM,port=34000, host='localhost', master_port=33000, master_host=None):
         self.port = port
+        self.host = host or get_ip_address.get_ip_address()
+        print("WARNING: using ip address:", self.host)
         self.num_nodes = num_nodes
         self.adjacency_matrix = line_adjacency_matrix(self.num_nodes)
         self.node_ids = np.array(list(range(self.num_nodes)))
@@ -47,7 +49,7 @@ class SlaveEmulator:
 
     async def register_with_master(self):
         print("in register_with_master")
-        host = get_ip_address.get_ip_address()
+        host = self.host
         devices = []
         for device in self.devices:
             await device.server.started.wait()
@@ -57,6 +59,7 @@ class SlaveEmulator:
                 "port": device.server.port,
                 "public_key": device.jwt.public_key.decode("utf-8")
             })
+
 
         body = {
             "emulator_interface": {
