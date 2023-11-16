@@ -1,1 +1,3 @@
-ssh -L 8080:localhost:8080 pi
+ssh \
+	-L 33000:localhost:33000 \
+	pi

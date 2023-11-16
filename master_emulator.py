@@ -136,11 +136,14 @@ class MasterEmulator:
         
     def disconnect_device(self, key_name):
         connections = []
+        print(key_name, len(self.current_topology['connections']))
         for connection in self.current_topology['connections']:
             if connection['source'] != key_name and connection['target'] != key_name:
                 connections.append(connection)
                 print("not keeping connection", connection)
         self.current_topology['connections'] = connections
+        print(key_name, len(self.current_topology['connections']))
+
 
     def register_slave(self, registration_form):
         for i, slave in enumerate(self.registered_slaves):
@@ -251,7 +254,7 @@ async def main():
         device_key_name = quart.request.args.get('key_name',default=None, type=str)
         if device_key_name is None:
             import random
-            device_key_name = random.choice(emulator.current_topology['devices'])
+            device_key_name = random.choice(emulator.current_topology['devices'])['key_name']
         emulator.disconnect_device(device_key_name)
         emulator.should_propagate.set()
         return "ok baby", 200
