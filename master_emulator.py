@@ -9,7 +9,6 @@ import asyncio
 import schema
 import jsonschema
 
-
 class MasterEmulator:
     def __init__(self,heartbeat=1):
         self.heartbeat_interval = heartbeat
@@ -68,7 +67,7 @@ class MasterEmulator:
         async with httpx.AsyncClient(timeout=timeout) as client:
             try:
                 headers = {"content-type": "application/json"}
-                await client.post(f"http://{slave_emulator_interface['host']}:{i['port']}/update_topology", json=self.current_topology, headers=headers)
+                await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
                 return True
             except Exception as e:
                 print(f"failed to send topology to {slave_emulator_interface['host']}:{slave_emulator_interface['port']}", str(e))
@@ -83,6 +82,8 @@ class MasterEmulator:
                     tasks = [asyncio.create_task(self.send_topology_to_slave(s)) for s in self.registered_slaves]
                     together = asyncio.gather(*tasks,return_exceptions=True)
                     results = await together
+                    print("finished propagating topology")
+                    print(self.current_topology)
                     print(results)
                 except Exception as e:
                     print("exception while propagating topology", str(e))

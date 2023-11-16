@@ -45,13 +45,14 @@ class DeviceInterface:
     # param device: DeviceInterface
     def from_device(device):
         host = device.server.host
-        ip = host.split(".")
-        try:
-            assert len(ip) == 4
-            assert int(ip[0]) and int(ip[1]) and int(ip[2]) and int(ip[3])
-        except AssertionError:
-            print("host is not an ip address", host)
-            exit()
+        if not host == 'localhost':
+            ip = host.split(".")
+            try:
+                assert len(ip) == 4
+                assert int(ip[0]) and int(ip[1]) and int(ip[2]) and int(ip[3])
+            except AssertionError:
+                print("host is not an ip address", ip, host)
+                exit()
         port = device.server.port
         key_name = device.jwt.key_name
         return DeviceInterface(host,port,key_name)
