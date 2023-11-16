@@ -140,7 +140,6 @@ class Device:
             
             self.PIT[data_name]['waiting_list'].append(di)
             
-
             
         # PIT_ENTRY = {
         #     "what they want": data_name,

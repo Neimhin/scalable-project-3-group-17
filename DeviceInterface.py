@@ -25,7 +25,6 @@ class DeviceInterface:
         try:
             # Validate IP address
             ipaddress.ip_address(d["host"])
-
             host = d["host"]
             port = d["port"]
             key_name = d["key_name"]
