@@ -243,9 +243,9 @@ async def main():
             await device.desire_queue.put(data_name)
         return f'set desire {data_name} for {len(emulator.devices)} devices', 200
     
-    @app.route('/set_desire' ,methods=['GET'])
-    async def set_desire():
-        # give each device a new desire
+    @app.route('/set_desire_for_one' ,methods=['GET'])
+    async def set_desire_for_one():
+        # give one device a new desire
         data_name = quart.request.args.get('data_name', default=None, type=str)
         device_key_name = quart.request.args.get("key_name", default=None, type=str)
         if data_name is None or device_key_name is None:

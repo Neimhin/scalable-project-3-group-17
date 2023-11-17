@@ -5,6 +5,7 @@ Base script to generate random various sensor data
 
 import random
 import numpy as np
+import json
 
 class BarometricPressureSensor:
     def __init__(self):
@@ -84,30 +85,45 @@ class HumiditySensor:
     def read(self):
         return self.humidity
 
-# Example of usage
-barometric_pressure_sensor = BarometricPressureSensor()
-wind_sensor = WindSensor()
-wave_sensor = WaveSensor()
-sst_sensor = SeaSurfaceTemperatureSensor()
-current_sensor = CurrentSensor()
-rainfall_sensor = RainfallSensor()
-humidity_sensor = HumiditySensor()
 
-# Update and read data
-for _ in range(10):  # Simulate 10 time steps
-    barometric_pressure_sensor.update()
-    wind_sensor.update()
-    wave_sensor.update()
-    sst_sensor.update()
-    current_sensor.update()
-    rainfall_sensor.update()
-    humidity_sensor.update()
+def get_measurements() -> dict:
+    barometric_pressure_sensor = BarometricPressureSensor()
+    wind_sensor = WindSensor()
+    wave_sensor = WaveSensor()
+    sst_sensor = SeaSurfaceTemperatureSensor()
+    current_sensor = CurrentSensor()
+    rainfall_sensor = RainfallSensor()
+    humidity_sensor = HumiditySensor()
 
-    print("Barometric Pressure:", barometric_pressure_sensor.read())
-    print("Wind:", wind_sensor.read())
-    print("Wave:", wave_sensor.read())
-    print("Sea Surface Temperature:", sst_sensor.read())
-    print("Current:", current_sensor.read())
-    print("Rainfall Rate:", rainfall_sensor.read())
-    print("Humidity:", humidity_sensor.read())
-    # TODO: More data add
+
+    data_dict = {}
+    # Update and read data
+    for i in range(1, 11):  # Simulate 10 time steps
+        barometric_pressure_sensor.update(), 
+        wind_sensor.update(),
+        wave_sensor.update(),
+        sst_sensor.update(),
+        current_sensor.update(),
+        rainfall_sensor.update(),
+        humidity_sensor.update()
+
+        measurement = [
+                barometric_pressure_sensor.read(),
+                wind_sensor.read(),
+                wave_sensor.read(),
+                sst_sensor.read(),
+                current_sensor.read(),
+                rainfall_sensor.read(),
+                humidity_sensor.read()
+        ]
+
+        cnt_step = 'step ' + str(i)
+        data_dict[cnt_step] = measurement
+
+    return data_dict
+    
+
+def debug():
+    mes = get_measurements()
+    j_out = json.dumps(mes, indent=4)
+    print(j_out)
