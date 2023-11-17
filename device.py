@@ -256,6 +256,7 @@ class Device:
                         PACKET_FIELD_DATA_NAME: data_name,
                         PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
                         PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
+                        # TODO: device interface should be discovered, not included in packet.
                         PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
                     }
                     print(data)
