@@ -119,13 +119,11 @@ def get_measurements() -> dict:
 
         cnt_step = 'step ' + str(i)
         data_dict[cnt_step] = measurement
-        print(cnt_step)
-        print(measurement)
 
     return data_dict
     
 
-
-mes = get_measurements()
-j_out = json.dumps(mes, indent=4)
-print(j_out)
+def debug():
+    mes = get_measurements()
+    j_out = json.dumps(mes, indent=4)
+    print(j_out)
