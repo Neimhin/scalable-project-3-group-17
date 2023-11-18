@@ -80,7 +80,7 @@ class SlaveEmulator:
         # except Exception as e:
         #     print(str(e))
         #     exit()
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(proxies={}) as client:
             headers = {"content-type": "application/json"}
             print(body)
             try:
