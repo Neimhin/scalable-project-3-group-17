@@ -1,6 +1,6 @@
 from __future__ import annotations
 import asyncio
-import httpx
+import http_client
 import signal
 import asyncio
 import is_port_open
@@ -69,8 +69,7 @@ class MasterEmulator:
         headers = ["Content-Type: application/json"]
 
         try:
-            timeout = httpx.Timeout(0.5)
-            async with httpx.AsyncClient(timeout=timeout) as client:
+            async with http_client.no_proxy() as client:
                     headers = {"content-type": "application/json"}
                     await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
                     return True

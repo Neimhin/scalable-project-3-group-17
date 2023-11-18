@@ -2,7 +2,7 @@
 G17 ICN Node
 '''
 from __future__ import annotations
-import httpx
+import http_client
 import logging
 from aiohttp import web
 import asyncio
@@ -208,7 +208,7 @@ class Device:
         # print("RESPONSE RAWE:", response_raw)
         # print("RESPONSE BODY:", response_body)
         # print("ENCAPSULATE HTTP RESPONS BODY:", response_body)
-        async with httpx.AsyncClient() as client:
+        async with http_client.no_proxy() as client:
             headers = {HOP_HEADER: str(hop)}
             await client.post(url, content=payload, headers=headers)
 
