@@ -1,12 +1,12 @@
-import socket
 import netifaces
+from typing import Optional
 
-IP_ADDRESS = None
+cached_ip_address: Optional[str] = None
 
-def get_ip_address():
-    global IP_ADDRESS
-    if IP_ADDRESS:
-        return IP_ADDRESS
+def get_ip_address() -> str:
+    global cached_ip_address
+    if cached_ip_address:
+        return cached_ip_address
 
     try:
         interfaces = netifaces.interfaces()
@@ -17,8 +17,8 @@ def get_ip_address():
                 for ipv4 in ipv4s:
                     ip = ipv4['addr']
                     if ip != "127.0.0.1":  # Exclude localhost
-                        IP_ADDRESS = ip
-                        return IP_ADDRESS
+                        cached_ip_address = ip
+                        return ip
 
         return "No public IPv4 address found"
     except Exception as e:

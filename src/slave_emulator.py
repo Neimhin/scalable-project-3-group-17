@@ -6,38 +6,23 @@ from device import Device
 from DeviceInterface import DeviceInterface
 import gateway_port
 import asyncio
-import get_ip_address
 import numpy as np
 import logging
-import asyncio
 import get_ip_address
-import logging
 import schema
 import jsonschema
 import JWT
 import argparse
 import http_client
-
-logging.basicConfig(level=logging.DEBUG)
-
-# contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
-def line_adjacency_matrix(n):
-    adj_matrix = [[0] * n for _ in range(n)]
-    for i in range(n-1):
-        adj_matrix[i+1][i] = 1 
-        adj_matrix[i][i+1] = 1
-    return adj_matrix
-
+from typing import Optional
 
 class SlaveEmulator:
-    def __init__(self,num_nodes=3,jwt_algorithm=JWT.ALGORITHM,port=34000, host='localhost', master_port=33000, master_host=None):
+    def __init__(self,num_nodes:int=3,jwt_algorithm:str=JWT.ALGORITHM,port:int=34000,host:str='localhost',master_port:int=33000, master_host:Optional[str]=None):
         self.port = port
         self.host = host or get_ip_address.get_ip_address()
-        print("WARNING: using ip address:", self.host)
         self.num_nodes = num_nodes
-        self.adjacency_matrix = line_adjacency_matrix(self.num_nodes)
         self.node_ids = np.array(list(range(self.num_nodes)))
-        self.devices = [Device(idx,self,jwt_algorithm=jwt_algorithm) for idx in self.node_ids]
+        self.devices = [Device(self,jwt_algorithm=jwt_algorithm) for idx in range(self.num_nodes)]
         self.start_event = asyncio.Event()
         self.logger = logging.getLogger()
         self.master_host = master_host or get_ip_address.get_ip_address()
@@ -102,8 +87,8 @@ class SlaveEmulator:
         }
 
     # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
-    def discover_neighbours(self, device_key_name) -> List(DeviceInterface):
-        neighbour_key_names = []
+    def discover_neighbours(self, device_key_name:str) -> List[DeviceInterface]:
+        neighbour_key_names: List[str] = []
         for connection in self.current_topology['connections']:
             if connection['source'] == connection['target']:
                 raise Exception("source and target of connection cannot be the same")
@@ -124,23 +109,22 @@ class SlaveEmulator:
         jsonschema.validate(topology, schema=schema.device_topology)
         self.current_topology=topology
     
-    def start(self) -> List(asyncio.Task):
-        import asyncio
+    def start(self) -> List[asyncio.Task]:
         self.tasks = [asyncio.create_task(node.start()) for node in self.devices]
         register_task = asyncio.create_task(self.register_with_master())
         return [*self.tasks, register_task]
 
-    async def generate_trusted_keys_table_all_nodes(self):
-        d = {}
+    async def generate_trusted_keys_table_all_nodes(self) -> dict[str,str]:
+        d: dict[str,str] = {}
         for device in self.devices:
             hash = device.jwt.hash_of_public_key()
             pub_key = device.jwt.public_key_pem
             d[hash] = pub_key
         return d
     
-    async def get_updated_topology(self, master_host='127.0.0.1', master_port=33000):
+    async def get_updated_topology(self, master_host:str='127.0.0.1', master_port:int=33000):
         print("Receiving Updated Device Topology from Master")
-        host = self.host
+        host:str = self.host
     
         body = {
             "emulator_interface": {
@@ -206,7 +190,6 @@ def parse_arguments():
     return args
 
 async def main():
-    import get_ip_address
     args = parse_arguments()
     if args.master_host is None:
         args.master_host = get_ip_address.get_ip_address()

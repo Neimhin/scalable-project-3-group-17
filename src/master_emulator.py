@@ -5,17 +5,19 @@ import signal
 import asyncio
 import is_port_open
 import quart
-import asyncio
 import schema
 import jsonschema
+from typing import Union
+from typing import List
+from typing import Literal
 
 class MasterEmulator:
-    def __init__(self,heartbeat=1):
+    def __init__(self,heartbeat:Union[int,float]=1):
         self.heartbeat_interval = heartbeat
         self.registered_slaves = []
         self.dead_interfaces = []
         self.adjacency_matrix = []
-        self.current_topology = {
+        self.current_topology: dict[Literal["devices", "connections"],List] = {
             "devices": [],
             "connections": [],
         }

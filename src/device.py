@@ -16,8 +16,6 @@ from typing import List
 from typing import Optional
 import os
 
-
-
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
 PACKET_FIELD_SENDER_PUBLIC_KEY =        "sender_public_key"
@@ -28,12 +26,11 @@ PACKET_FIELD_REQUESTOR_KEY_NAME =       "requestor_key_name"
 PACKET_FIELD_SENDER_KEY_NAME =          "requestor_key_name"
 #PACKET_FIELD_PORT_NUMBER=               "port"
 
-def find_device_by_key_name(key_name: str, dis: List(DeviceInterface)) -> Optional(DeviceInterface):
+def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Optional[DeviceInterface]:
     for di in dis:
         if di.key_name == key_name:
             return di
     return None
-
 
 # TODO: just send key_name in packet, not device_interface
 PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
@@ -41,23 +38,21 @@ HOP_HEADER =                            "x-tcdicn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, task_id, emulation,jwt_algorithm=None,host='localhost'):
+    def __init__(self, emulation, jwt_algorithm:str='RS256',host:str='localhost'):
         self.host = host
-        self.task_id = task_id
         self.logger = logging.getLogger()
         self.emulation = emulation
-        self.CACHE = {} # TODO: use  CACHEStore()
         async def handler_async(request):
             return await self.handler(request)
         self.server = HTTPServer(handler_async,host=host)
         self.desire_queue_task = None
-        self.desire_queue = asyncio.Queue()
+        self.desire_queue: asyncio.Queue[str] = asyncio.Queue()
         self.jwt = JWT.JWT(algorithm=jwt_algorithm)
         self.jwt.init_jwt(key_size=512)
         self.debug_flag=False
         # TODO: define these from seperate class cache       
         self.PIT = {} 
-        self.FIB = {}
+        self.FIB: dict[str,dict]= {}
         self.CACHE = {}
         self.neighbours = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
@@ -83,7 +78,7 @@ class Device:
         # Add the handlers to the logger
         self.logger.addHandler(fh)
 
-    def create_FIB_entry(self, data_name, hop, device_interface: DeviceInterface, interested_key_name: str):
+    def create_FIB_entry(self, data_name:str, hop: int, device_interface: DeviceInterface, interested_key_name: str):
         entry = {}
         entry['hop']=hop
         # entry['device_interface']=device_interface
@@ -200,7 +195,7 @@ class Device:
         # if is_the_first:
              
 
-    def discover_neighbours(self):
+    def discover_neighbours(self) -> List[DeviceInterface]:
         self.neighbours = self.emulation.discover_neighbours(self.jwt.key_name)
         self.logger.debug(f"got neighbours {list(map(str,self.neighbours))}")
         return self.neighbours
@@ -281,11 +276,11 @@ class Device:
         async def handle():
             while True:
                 data_name = await self.desire_queue.get()
-                self.logger.debug("processing new desire:", data_name)
+                self.logger.debug(f"processing new desire: {data_name}")
                 if self.CACHE.get(data_name):
                     continue
 
-                self.logger.debug(f"got item '{data_name}' from desire queue: node {self.task_id}: port: {self.server.port}")
+                self.logger.debug(f"got item '{data_name}' from desire queue: node {self.host}:{self.server.port}")
 
                 # TODO what if device has no neighbours currently?
                 # should store desire until there are neighbour
@@ -293,7 +288,7 @@ class Device:
                 while len(current_neighbours) == 0:
                     current_neighbours = self.discover_neighbours()
                     await asyncio.sleep(1)
-                    self.logger.debug("sending to neighbours:", current_neighbours)
+                    self.logger.debug(f"sending to neighbours: {list(map(str,current_neighbours))}")
                     data = {
                         PACKET_FIELD_REQUEST_TYPE: "interest",
                         PACKET_FIELD_DATA_NAME: data_name,
@@ -311,10 +306,11 @@ class Device:
         return self.desire_queue_task
 
     async def start(self):
-        self.logger.debug(f"starting node {self.task_id}")
+        self.logger.debug(f"starting node")
         self.start_queue_handler()
         await self.server.start()
         await self.init_logger()
+        self.logger.debug(f"started {self.host}:{self.server.port}")
 
 
 class Emulation:
