@@ -91,7 +91,7 @@ class Device:
     TODO: Shift this send/forward logic to storing and routing
     '''
 
-    async def handle_satisfy_packet(self, packet, jwt, hop=None):
+    async def handle_satisfy_packet(self, packet: dict, jwt:str, hop:str=None):
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         #_list = self.PIT[data_name]['waiting_list']
@@ -116,13 +116,11 @@ class Device:
             self.create_FIB_entry(data_name,hop,None,interested_key_name)
         elif entry_fib['hop']>hop:
             # entry_fib['device_interface']=di
-            entry_fib['interested_key_name']=packet.get(PACKET_FIELD_REQUESTOR_PUBLIC_KEY)
+            entry_fib['interested_key_name']=packet.get(PACKET_FIELD_REQUESTOR_KEY_NAME)
 
         # TODO verify packet came from a trusted sender
         # TODO delete entry that time is invalid
         self.CACHE[data_name] = packet.get(PACKET_FIELD_DATA_PLAIN)
-
-       # self.logger.debug(f"{self.task_id} get a message {data_name}, cache number is {len(self.CACHE)}")
 
     async def propagate_interest(self,packet,hop=None):
         assert type(hop) == int
@@ -149,7 +147,7 @@ class Device:
         assert type(hop) == int
         self.logger.debug(packet)
         data_name=packet[PACKET_FIELD_DATA_NAME]
-        requestor = packet[PACKET_FIELD_REQUESTOR_PUBLIC_KEY]
+        requestor = packet[PACKET_FIELD_REQUESTOR_KEY_NAME]
         if requestor == self.jwt.public_key:
             return
 
@@ -269,7 +267,7 @@ class Device:
         gathered_tasks = asyncio.gather(*tasks)
         await gathered_tasks
 
-    def device_interface_dict(self):
+    def device_interface_dict(self) -> DeviceInterface:
         return DeviceInterface.from_device(self).to_dict()
     
     def start_queue_handler(self):
@@ -292,7 +290,6 @@ class Device:
                     data = {
                         PACKET_FIELD_REQUEST_TYPE: "interest",
                         PACKET_FIELD_DATA_NAME: data_name,
-                        PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'), # DEPRECATED
                         PACKET_FIELD_REQUESTOR_KEY_NAME: self.jwt.key_name,
                         PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
                         PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()

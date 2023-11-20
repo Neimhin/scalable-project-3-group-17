@@ -58,14 +58,10 @@ class DeviceInterface:
 
     @staticmethod
     def from_dict(d):
-        try:
-            host = d["host"]
-            port = d["port"]
-            key_name = d["key_name"]
-            return DeviceInterface(host=host,port=port,key_name=key_name)
-        except:
-            print("failed to create DeviceInterface from dict:", d)
-            exit()
+        host:str = d["host"]
+        port:int = d["port"]
+        key_name = d["key_name"]
+        return DeviceInterface(host=host,port=port,key_name=key_name)
 
     def __str__(self):
         return self.host + ":" + str(self.port) + "  " + self.key_name[:10]
