@@ -1,6 +1,13 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Optional
+from typing import TypedDict
+from typing import Optional
+
+class FIBEntry(TypedDict):
+    hop: int
+    interested_key_name: str
+    created_at: float
 
 class Router(ABC):
     
@@ -9,7 +16,7 @@ class Router(ABC):
         pass
 
     @abstractmethod
-    def get_fib_entry(self, data_name: str) -> Optional[dict]:
+    def get_fib_entry(self, data_name: str) -> Optional[FIBEntry]:
         pass
 
     @abstractmethod
@@ -18,17 +25,17 @@ class Router(ABC):
 
 class BasicRouter(Router):
     def __init__(self):
-        self.FIB = {}
+        self.FIB: dict[str, FIBEntry] = {}
 
     def create_fib_entry(self, data_name: str, hop: int, interested_key_name: str) -> None:
-        entry = {
+        entry: FIBEntry = {
             'hop': hop,
             'interested_key_name': interested_key_name,
             'created_at': datetime.now().timestamp()
         }
         self.FIB[data_name] = entry
 
-    def get_fib_entry(self, data_name: str) -> Optional[dict]:
+    def get_fib_entry(self, data_name: str) -> Optional[FIBEntry]:
         return self.FIB.get(data_name)
 
     def update_fib_entry(self, data_name: str, hop: int, interested_key_name: str) -> None:
