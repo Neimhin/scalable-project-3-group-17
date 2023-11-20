@@ -90,11 +90,16 @@ and delivered in the body of a HTTP POST request.
 The JWTs are signed using PKC, the default algorithm in our emulation is RSA 256 with key size 512, but this is configurable.
 Both interest and satisfy packets are signed.
 
+Timestamps in the protocol are seconds since the epoch, either integer or decimal.
+
 Satisfy packets are sent lazily, i.e. only after receiving a corresponding interest packet.
 
+\subsubsection{Optimisation Headers}
 Our protocol uses HTTP headers to provide hints to neighbouring nodes for routing optimisation.
-The `x-g17icn-version` will facilitate compatibility with future version of the protocol. The `x-g17icn-hopcount` header indicates the distance in hops
-that a packet has traveled from its origin.
+The `x-g17icn-version` will facilitate compatibility with future version of the protocol.
+The `x-g17icn-hopcount` header indicates the distance in hops that a packet has traveled from its origin.
+A series of headers `x-g17icn-router-0`, `x-g17icn-router-1`, etc. allow each router to reconstruct the traceroute of the packet so far.
+This can also be used for a router to gleem an approximate picture of the network topology. The `x-g17icn-router-X` headers contain three pieces of information; 1. the time at which the router first received the packet, 2. the key name of the router, 3. a numeric indicator of the router's congestion at that time.
 
 \begin{figure}
 	\includegraphics[width=1\textwidth]{example_interest_packet.json.pdf}	
@@ -110,6 +115,12 @@ Each device in the network runs a HTTP server listening to respond to requests.
 
 \subsection{Motivation and Design Considerations}
 \subsection{Security}
+
+All interest and satisfy packets are signed by the creator of the packet
+such that any node can verify the authenticity of a message.
+PKC is used, so each node has a public-private key pair.
+The node uses it's private key to create a cryptographic signature of the
+interest/satisfy packet, and encodes the packet and signature as a JWT.
 
 \section{Emulation}
 We have implementented an {\em emulation} of our protocol, not a deployable implementation of the protocol,
