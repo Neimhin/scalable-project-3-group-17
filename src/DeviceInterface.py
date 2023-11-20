@@ -19,7 +19,7 @@ class DeviceInterface:
     
 
     @staticmethod
-    def from_dict(d: dict):
+    def from_dict(d: dict) -> 'DeviceInterface':
         host = d["host"]
         # ip = host.split(".")
         try:
@@ -42,7 +42,7 @@ class DeviceInterface:
 
     @staticmethod
     # param device: DeviceInterface
-    def from_device(device):
+    def from_device(device) -> 'DeviceInterface':
         host = device.server.host
         if not host == 'localhost':
             ip = host.split(".")
@@ -57,7 +57,7 @@ class DeviceInterface:
         return DeviceInterface(host,port,key_name)
 
     @staticmethod
-    def from_dict(d):
+    def from_dict(d) -> 'DeviceInterface':
         host:str = d["host"]
         port:int = d["port"]
         key_name = d["key_name"]

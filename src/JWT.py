@@ -4,13 +4,15 @@ from cryptography.hazmat.backends import default_backend
 import jwt
 import logging
 import os
+from typing import Any
+from typing import Tuple
 
 import hashlib
 
 ALGORITHM = os.environ.get("JWT_ALGORITHM") or "RS256"
 
 # contributors: [agrawasa-12.11.23, nrobinso-12.11.23]
-def hash_string_sha3_256(input_bytes):
+def hash_string_sha3_256(input_bytes: bytes):
     sha3_256_hash = hashlib.sha3_256()
     sha3_256_hash.update(input_bytes)
     hashed_string = sha3_256_hash.hexdigest()
@@ -19,7 +21,7 @@ def hash_string_sha3_256(input_bytes):
 # TODO: use a faster algorithm or one with a smaller key, e.g. ed25519
 
 # contributors: [nrobinso-7.11.23]
-def rs256_keypair(key_size=2048,public_exponent=65537):
+def rs256_keypair(key_size:int=2048,public_exponent:int=65537)->Tuple[bytes,bytes]:
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=key_size,
@@ -43,8 +45,6 @@ class JWT:
     def __init__(self,algorithm=ALGORITHM):
         self.algorithm = algorithm
         print("ALGORITHM", self.algorithm)
-        self.private_key = None
-        self.public_key = None
         self.logger = logging.getLogger()
         # Generate new RSA key pair
         self.private_key, self.public_key = rs256_keypair()
@@ -56,7 +56,7 @@ class JWT:
             raise Exception
         return hash_string_sha3_256(self.public_key)
 
-    def init_jwt(self, key_size=2048):
+    def init_jwt(self, key_size:int=2048):
         # Generate new RSA key pair
         self.private_key, self.public_key = rs256_keypair(key_size=key_size)
         self.key_name = self.hash_of_public_key()
@@ -64,10 +64,10 @@ class JWT:
             self.private_key=None
     
 
-    def encode(self, payload):
+    def encode(self, payload: dict[Any,Any]):
         return jwt.encode(payload, self.private_key, algorithm=self.algorithm)
 
-    def decode(self, token):
+    def decode(self, token: str):
         if self.public_key:
             tok = jwt.decode(token, options={"verify_signature": False}, algorithms=[self.algorithm])
             return tok

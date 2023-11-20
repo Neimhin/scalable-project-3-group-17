@@ -21,7 +21,25 @@ import gateway_port
 from aiohttp import web
 from typing import Coroutine, Any
 
+if TYPE_CHECKING:
+    from slave_emulator import SlaveEmulator
+
 AiohttpHandler = Callable[[web.Request],Coroutine[Any,Any,web.Response]]
+
+import re
+
+def extract_matching_headers(request: web.Request) -> dict[str,str]:
+    """
+    Extracts headers from the request that match the pattern 'x-g17icn-router-<n>',
+    where <n> is a natural number.
+
+    :param request: The aiohttp request object
+    :return: A dictionary of matching headers
+    """
+    header_pattern = re.compile(r'x-g17icn-router-(\d+)')
+    return {key: value for key, value in request.headers.items() if header_pattern.match(key)}
+
+
 
 class HTTPServer:
     def __init__(self,handler: AiohttpHandler, host:str='localhost'):
@@ -46,10 +64,6 @@ class HTTPServer:
         self.started.set()
         self.logger.debug(f"started server on port {self.port}")
 
-
-if TYPE_CHECKING:
-    from slave_emulator import SlaveEmulator
-
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUEST_TYPE =             "type"
 PACKET_FIELD_CREATED_AT =               "created_at"
@@ -65,7 +79,7 @@ def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Option
 
 # TODO: just send key_name in packet, not device_interface
 PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
-HOP_HEADER =                    "x-tcdicn-hop"
+HOP_HEADER =                    "x-g17icn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
@@ -74,9 +88,9 @@ class Device:
         self.router = router
         self.logger = logging.getLogger()
         self.emulation = emulation
-        async def handler_async(request):
-            return await self.handler(request)
-        self.server = HTTPServer(handler_async,host=host)
+        # async def handler_async(request):
+        #     return await self.handler(request)
+        self.server = HTTPServer(self.handler, host=host)
         self.desire_queue_task = None
         self.desire_queue: asyncio.Queue[str] = asyncio.Queue()
         self.jwt = JWT.JWT(algorithm=jwt_algorithm)
@@ -191,7 +205,7 @@ class Device:
         self.logger.debug(f"got neighbours {list(map(str,self.neighbours))}")
         return self.neighbours
     
-    async def handler(self, request):
+    async def handler(self, request: web.Request) -> web.Response:
         hop_count=None
         try:
             self.logger.debug(request.headers)
@@ -202,6 +216,8 @@ class Device:
             return web.Response(text="failed",status=400)
         jwt = await request.text()
         packet = self.jwt.decode(jwt)
+        trace_headers = extract_matching_headers(request)
+        self.logger.debug(f"{trace_headers}")
         # TODO: validate packet format
         # TODO: check if id exists in TRUSTED_IDS
         packet_type = packet.get(PACKET_FIELD_REQUEST_TYPE)
@@ -301,32 +317,3 @@ class Device:
         await self.server.start()
         await self.init_logger()
         self.logger.debug(f"started {self.host}:{self.server.port}")
-
-
-class Emulation:
-    def __init__(self):
-        pass
-
-    def discover_neighbours(self,task_id):
-        import get_ip_address
-        return [DeviceInterface.from_dict({
-            "host": get_ip_address.get_ip_address(),
-            "port": 34000,
-            "key_name": "abc",
-        })]
-            
-
-async def main():
-        # instantiate emulation
-        em = Emulation()
-        # instantiate device and pass emulation
-        device = Device(0, em)
-        
-        await device.start()
-
-        # create queue for device to send out interest packets
-        interest_queue = interest_emulation.desire_queue_deterministic(["a","b","c"],interval=1)
-        
-        device.set_desire_queue(interest_queue)
-        
-        await device.send_payload_to(device.device_interface_dict(), payload=device.jwt.encode({"hi": "ok"}), hop=0)
