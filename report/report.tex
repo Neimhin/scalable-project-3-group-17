@@ -80,18 +80,46 @@ here means communication between
 a pair of nodes with a direct physical link (acoustic, RF, fibre, what have you).
 
 \section{ICN/NDN Protocol}
-Here we describe our ICN/NDN protocol which we name G17ICN 1.0.
+% Our protocol uses HTTP 1.1 as the serialization standard, and in the emulation the HTTP request and response messages are delivered over TCP.
+% HTTP is a request/response style standard; a client makes a request to a server and the server responds.
+% The responses in our protocol are merely acknowledgment responses intended to inform the client as to whether
+% the request is being processed. The HTTP response does not contain data to satisfy the request.
+% Each device in the network runs a HTTP server listening to respond to requests.
+
+Here we describe our ICN/NDN protocol which we name G17ICN. We designate this as version 1.0.
 \subsection{Concise Description of the Protocol}
 The protocol uses HTTP as the serialization and request/response format, with a JWT as the request body.
 There are two types of ICN packets in our protocol, interest and satisfy packets.
 Interest and satisfy packets are encoded as JWTs
 and delivered in the body of a HTTP POST request.
 
-The JWTs are signed using PKC, the default algorithm in our emulation is RSA 256 with key size 512, but this is configurable.
+The JWTs are signed using PKC,
+the default algorithm in our emulation is RSA 256 with key size 512,
+but this is configurable.
 Both interest and satisfy packets are signed.
 
-Timestamps in the protocol are seconds since the epoch, either integer or decimal.
+Timestamps in the protocol in are seconds since the epoch, either integer or decimal.
 
+\subsubsection{Routing}
+\begin{figure}
+	% TODO
+	\caption{\label{fig:discovery}TODO: A depiction of the assumed discovery process for devices in the network.}
+\end{figure}
+Each device acts as a router to facilitate communication between other devices.
+In designing a routing algorithm there are several things we wish to optimize/minimize.
+\begin{enumerate}
+    \item \textbf{Packet Latency:} Minimizing the time it takes for a packet to travel from the source to the destination.
+    \item \textbf{Round Trip Latency:} Minimizing the it takes to receive an appropriate satisfy packet after issuing an interest packet.
+    \item \textbf{Bandwidth Utilization:} Maximizing the effective use of the available bandwidth in the network.
+    \item \textbf{Packet Loss:} Minimizing the number of packets that are lost during transmission.
+    \item \textbf{Throughput:} Maximizing the number of successful message deliveries over a communication channel.
+    \item \textbf{Routing Overhead:} Minimizing the amount of additional network traffic caused by routing protocols.
+    \item \textbf{Scalability:} Ensuring the routing algorithm performs well as the network size grows.
+    \item \textbf{Energy Efficiency:} Minimizing energy consumption, particularly in wireless and mobile networks.
+    \item \textbf{Security:} Ensuring that the routing protocol is secure against various types of attacks.
+\end{enumerate}
+
+while satisfying all requests with min
 Satisfy packets are sent lazily, i.e. only after receiving a corresponding interest packet.
 
 \subsubsection{Optimisation Headers}
@@ -107,20 +135,29 @@ This can also be used for a router to gleem an approximate picture of the networ
 \end{figure}
 
 
-Our protocol uses HTTP 1.1 as the serialization standard, and in the emulation the HTTP request and response messages are delivered over TCP.
-HTTP is a request/response style standard; a client makes a request to a server and the server responds.
-The responses in our protocol are merely acknowledgment responses intended to inform the client as to whether
-the request is being processed. The HTTP response does not contain data to satisfy the request.
-Each device in the network runs a HTTP server listening to respond to requests.
-
 \subsection{Motivation and Design Considerations}
+HTTP is a lightweight textual format for separating out message headers and message content.
+It has ubiquotous library support in almost all environments.
+We implemented our emulation of this
+protocol in python using the `asyncio' asynchronous runtime, which entailed running multiple
+http servers in a single process {\em and} having those servers communicate with other.
+The existence of HTTP libraries designed to run in the `asyncio' environment facilitated rapid prototyping of our emulator.
+Running multiple servers in a single asynchronous process can be tricky in terms of avoiding deadlocks,
+but the libraries we used, `Quart' for servers, and `httpx' for clients, could communicate without deadlocks.
 \subsection{Security}
-
-All interest and satisfy packets are signed by the creator of the packet
-such that any node can verify the authenticity of a message.
-PKC is used, so each node has a public-private key pair.
+RSA 256 is used for signing (and optionally encrypting) data packets.
+Each device has a public/private key pair.
+The name of a device is the SHA 256 hash of that device's public key, which we call the ``key\_name''.
+All interest and satisfy packets include the data name of the creator of the packet
+and are signed by the creator of the packet using the private key
+such that any node can verify the authenticity of a packet.
 The node uses it's private key to create a cryptographic signature of the
 interest/satisfy packet, and encodes the packet and signature as a JWT.
+
+While this protocol provides message authenticity it does not establish a trust model.
+For version 1.0 of G17ICN we assume that a list of trusted devices (mapping key names to public keys) has 
+been distributed out-of-band.
+Each device holds the list of trusted keys and discards any message not signed by a device from this list.
 
 \section{Emulation}
 We have implementented an {\em emulation} of our protocol, not a deployable implementation of the protocol,
