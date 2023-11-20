@@ -16,6 +16,11 @@ from typing import List
 from typing import Optional
 import os
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from slave_emulator import SlaveEmulator
+
 PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUEST_TYPE =             "type"
 PACKET_FIELD_CREATED_AT =               "created_at"
@@ -35,7 +40,7 @@ HOP_HEADER =                    "x-tcdicn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, emulation, jwt_algorithm:str='RS256',host:str='localhost'):
+    def __init__(self, emulation: 'SlaveEmulator', jwt_algorithm:str='RS256',host:str='localhost'):
         self.host = host
         self.logger = logging.getLogger()
         self.emulation = emulation
@@ -55,24 +60,15 @@ class Device:
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
     async def init_logger(self):
-        # Set up logging to a file
         await self.server.started.wait()
         log_filename = f"logs/{self.host}:{self.server.port}"
         os.makedirs(os.path.dirname(log_filename), exist_ok=True)
-        
-        # Create a logger
         self.logger = logging.getLogger(log_filename)
-        self.logger.setLevel(logging.DEBUG)  # or any other level
-
-        # Create file handler which logs even debug messages
+        self.logger.setLevel(logging.DEBUG)
         fh = logging.FileHandler(log_filename, mode='w')  # 'w' to overwrite the file each time
         fh.setLevel(logging.DEBUG)
-
-        # Create formatter and add it to the handlers
         formatter = logging.Formatter('%(filename)s:%(lineno)s %(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
-
-        # Add the handlers to the logger
         self.logger.addHandler(fh)
 
     def create_FIB_entry(self, data_name:str, hop: int, device_interface: DeviceInterface, interested_key_name: str):
