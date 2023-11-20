@@ -8,7 +8,6 @@ from aiohttp import web
 import asyncio
 from datetime import datetime
 import JWT
-from http_server import HTTPServer
 from cache import CACHEStore
 from DeviceInterface import DeviceInterface
 import interest_emulation
@@ -17,6 +16,36 @@ from typing import Optional
 import os
 from router import Router
 from typing import TYPE_CHECKING
+from typing import Callable
+import gateway_port
+from aiohttp import web
+from typing import Coroutine, Any
+
+AiohttpHandler = Callable[[web.Request],Coroutine[Any,Any,web.Response]]
+
+class HTTPServer:
+    def __init__(self,handler: AiohttpHandler, host:str='localhost'):
+        self.logger = logging.getLogger()
+        self.port = None
+        self.handler = handler
+        self.host = host
+        # an async event that is set after the server has started
+        self.started = asyncio.Event()
+
+    async def start(self):
+        app = web.Application()
+        app.router.add_post("/", self.handler)
+        web_runner = web.AppRunner(app)
+        await web_runner.setup()
+        self.port = gateway_port.find_free_gateway_port()
+        site = web.TCPSite(web_runner,self.host, self.port)
+        await site.start()
+
+        # let outside listener know the server has started:
+        # usage: await server.started.wait()
+        self.started.set()
+        self.logger.debug(f"started server on port {self.port}")
+
 
 if TYPE_CHECKING:
     from slave_emulator import SlaveEmulator
