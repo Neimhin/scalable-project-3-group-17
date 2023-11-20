@@ -202,7 +202,7 @@ class Device:
 
     def discover_neighbours(self):
         self.neighbours = self.emulation.discover_neighbours(self.jwt.key_name)
-        self.logger.debug(f"got neighbours {str(self.neighbours)}")
+        self.logger.debug(f"got neighbours {list(map(str,self.neighbours))}")
         return self.neighbours
     
     async def handler(self, request):
@@ -234,7 +234,7 @@ class Device:
     '''
     async def send_payload_to(self,di: DeviceInterface, payload=None,hop=0):
         try:
-            self.logger.debug(f"from {self.device_interface_dict()} to device interface", di)
+            self.logger.debug(f"from {self.server.host}:{self.server.port} to device interface {di.host}:{di.port}")
             assert type(di) == DeviceInterface
         except AssertionError as e:
             self.logger.debug("device interface is wrong type:", di)
