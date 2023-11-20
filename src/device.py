@@ -15,7 +15,7 @@ import interest_emulation
 from typing import List
 from typing import Optional
 import os
-
+from router import Router
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -40,8 +40,9 @@ HOP_HEADER =                    "x-tcdicn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, emulation: 'SlaveEmulator', jwt_algorithm:str='RS256',host:str='localhost'):
+    def __init__(self, emulation: 'SlaveEmulator',  router: Router, jwt_algorithm:str='RS256',host:str='localhost'):
         self.host = host
+        self.router = router
         self.logger = logging.getLogger()
         self.emulation = emulation
         async def handler_async(request):
@@ -54,7 +55,6 @@ class Device:
         self.debug_flag=False
         # TODO: define these from seperate class cache       
         self.PIT = {} 
-        self.FIB: dict[str,dict]= {}
         self.CACHE = {}
         self.neighbours = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
@@ -70,15 +70,6 @@ class Device:
         formatter = logging.Formatter('%(filename)s:%(lineno)s %(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
         self.logger.addHandler(fh)
-
-    def create_FIB_entry(self, data_name:str, hop: int, device_interface: DeviceInterface, interested_key_name: str):
-        entry = {}
-        entry['hop']=hop
-        # entry['device_interface']=device_interface
-        entry['interested_key_name']=interested_key_name
-        entry['created_at']=datetime.now().timestamp()
-        self.FIB[data_name]=entry
-        self.logger.debug("CREATED FIB ENTRY:", entry)
 
     '''
     TODO: Shift this send/forward logic to storing and routing
@@ -103,13 +94,12 @@ class Device:
         await self.send_to_network(data_name,data,hop,_list)
         self.PIT.pop(data_name,None)
 
-        entry_fib = self.FIB.get(data_name)
+        entry_fib = self.router.get_fib_entry(data_name)
 
         if entry_fib is None:
-            self.create_FIB_entry(data_name,hop,None,interested_key_name)
+            self.router.create_fib_entry(data_name,hop,interested_key_name)
         elif entry_fib['hop']>hop:
-            # entry_fib['device_interface']=di
-            entry_fib['interested_key_name']=packet.get(PACKET_FIELD_REQUESTOR_KEY_NAME)
+            self.router.update_fib_entry(data_name, hop, interested_key_name)
 
         # TODO verify packet came from a trusted sender
         # TODO delete entry that time is invalid
@@ -123,7 +113,7 @@ class Device:
         def di2task(di: DeviceInterface):
             return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1))
         
-        fib_entry = self.FIB.get(packet[PACKET_FIELD_DATA_NAME])
+        fib_entry = self.router.get_fib_entry(packet[PACKET_FIELD_DATA_NAME])
         next_device = None
         if fib_entry:
             next_device = find_device_by_key_name(fib_entry['interested_key_name'], current_neighbours)
@@ -167,25 +157,6 @@ class Device:
         else:
             self.PIT[data_name]['waiting_list'].append(interested_key_name)
             
-            
-        # PIT_ENTRY = {
-        #     "what they want": data_name,
-        #     "who wants it": [port,], # TODO: hash of public key, not full public key
-        #     "packet jwt": jwt, # <jwt-headers>.{ "data_name": ..., "requestor_public_key": ..., }.<signature>
-        #     "when did they want it": packet[PACKET_FIELD_CREATED_AT],
-        # }
-
-        #self.PIT[data_name].add(requestor)
-        
-
-        # self.FIB[data_name] = {
-        #     "created_at": <timestamp>, # when was the interest packet generated?
-        #     "port": [<port>], #TODO don't use port, use hash of public key,
-        #      "hop": hop value   #represented the min value to go to node
-        # }
-        # if is_the_first:
-             
-
     def discover_neighbours(self) -> List[DeviceInterface]:
         self.neighbours = self.emulation.discover_neighbours(self.jwt.key_name)
         self.logger.debug(f"got neighbours {list(map(str,self.neighbours))}")
@@ -330,7 +301,3 @@ async def main():
         device.set_desire_queue(interest_queue)
         
         await device.send_payload_to(device.device_interface_dict(), payload=device.jwt.encode({"hi": "ok"}), hop=0)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

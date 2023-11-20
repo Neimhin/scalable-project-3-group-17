@@ -15,6 +15,7 @@ import JWT
 import argparse
 import http_client
 from typing import Optional
+from router import BasicRouter
 
 class SlaveEmulator:
     def __init__(self,num_nodes:int=3,jwt_algorithm:str=JWT.ALGORITHM,port:int=34000,host:str='localhost',master_port:int=33000, master_host:Optional[str]=None):
@@ -22,7 +23,7 @@ class SlaveEmulator:
         self.host = host or get_ip_address.get_ip_address()
         self.num_nodes = num_nodes
         self.node_ids = np.array(list(range(self.num_nodes)))
-        self.devices = [Device(self,jwt_algorithm=jwt_algorithm) for idx in range(self.num_nodes)]
+        self.devices = [Device(self,BasicRouter(),jwt_algorithm=jwt_algorithm) for idx in range(self.num_nodes)]
         self.start_event = asyncio.Event()
         self.logger = logging.getLogger()
         self.master_host = master_host or get_ip_address.get_ip_address()
