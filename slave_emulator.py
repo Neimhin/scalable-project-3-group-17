@@ -11,12 +11,12 @@ import numpy as np
 import logging
 import asyncio
 import get_ip_address
-import httpx
 import logging
 import schema
 import jsonschema
 import JWT
 import argparse
+import http_client
 
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
@@ -80,7 +80,7 @@ class SlaveEmulator:
         # except Exception as e:
         #     print(str(e))
         #     exit()
-        async with httpx.AsyncClient() as client:
+        async with http_client.no_proxy() as client:
             headers = {"content-type": "application/json"}
             print(body)
             try:
@@ -146,7 +146,7 @@ class SlaveEmulator:
                 "port": self.port # TODO
             }
         }
-        async with httpx.AsyncClient() as client:
+        async with http_client.no_proxy() as client:
             headers = {"content-type": "application/json"}
             print(body)
             res = await client.post(f"http://{master_host}:{master_port}/new_device_topology", json=body, headers=headers)
