@@ -18,6 +18,8 @@ import JWT
 import argparse
 import http_client
 
+logging.basicConfig(level=logging.DEBUG)
+
 # contributors: [agrawasa-8.11.23, nrobinso-9.11.23]
 def line_adjacency_matrix(n):
     adj_matrix = [[0] * n for _ in range(n)]
@@ -288,6 +290,25 @@ async def main():
         for device in emulator.devices:
             print(device)
             neighbours.append(device.CACHE)
+        print(neighbours)
+        return quart.jsonify(neighbours), 200
+    
+        
+    @app.route('/debug/fib' ,methods=['GET'])
+    async def debug_fib():
+        neighbours = []
+        for device in emulator.devices:
+            print(device)
+            neighbours.append(device.FIB)
+        print(neighbours)
+        return quart.jsonify(neighbours), 200
+    
+    @app.route('/debug/pit' ,methods=['GET'])
+    async def debug_pit():
+        neighbours = []
+        for device in emulator.devices:
+            print(device)
+            neighbours.append(device.PIT)
         print(neighbours)
         return quart.jsonify(neighbours), 200
     

@@ -12,6 +12,10 @@ from http_server import HTTPServer
 from cache import CACHEStore
 from DeviceInterface import DeviceInterface
 import interest_emulation
+from typing import List
+from typing import Optional
+import os
+
 
 
 PACKET_FIELD_DATA_NAME =                "data_name"
@@ -20,7 +24,16 @@ PACKET_FIELD_SENDER_PUBLIC_KEY =        "sender_public_key"
 PACKET_FIELD_REQUEST_TYPE =             "type"
 PACKET_FIELD_CREATED_AT =               "created_at"
 PACKET_FIELD_DATA_PLAIN =               "data"
+PACKET_FIELD_REQUESTOR_KEY_NAME =       "requestor_key_name"
+PACKET_FIELD_SENDER_KEY_NAME =          "requestor_key_name"
 #PACKET_FIELD_PORT_NUMBER=               "port"
+
+def find_device_by_key_name(key_name: str, dis: List(DeviceInterface)) -> Optional(DeviceInterface):
+    for di in dis:
+        if di.key_name == key_name:
+            return di
+    return None
+
 
 # TODO: just send key_name in packet, not device_interface
 PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
@@ -49,12 +62,35 @@ class Device:
         self.neighbours = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
-    def create_FIB_entry(self,data_name, hop,device_interface: DeviceInterface):
+    async def init_logger(self):
+        # Set up logging to a file
+        await self.server.started.wait()
+        log_filename = f"logs/{self.host}:{self.server.port}"
+        os.makedirs(os.path.dirname(log_filename), exist_ok=True)
+        
+        # Create a logger
+        self.logger = logging.getLogger(log_filename)
+        self.logger.setLevel(logging.DEBUG)  # or any other level
+
+        # Create file handler which logs even debug messages
+        fh = logging.FileHandler(log_filename, mode='w')  # 'w' to overwrite the file each time
+        fh.setLevel(logging.DEBUG)
+
+        # Create formatter and add it to the handlers
+        formatter = logging.Formatter('%(filename)s:%(lineno)s %(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fh.setFormatter(formatter)
+
+        # Add the handlers to the logger
+        self.logger.addHandler(fh)
+
+    def create_FIB_entry(self, data_name, hop, device_interface: DeviceInterface, interested_key_name: str):
         entry = {}
         entry['hop']=hop
-        entry['device_interface']=device_interface
+        # entry['device_interface']=device_interface
+        entry['interested_key_name']=interested_key_name
         entry['created_at']=datetime.now().timestamp()
         self.FIB[data_name]=entry
+        self.logger.debug("CREATED FIB ENTRY:", entry)
 
     '''
     TODO: Shift this send/forward logic to storing and routing
@@ -65,32 +101,33 @@ class Device:
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         #_list = self.PIT[data_name]['waiting_list']
         pit_entry = self.PIT.get(data_name)
-        di = DeviceInterface.from_dict(packet[PACKET_FIELD_DEVICE_INTERFACE])
+        # di = DeviceInterface.from_dict(packet[PACKET_FIELD_DEVICE_INTERFACE])
+        interested_key_name = packet.get(PACKET_FIELD_REQUESTOR_KEY_NAME)
         _list = None
         if pit_entry:
             _list = pit_entry.get('waiting_list')
         if _list is None:
-            _list=[di]
+            _list=[interested_key_name]
 
-        #print(f"now the {self.task_id} node has a waiting list {_list} for {data_name}")
+        #self.logger.debug(f"now the {self.task_id} node has a waiting list {_list} for {data_name}")
 
         data = packet.get(PACKET_FIELD_DATA_PLAIN)
         await self.send_to_network(data_name,data,hop,_list)
         self.PIT.pop(data_name,None)
 
         entry_fib = self.FIB.get(data_name)
-        if entry_fib==None:
-            self.create_FIB_entry(data_name,hop,di)
-        else:
-            if entry_fib['hop']>hop:
-                # TODO: rename to "device_interface"
-                entry_fib['device_interface']=di
+
+        if entry_fib is None:
+            self.create_FIB_entry(data_name,hop,None,interested_key_name)
+        elif entry_fib['hop']>hop:
+            # entry_fib['device_interface']=di
+            entry_fib['interested_key_name']=packet.get(PACKET_FIELD_REQUESTOR_PUBLIC_KEY)
 
         # TODO verify packet came from a trusted sender
         # TODO delete entry that time is invalid
         self.CACHE[data_name] = packet.get(PACKET_FIELD_DATA_PLAIN)
 
-       # print(f"{self.task_id} get a message {data_name}, cache number is {len(self.CACHE)}")
+       # self.logger.debug(f"{self.task_id} get a message {data_name}, cache number is {len(self.CACHE)}")
 
     async def propagate_interest(self,packet,hop=None):
         assert type(hop) == int
@@ -100,9 +137,13 @@ class Device:
         def di2task(di: DeviceInterface):
             return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1))
         
-        next_device = self.FIB.get(packet[PACKET_FIELD_DATA_NAME],None)
+        fib_entry = self.FIB.get(packet[PACKET_FIELD_DATA_NAME])
+        next_device = None
+        if fib_entry:
+            next_device = find_device_by_key_name(fib_entry['interested_key_name'], current_neighbours)
+        tasks = []
         if next_device:
-            print("NEXT DEVICE", next_device)
+            self.logger.debug("JUST SENDING TO ONE INTERESTED DEVICE", next_device)
             tasks=[di2task(next_device)]
         else:
             tasks = [di2task(port) for port in current_neighbours]
@@ -119,26 +160,26 @@ class Device:
 
         data = self.CACHE.get(data_name)
         self.logger.debug(f"GOT DATA: {data} {self.server.port}")
-        di_dict = packet[PACKET_FIELD_DEVICE_INTERFACE]
-        di = DeviceInterface.from_dict(di_dict)
+        interested_key_name = packet[PACKET_FIELD_REQUESTOR_KEY_NAME]
+        # di_dict = packet[PACKET_FIELD_DEVICE_INTERFACE]
+        # di = DeviceInterface.from_dict(di_dict)
         if data:
-            #print(f"get data {self.task_id}")
-            return await self.send_to_network(data_name, data,hop, [di] )
+            
+            #self.logger.debug(f"get data {self.task_id}")
+            return await self.send_to_network(data_name, data,hop, [interested_key_name] )
         
-        is_the_first=True  # true represented this request is the first request for some interst
-
         if self.PIT.get(data_name) is None:
             #self.PIT[data_name] = set()
             self.PIT[data_name]={} # PIT should be a dictionary of dictionary, instead of a set.
             sub_dict={}
+            # TODO: make 'waiting_list' a set not a list
             sub_dict['waiting_list']=[]
-            sub_dict['waiting_list'].append(di)
+            sub_dict['waiting_list'].append(interested_key_name)
             sub_dict['time_stamp']= datetime.now().timestamp()  # mark the time intersted entry created
             self.PIT[data_name]=sub_dict
             await self.propagate_interest(packet,hop=hop+1)       
         else:
-            
-            self.PIT[data_name]['waiting_list'].append(di)
+            self.PIT[data_name]['waiting_list'].append(interested_key_name)
             
             
         # PIT_ENTRY = {
@@ -193,46 +234,45 @@ class Device:
     '''
     async def send_payload_to(self,di: DeviceInterface, payload=None,hop=0):
         try:
-            print(f"from {self.device_interface_dict()} to device interface", di)
+            self.logger.debug(f"from {self.device_interface_dict()} to device interface", di)
             assert type(di) == DeviceInterface
         except AssertionError as e:
-            print("device interface is wrong type:", di)
-            print(str(Exception()),str(e))
+            self.logger.debug("device interface is wrong type:", di)
+            self.logger.debug(str(Exception()),str(e))
         assert payload is not None
         url = di.url()
-        import encapsulate_http
-        headers = [
-            f"{HOP_HEADER}: {str(hop)}",
-            f"Content-Type: application/jwt",
-        ]
-        # print("encapsulating http request to ", di.host, di.port, headers)
-        # response_raw = encapsulate_http.http_request("/", di.host, di.port,method="POST", headers=headers, body=payload)
-        # response_body = encapsulate_http.extract_body_from_response(response_raw)
-        # print("RESPONSE RAWE:", response_raw)
-        # print("RESPONSE BODY:", response_body)
-        # print("ENCAPSULATE HTTP RESPONS BODY:", response_body)
         async with http_client.no_proxy() as client:
             headers = {HOP_HEADER: str(hop)}
             await client.post(url, content=payload, headers=headers)
 
     
     # send named data to the network
-    async def send_to_network(self, data_name, data, hop, neighbours):
+    async def send_to_network(self, data_name, data, hop, neighbour_key_names: List(str)):
+        self.logger.debug(f"sending data to network {data_name}, {data}, {hop}")
         payload = self.jwt.encode({
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
             PACKET_FIELD_DATA_NAME: data_name,
             PACKET_FIELD_DATA_PLAIN: data,
             # TODO: don't decode every time
-            PACKET_FIELD_SENDER_PUBLIC_KEY: self.jwt.public_key.decode("utf-8"),
+            PACKET_FIELD_SENDER_KEY_NAME: self.jwt.key_name,
             PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
             PACKET_FIELD_DEVICE_INTERFACE: DeviceInterface.from_device(self).to_dict()
         })
 
+        neighbour_interfaces = self.discover_neighbours()
+
+        forward_to = []
+        for n in neighbour_interfaces:
+            for name in neighbour_key_names:
+                if n.key_name == name:
+                    forward_to.append(n)
+
         def di2task(di: DeviceInterface) -> asyncio.Task:
             coroutine = self.send_payload_to(di, hop=hop,payload=payload, )
             return asyncio.create_task(coroutine)
-        [di2task(di) for di in neighbours] # directly pass the data to the requestor, the reason that do not need to use neighbour is we just want to pass the data to the node who needs it.
-
+        tasks = [di2task(di) for di in forward_to] # directly pass the data to the requestor, the reason that do not need to use neighbour is we just want to pass the data to the node who needs it.
+        gathered_tasks = asyncio.gather(*tasks)
+        await gathered_tasks
 
     def device_interface_dict(self):
         return DeviceInterface.from_device(self).to_dict()
@@ -241,7 +281,7 @@ class Device:
         async def handle():
             while True:
                 data_name = await self.desire_queue.get()
-                print("processing new desire:", data_name)
+                self.logger.debug("processing new desire:", data_name)
                 if self.CACHE.get(data_name):
                     continue
 
@@ -253,15 +293,16 @@ class Device:
                 while len(current_neighbours) == 0:
                     current_neighbours = self.discover_neighbours()
                     await asyncio.sleep(1)
-                    print("sending to neighbours:", current_neighbours)
+                    self.logger.debug("sending to neighbours:", current_neighbours)
                     data = {
                         PACKET_FIELD_REQUEST_TYPE: "interest",
                         PACKET_FIELD_DATA_NAME: data_name,
-                        PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'),
+                        PACKET_FIELD_REQUESTOR_PUBLIC_KEY: self.jwt.public_key.decode('utf-8'), # DEPRECATED
+                        PACKET_FIELD_REQUESTOR_KEY_NAME: self.jwt.key_name,
                         PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
                         PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
                     }
-                    print(data)
+                    self.logger.debug(data)
                     payload = self.jwt.encode(data)
                     tasks = [asyncio.create_task(self.send_payload_to(di, payload)) for di in current_neighbours]
                     await asyncio.gather(*tasks)
@@ -273,6 +314,7 @@ class Device:
         self.logger.debug(f"starting node {self.task_id}")
         self.start_queue_handler()
         await self.server.start()
+        await self.init_logger()
 
 
 class Emulation:

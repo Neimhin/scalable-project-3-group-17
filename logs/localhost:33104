@@ -1,0 +1,221 @@
+device.py:288 2023-11-20 18:43:33,557 - logs/localhost:33104 - DEBUG - got item '/foo/bar' from desire queue: node 4: port: 33104
+device.py:205 2023-11-20 18:43:33,557 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748acf2790>, <DeviceInterface.DeviceInterface object at 0x7f748acf2850>]
+device.py:305 2023-11-20 18:43:34,618 - logs/localhost:33104 - DEBUG - {'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKQ4mU2fa70Jw9Aip/RPXLX8cJb5MYkT\nJ3tPbTrf9dK0AkHPX7tXYXeH5qTTbbko+8ZYKbVXYHfFN2AsLbt40UMCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '777541f98295cccb2ec942499bd954a0c715dbdfa4bbe0ed688857dbea986614', 'created_at': 1700505814.618091, 'device_interface': {'host': 'localhost', 'port': 33104, 'key_name': '777541f98295cccb2ec942499bd954a0c715dbdfa4bbe0ed688857dbea986614'}}
+device.py:211 2023-11-20 18:43:34,777 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+device.py:222 2023-11-20 18:43:34,777 - logs/localhost:33104 - DEBUG - interest
+device.py:155 2023-11-20 18:43:34,785 - logs/localhost:33104 - DEBUG - {'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALGZEIAvvFCw80eVjHjJ2Vy9qcQBv465\nUs2G+4sZTYna5I52fTiS2jEhQUc3gdjbf9OYF7Up3zPgTGtwXbHVwIcCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'a45b3816a24fcb93f78aa79283dde34ac3a5a8f458f4ceef368f8067963c8cec', 'created_at': 1700505814.556421, 'device_interface': {'host': 'localhost', 'port': 33100, 'key_name': 'a45b3816a24fcb93f78aa79283dde34ac3a5a8f458f4ceef368f8067963c8cec'}}
+device.py:162 2023-11-20 18:43:34,785 - logs/localhost:33104 - DEBUG - GOT DATA: None 33104
+device.py:205 2023-11-20 18:43:34,785 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b75e90>, <DeviceInterface.DeviceInterface object at 0x7f7489b74fd0>]
+device.py:211 2023-11-20 18:43:35,101 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+device.py:222 2023-11-20 18:43:35,101 - logs/localhost:33104 - DEBUG - interest
+device.py:155 2023-11-20 18:43:35,109 - logs/localhost:33104 - DEBUG - {'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOPHMqyePn7bMcERx/5gMLhn3mpLZEx2\n0kbbf+ID13+QBpU1iWloEg1g/kPPrqia/zUtODKf3Y8Cx8QoWrnjqmUCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'ec2de6a7757647aa0425ee5b4f186f008ee0ef7c912d263b27d15a5e45d2f866', 'created_at': 1700505814.609692, 'device_interface': {'host': 'localhost', 'port': 33100, 'key_name': 'a45b3816a24fcb93f78aa79283dde34ac3a5a8f458f4ceef368f8067963c8cec'}}
+device.py:162 2023-11-20 18:43:35,109 - logs/localhost:33104 - DEBUG - GOT DATA: None 33104
+device.py:211 2023-11-20 18:43:35,115 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:35,115 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:35,119 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:35,122 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489ba7190>, <DeviceInterface.DeviceInterface object at 0x7f7489ba7010>]
+device.py:93 2023-11-20 18:43:35,300 - logs/localhost:33104 - DEBUG - CREATED FIB ENTRY:
+device.py:211 2023-11-20 18:43:35,304 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '527')>
+device.py:222 2023-11-20 18:43:35,304 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:35,305 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:35,309 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489ba4d50>, <DeviceInterface.DeviceInterface object at 0x7f7489ba5210>]
+device.py:211 2023-11-20 18:43:35,494 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:35,495 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:35,504 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:35,507 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b760d0>, <DeviceInterface.DeviceInterface object at 0x7f7489b76150>]
+device.py:211 2023-11-20 18:43:35,701 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:35,701 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:35,703 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:35,706 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b64110>, <DeviceInterface.DeviceInterface object at 0x7f7489b66450>]
+device.py:211 2023-11-20 18:43:35,902 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:35,902 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:35,907 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:35,909 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ad44890>, <DeviceInterface.DeviceInterface object at 0x7f748ad45850>]
+device.py:211 2023-11-20 18:43:36,122 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:36,122 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:36,136 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:36,139 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b77f90>, <DeviceInterface.DeviceInterface object at 0x7f7489b76010>]
+device.py:211 2023-11-20 18:43:36,344 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:36,344 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:36,349 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:36,352 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748acf3110>, <DeviceInterface.DeviceInterface object at 0x7f748acf2890>]
+device.py:211 2023-11-20 18:43:36,553 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:36,553 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:36,567 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:36,570 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b64d90>, <DeviceInterface.DeviceInterface object at 0x7f7489b65390>]
+device.py:211 2023-11-20 18:43:36,753 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:36,754 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:36,788 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:36,791 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bc3690>, <DeviceInterface.DeviceInterface object at 0x7f7489bc3110>]
+device.py:211 2023-11-20 18:43:36,960 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:36,960 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:36,974 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:36,978 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bc9710>, <DeviceInterface.DeviceInterface object at 0x7f7489bc9150>]
+device.py:211 2023-11-20 18:43:37,168 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:37,168 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:37,184 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:37,187 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bd7750>, <DeviceInterface.DeviceInterface object at 0x7f7489bd7550>]
+device.py:211 2023-11-20 18:43:37,376 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:37,376 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:37,394 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:37,397 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489beafd0>, <DeviceInterface.DeviceInterface object at 0x7f7489beae90>]
+device.py:211 2023-11-20 18:43:37,569 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:37,569 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:37,580 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:37,583 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bf8bd0>, <DeviceInterface.DeviceInterface object at 0x7f7489bfb0d0>]
+device.py:211 2023-11-20 18:43:37,772 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:37,772 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:37,877 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:37,880 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c0b750>, <DeviceInterface.DeviceInterface object at 0x7f7489c0b590>]
+device.py:211 2023-11-20 18:43:37,944 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:37,945 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:37,949 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:37,951 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c00090>, <DeviceInterface.DeviceInterface object at 0x7f7489c00150>]
+device.py:211 2023-11-20 18:43:38,145 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:38,145 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:38,249 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:38,252 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c35550>, <DeviceInterface.DeviceInterface object at 0x7f7489c35450>]
+device.py:211 2023-11-20 18:43:38,329 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:38,329 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:38,337 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:38,339 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c3ed10>, <DeviceInterface.DeviceInterface object at 0x7f7489c3eb10>]
+device.py:211 2023-11-20 18:43:38,585 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:38,585 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:38,647 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:38,650 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c0a550>, <DeviceInterface.DeviceInterface object at 0x7f7489c0a1d0>]
+device.py:211 2023-11-20 18:43:38,776 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:38,776 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:38,807 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:38,811 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bfa890>, <DeviceInterface.DeviceInterface object at 0x7f7489bfaed0>]
+device.py:211 2023-11-20 18:43:38,956 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:38,957 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:38,968 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:38,970 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c03090>, <DeviceInterface.DeviceInterface object at 0x7f7489c01cd0>]
+device.py:211 2023-11-20 18:43:39,140 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:39,140 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:39,148 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:39,150 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bf8550>, <DeviceInterface.DeviceInterface object at 0x7f7489bf8c90>]
+device.py:211 2023-11-20 18:43:39,323 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:39,323 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:39,360 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:39,364 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ad334d0>, <DeviceInterface.DeviceInterface object at 0x7f748ad30110>]
+device.py:211 2023-11-20 18:43:39,509 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:39,510 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:39,539 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:39,543 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bf8250>, <DeviceInterface.DeviceInterface object at 0x7f7489bf8c90>]
+device.py:211 2023-11-20 18:43:39,698 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:39,698 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:39,711 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:39,714 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bca290>, <DeviceInterface.DeviceInterface object at 0x7f7489bc8d10>]
+device.py:211 2023-11-20 18:43:39,888 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:39,888 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:39,893 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:39,895 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bfac90>, <DeviceInterface.DeviceInterface object at 0x7f7489bfa650>]
+device.py:211 2023-11-20 18:43:40,062 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:40,062 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:40,069 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:40,072 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b81a50>, <DeviceInterface.DeviceInterface object at 0x7f7489b80250>]
+device.py:211 2023-11-20 18:43:40,234 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:40,234 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:40,239 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:40,242 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c11c50>, <DeviceInterface.DeviceInterface object at 0x7f7489c11510>]
+device.py:211 2023-11-20 18:43:40,410 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '526')>
+device.py:222 2023-11-20 18:43:40,411 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:40,416 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:40,418 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b746d0>, <DeviceInterface.DeviceInterface object at 0x7f7489b76290>]
+device.py:211 2023-11-20 18:43:40,593 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:40,593 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:40,599 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:40,601 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c46850>, <DeviceInterface.DeviceInterface object at 0x7f7489c46710>]
+device.py:211 2023-11-20 18:43:40,817 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:40,818 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:40,827 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:40,830 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b9d3d0>, <DeviceInterface.DeviceInterface object at 0x7f7489b9ccd0>]
+device.py:211 2023-11-20 18:43:41,040 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:41,040 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:41,044 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:41,048 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bb8f10>, <DeviceInterface.DeviceInterface object at 0x7f7489bb92d0>]
+device.py:211 2023-11-20 18:43:41,242 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:41,242 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:41,292 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:41,296 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ad4f050>, <DeviceInterface.DeviceInterface object at 0x7f748ad4d910>]
+device.py:211 2023-11-20 18:43:41,430 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:41,431 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:41,435 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:41,437 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748c9d0910>, <DeviceInterface.DeviceInterface object at 0x7f748c9d2350>]
+device.py:211 2023-11-20 18:43:41,617 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:41,617 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:41,624 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:41,626 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ad4f3d0>, <DeviceInterface.DeviceInterface object at 0x7f748ad4cc90>]
+device.py:211 2023-11-20 18:43:41,802 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:41,802 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:41,803 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:41,806 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ad3d450>, <DeviceInterface.DeviceInterface object at 0x7f748ad3e7d0>]
+device.py:211 2023-11-20 18:43:41,998 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '527')>
+device.py:222 2023-11-20 18:43:41,998 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:42,006 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:42,009 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489ba1ad0>, <DeviceInterface.DeviceInterface object at 0x7f7489ba1510>]
+device.py:211 2023-11-20 18:43:42,190 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:42,190 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:42,192 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:42,195 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b74390>, <DeviceInterface.DeviceInterface object at 0x7f7489b751d0>]
+device.py:211 2023-11-20 18:43:42,383 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:42,383 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:42,391 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:42,393 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bcf0d0>, <DeviceInterface.DeviceInterface object at 0x7f7489bcfcd0>]
+device.py:211 2023-11-20 18:43:42,571 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:42,571 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:42,572 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:42,575 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489beb450>, <DeviceInterface.DeviceInterface object at 0x7f7489beac90>]
+device.py:211 2023-11-20 18:43:42,765 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '527')>
+device.py:222 2023-11-20 18:43:42,765 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:42,766 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:42,769 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bcf750>, <DeviceInterface.DeviceInterface object at 0x7f7489bcfcd0>]
+device.py:211 2023-11-20 18:43:42,944 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '527')>
+device.py:222 2023-11-20 18:43:42,944 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:42,969 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:42,972 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c010d0>, <DeviceInterface.DeviceInterface object at 0x7f7489c035d0>]
+device.py:211 2023-11-20 18:43:43,119 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:43,120 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:43,129 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:43,132 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489be9110>, <DeviceInterface.DeviceInterface object at 0x7f7489beb690>]
+device.py:211 2023-11-20 18:43:43,327 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '527')>
+device.py:222 2023-11-20 18:43:43,327 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:43,340 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:43,342 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489beaa90>, <DeviceInterface.DeviceInterface object at 0x7f7489bea850>]
+device.py:211 2023-11-20 18:43:43,501 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:43,501 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:43,515 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:43,521 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ad33950>, <DeviceInterface.DeviceInterface object at 0x7f748ad33ed0>]
+device.py:211 2023-11-20 18:43:43,704 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:43,704 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:43,719 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:43,721 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489bca090>, <DeviceInterface.DeviceInterface object at 0x7f7489bca250>]
+device.py:211 2023-11-20 18:43:43,893 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:43,893 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:43,899 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:43,901 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c46890>, <DeviceInterface.DeviceInterface object at 0x7f7489c45c10>]
+device.py:211 2023-11-20 18:43:44,079 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:44,080 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:44,094 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:44,098 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ad3d790>, <DeviceInterface.DeviceInterface object at 0x7f748ad3c2d0>]
+device.py:211 2023-11-20 18:43:44,268 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:44,268 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:44,280 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:44,283 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f748ac5cd90>, <DeviceInterface.DeviceInterface object at 0x7f748ac5c9d0>]
+device.py:211 2023-11-20 18:43:44,442 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:44,442 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:44,452 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:44,454 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489b9ca50>, <DeviceInterface.DeviceInterface object at 0x7f7489b9e790>]
+device.py:211 2023-11-20 18:43:44,629 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '527')>
+device.py:222 2023-11-20 18:43:44,630 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:44,701 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:44,704 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c23990>, <DeviceInterface.DeviceInterface object at 0x7f7489c216d0>]
+device.py:211 2023-11-20 18:43:44,794 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '527')>
+device.py:222 2023-11-20 18:43:44,795 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:44,801 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:44,803 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489c22d50>, <DeviceInterface.DeviceInterface object at 0x7f7489c232d0>]
+device.py:211 2023-11-20 18:43:44,973 - logs/localhost:33104 - DEBUG - <CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '1', 'Content-Length': '528')>
+device.py:222 2023-11-20 18:43:44,973 - logs/localhost:33104 - DEBUG - satisfy
+device.py:251 2023-11-20 18:43:44,983 - logs/localhost:33104 - DEBUG - sending data to network /foo/bar, 42, 1
+device.py:205 2023-11-20 18:43:44,986 - logs/localhost:33104 - DEBUG - got neighbours [<DeviceInterface.DeviceInterface object at 0x7f7489ba6410>, <DeviceInterface.DeviceInterface object at 0x7f7489ba64d0>]

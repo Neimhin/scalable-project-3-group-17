@@ -1,0 +1,398 @@
+DEBUG:asyncio:Using selector: EpollSelector
+DEBUG:root:starting node 0
+DEBUG:root:starting node 1
+DEBUG:root:starting node 2
+DEBUG:root:starting node 3
+DEBUG:root:starting node 4
+DEBUG:root:started server on port 33100
+DEBUG:root:started server on port 33101
+DEBUG:root:started server on port 33102
+[2023-11-20 18:22:41 +0000] [21605] [INFO] Running on http://127.0.0.1:34000 (CTRL + C to quit)
+INFO:hypercorn.error:Running on http://127.0.0.1:34000 (CTRL + C to quit)
+DEBUG:root:started server on port 33103
+DEBUG:root:started server on port 33104
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33000 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f4b4b550>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'', [(b'content-type', b'application/json'), (b'content-length', b'43'), (b'date', b'Mon, 20 Nov 2023 18:22:41 GMT'), (b'server', b'hypercorn-h11')])
+INFO:httpx:HTTP Request: POST http://localhost:33000/register "HTTP/1.1 200 "
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:root:got item '/foo/bar' from desire queue: node 0: port: 33100
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f41c9990>, <DeviceInterface.DeviceInterface object at 0x7fb2f41a6cd0>]
+DEBUG:root:got item '/foo/bar' from desire queue: node 1: port: 33101
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f41c9d10>, <DeviceInterface.DeviceInterface object at 0x7fb2f41ca010>]
+DEBUG:root:got item '/foo/bar' from desire queue: node 2: port: 33102
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f41c9d90>, <DeviceInterface.DeviceInterface object at 0x7fb2f41ca050>]
+DEBUG:root:got item '/foo/bar' from desire queue: node 4: port: 33104
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f41ca0d0>, <DeviceInterface.DeviceInterface object at 0x7fb2f41ca1d0>]
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33101 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33104 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33100 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33102 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33101 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33103 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33103 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33100 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f4bef250>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41dd950>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41bcd10>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41db010>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41dcc10>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41dd210>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f4b4bb50>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41de350>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33101', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33100', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMztiFIFr1tdW9lAS5tO989SUr4gLpXy\niPhXdr44vcR37sda3wCElhsi+9JjTtm9vLNIeaQTrkVeYF/pTNYsGQcCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12', 'created_at': 1700504567.366059, 'device_interface': {'host': 'localhost', 'port': 33100, 'key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12'}}
+DEBUG:root:GOT DATA: None 33101
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f420c890>, <DeviceInterface.DeviceInterface object at 0x7fb2f420c850>]
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALclVMx58zz5TVy8XrpnfhesvOvA9PAa\n0iKsCOFDJ6H6o+pNhBqvFErGYkygMMZ33JkH5uTzG2rq67tAgkgENFMCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7', 'created_at': 1700504567.372373, 'device_interface': {'host': 'localhost', 'port': 33101, 'key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7'}}
+DEBUG:root:GOT DATA: None 33100
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f420c910>, <DeviceInterface.DeviceInterface object at 0x7fb2f420c050>]
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMztiFIFr1tdW9lAS5tO989SUr4gLpXy\niPhXdr44vcR37sda3wCElhsi+9JjTtm9vLNIeaQTrkVeYF/pTNYsGQcCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12', 'created_at': 1700504567.366059, 'device_interface': {'host': 'localhost', 'port': 33100, 'key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12'}}
+DEBUG:root:GOT DATA: None 33104
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f420c210>, <DeviceInterface.DeviceInterface object at 0x7fb2f420c1d0>]
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33102', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALclVMx58zz5TVy8XrpnfhesvOvA9PAa\n0iKsCOFDJ6H6o+pNhBqvFErGYkygMMZ33JkH5uTzG2rq67tAgkgENFMCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7', 'created_at': 1700504567.372373, 'device_interface': {'host': 'localhost', 'port': 33101, 'key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7'}}
+DEBUG:root:GOT DATA: None 33102
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f420fe50>, <DeviceInterface.DeviceInterface object at 0x7fb2f420fe90>]
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33101 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33100 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33104 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:httpx:load_ssl_context verify=True cert=None trust_env=True http2=False
+DEBUG:httpx:load_verify_locations cafile='/home/neimhin/base-venv/lib/python3.11/site-packages/certifi/cacert.pem'
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33101', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33103', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33103', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33100', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '0', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33102 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJZg+Y+MHfKHke74h/CMJBWYc4z3l0Bj\njZWqla4DVLHOQ4spEVTGyz2jrEe2ZPyil5Os7BLSbWc+cEvhRBmlzuUCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '760df51607c59aa6c3b15ee7739c3e7a2053fb81cf7df16e88ce4540166371f9', 'created_at': 1700504567.500597, 'device_interface': {'host': 'localhost', 'port': 33102, 'key_name': '760df51607c59aa6c3b15ee7739c3e7a2053fb81cf7df16e88ce4540166371f9'}}
+DEBUG:root:GOT DATA: None 33101
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJZg+Y+MHfKHke74h/CMJBWYc4z3l0Bj\njZWqla4DVLHOQ4spEVTGyz2jrEe2ZPyil5Os7BLSbWc+cEvhRBmlzuUCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '760df51607c59aa6c3b15ee7739c3e7a2053fb81cf7df16e88ce4540166371f9', 'created_at': 1700504567.500597, 'device_interface': {'host': 'localhost', 'port': 33102, 'key_name': '760df51607c59aa6c3b15ee7739c3e7a2053fb81cf7df16e88ce4540166371f9'}}
+DEBUG:root:GOT DATA: 42 33103
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f422d390>, <DeviceInterface.DeviceInterface object at 0x7fb2f422d4d0>]
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANpllF0wcY2h9qV5AVvcPlJq2IZ5SKLf\nFZ1Dumk+SLj1i8UFrgD13RKvNDBCUvwpN9ee2BZZDOTiDx3qvpGQ6S8CAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '8e92c8572cd2cea8cd769cc92667c9b5327bbe3dd5f62c5fbecffe903fa7d5f5', 'created_at': 1700504567.563669, 'device_interface': {'host': 'localhost', 'port': 33104, 'key_name': '8e92c8572cd2cea8cd769cc92667c9b5327bbe3dd5f62c5fbecffe903fa7d5f5'}}
+DEBUG:root:GOT DATA: 42 33103
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f422d890>, <DeviceInterface.DeviceInterface object at 0x7fb2f422d7d0>]
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANpllF0wcY2h9qV5AVvcPlJq2IZ5SKLf\nFZ1Dumk+SLj1i8UFrgD13RKvNDBCUvwpN9ee2BZZDOTiDx3qvpGQ6S8CAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '8e92c8572cd2cea8cd769cc92667c9b5327bbe3dd5f62c5fbecffe903fa7d5f5', 'created_at': 1700504567.563669, 'device_interface': {'host': 'localhost', 'port': 33104, 'key_name': '8e92c8572cd2cea8cd769cc92667c9b5327bbe3dd5f62c5fbecffe903fa7d5f5'}}
+DEBUG:root:GOT DATA: None 33100
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33100 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33102 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33101 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33104 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33103 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33100 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33101 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33103 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33103 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33100 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33101 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='localhost' port=33103 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f421cb90>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f421f9d0>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f4ab4a10>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f421d7d0>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41c9150>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f41ca190>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb3071c2ed0>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x7fb2f422d350>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33100', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33104', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33101', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33102', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33103', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33100', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMztiFIFr1tdW9lAS5tO989SUr4gLpXy\niPhXdr44vcR37sda3wCElhsi+9JjTtm9vLNIeaQTrkVeYF/pTNYsGQcCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12', 'created_at': 1700504567.366059, 'device_interface': {'host': 'localhost', 'port': 33101, 'key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7'}}
+DEBUG:root:GOT DATA: None 33100
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALclVMx58zz5TVy8XrpnfhesvOvA9PAa\n0iKsCOFDJ6H6o+pNhBqvFErGYkygMMZ33JkH5uTzG2rq67tAgkgENFMCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7', 'created_at': 1700504567.372373, 'device_interface': {'host': 'localhost', 'port': 33100, 'key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12'}}
+DEBUG:root:GOT DATA: None 33104
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALclVMx58zz5TVy8XrpnfhesvOvA9PAa\n0iKsCOFDJ6H6o+pNhBqvFErGYkygMMZ33JkH5uTzG2rq67tAgkgENFMCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7', 'created_at': 1700504567.372373, 'device_interface': {'host': 'localhost', 'port': 33100, 'key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12'}}
+DEBUG:root:GOT DATA: None 33101
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMztiFIFr1tdW9lAS5tO989SUr4gLpXy\niPhXdr44vcR37sda3wCElhsi+9JjTtm9vLNIeaQTrkVeYF/pTNYsGQcCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12', 'created_at': 1700504567.366059, 'device_interface': {'host': 'localhost', 'port': 33101, 'key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7'}}
+DEBUG:root:GOT DATA: None 33102
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMztiFIFr1tdW9lAS5tO989SUr4gLpXy\niPhXdr44vcR37sda3wCElhsi+9JjTtm9vLNIeaQTrkVeYF/pTNYsGQcCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12', 'created_at': 1700504567.366059, 'device_interface': {'host': 'localhost', 'port': 33104, 'key_name': '8e92c8572cd2cea8cd769cc92667c9b5327bbe3dd5f62c5fbecffe903fa7d5f5'}}
+DEBUG:root:GOT DATA: 42 33103
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f4238710>, <DeviceInterface.DeviceInterface object at 0x7fb2f4238750>]
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMztiFIFr1tdW9lAS5tO989SUr4gLpXy\niPhXdr44vcR37sda3wCElhsi+9JjTtm9vLNIeaQTrkVeYF/pTNYsGQcCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': 'dd3aaddd0a7763099a02115fed7789909ada740cc4cb7b066362ff88363f5e12', 'created_at': 1700504567.366059, 'device_interface': {'host': 'localhost', 'port': 33104, 'key_name': '8e92c8572cd2cea8cd769cc92667c9b5327bbe3dd5f62c5fbecffe903fa7d5f5'}}
+DEBUG:root:GOT DATA: None 33100
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33103', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:<CIMultiDictProxy('Host': 'localhost:33101', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Connection': 'keep-alive', 'User-Agent': 'python-httpx/0.25.1', 'x-tcdicn-hop': '3', 'Content-Length': '796')>
+DEBUG:root:interest
+INFO:aiohttp.access:::1 [20/Nov/2023:18:22:47 +0000] "POST / HTTP/1.1" 200 153 "-" "python-httpx/0.25.1"
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALclVMx58zz5TVy8XrpnfhesvOvA9PAa\n0iKsCOFDJ6H6o+pNhBqvFErGYkygMMZ33JkH5uTzG2rq67tAgkgENFMCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7', 'created_at': 1700504567.372373, 'device_interface': {'host': 'localhost', 'port': 33102, 'key_name': '760df51607c59aa6c3b15ee7739c3e7a2053fb81cf7df16e88ce4540166371f9'}}
+DEBUG:root:GOT DATA: 42 33103
+DEBUG:root:got neighbours [<DeviceInterface.DeviceInterface object at 0x7fb2f4238c50>, <DeviceInterface.DeviceInterface object at 0x7fb2f4239d50>]
+DEBUG:root:{'type': 'interest', 'data_name': '/foo/bar', 'requestor_public_key': '-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALclVMx58zz5TVy8XrpnfhesvOvA9PAa\n0iKsCOFDJ6H6o+pNhBqvFErGYkygMMZ33JkH5uTzG2rq67tAgkgENFMCAwEAAQ==\n-----END PUBLIC KEY-----\n', 'requestor_key_name': '7c09fb97ce7bd47ff78d314900cd30098e447f1c51dd645562ee21b8741bf6a7', 'created_at': 1700504567.372373, 'device_interface': {'host': 'localhost', 'port': 33102, 'key_name': '760df51607c59aa6c3b15ee7739c3e7a2053fb81cf7df16e88ce4540166371f9'}}
+DEBUG:root:GOT DATA: None 33101
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33100 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33104 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33101 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33102 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33103 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33100 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33103 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'text/plain; charset=utf-8'), (b'Content-Length', b'2'), (b'Date', b'Mon, 20 Nov 2023 18:22:47 GMT'), (b'Server', b'Python/3.11 aiohttp/3.8.6')])
+INFO:httpx:HTTP Request: POST http://localhost:33101 "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:close.complete
