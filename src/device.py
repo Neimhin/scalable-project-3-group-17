@@ -17,14 +17,11 @@ from typing import Optional
 import os
 
 PACKET_FIELD_DATA_NAME =                "data_name"
-PACKET_FIELD_REQUESTOR_PUBLIC_KEY =     "requestor_public_key"
-PACKET_FIELD_SENDER_PUBLIC_KEY =        "sender_public_key"
 PACKET_FIELD_REQUEST_TYPE =             "type"
 PACKET_FIELD_CREATED_AT =               "created_at"
 PACKET_FIELD_DATA_PLAIN =               "data"
 PACKET_FIELD_REQUESTOR_KEY_NAME =       "requestor_key_name"
 PACKET_FIELD_SENDER_KEY_NAME =          "requestor_key_name"
-#PACKET_FIELD_PORT_NUMBER=               "port"
 
 def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Optional[DeviceInterface]:
     for di in dis:
@@ -34,7 +31,7 @@ def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Option
 
 # TODO: just send key_name in packet, not device_interface
 PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
-HOP_HEADER =                            "x-tcdicn-hop"
+HOP_HEADER =                    "x-tcdicn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
