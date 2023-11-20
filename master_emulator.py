@@ -69,11 +69,6 @@ class MasterEmulator:
         headers = ["Content-Type: application/json"]
 
         try:
-            # import encapsulate_http
-            # import json
-            # response_raw = encapsulate_http.http_request("/update_topology", host, port, method="POST", headers=headers, body=json.dumps(self.current_topology))
-            # response = encapsulate_http.extract_body_from_response(response_raw)
-            # print(response)
             timeout = httpx.Timeout(0.5)
             async with httpx.AsyncClient(timeout=timeout) as client:
                     headers = {"content-type": "application/json"}
