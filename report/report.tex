@@ -79,6 +79,27 @@ Our protocol is peer-to-peer, where peer-to-peer
 here means communication between
 a pair of nodes with a direct physical link (acoustic, RF, fibre, what have you).
 
+\subsection{Data Naming Conventions}
+The data naming convention in the oceanography network is designed to be intuitive, hierarchically structured, and adaptable. It is based on a URI-like format with query parameters, ensuring both readability and precision.
+
+The convention follows a path-query format. The path typically contains the broad location and data type (e.g., ``/pacific-ocean/temperature"),
+while the query parameters provide specific details
+(e.g., ``near\_latitude=53.34").
+This dual-layer structure ensures both a high-level categorization and fine-grained control.
+In this format data names are allowed to be somewhat ambiguous such that
+multiple different specific data payloads might satisfy a single data name.
+
+   
+Location Identifier: Specifies the oceanic region (e.g., Indian Ocean, Atlantic Ocean).
+    
+Data Type: Indicates the type of data (e.g., temperature, pH level).
+
+Query Parameters: Include specifics like geographic coordinates, depth, time constraints, and tolerances.
+
+An example of a valid data name in our scenario is:
+
+\texttt{``/atlantic-ocean/water-ph?near\_latitude=53.34\&near\_longitude=68.34\&near\_depth=30''}.
+
 \section{ICN/NDN Protocol}
 % Our protocol uses HTTP 1.1 as the serialization standard, and in the emulation the HTTP request and response messages are delivered over TCP.
 % HTTP is a request/response style standard; a client makes a request to a server and the server responds.
