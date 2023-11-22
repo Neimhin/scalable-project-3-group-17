@@ -20,6 +20,7 @@ from typing import Callable
 import gateway_port
 from aiohttp import web
 from typing import Coroutine, Any
+import traceback
 
 if TYPE_CHECKING:
     from slave_emulator import SlaveEmulator
@@ -109,7 +110,7 @@ class Device:
         self.logger.setLevel(logging.DEBUG)
         fh = logging.FileHandler(log_filename, mode='w')  # 'w' to overwrite the file each time
         fh.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(filename)s:%(lineno)s %(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter(f'{self.host}:{self.server.port} %(filename)s:%(lineno)s %(asctime)s - %(name)s - %(levelname)s - %(message)s')
         fh.setFormatter(formatter)
         self.logger.addHandler(fh)
 
@@ -134,7 +135,7 @@ class Device:
         data = packet.get(PACKET_FIELD_DATA_PLAIN)
         if headers is None:
             headers = {}
-        headers[f"x-g17icn-router-{hop}"] = self.jwt.key_name
+        headers[f"x-g17icn-router-{hop}"] = self.router_header()
 
         await self.send_to_network(data_name,data,hop,_list, headers=headers)
         self.PIT.pop(data_name,None)
@@ -155,7 +156,7 @@ class Device:
         current_neighbours = self.discover_neighbours()
         # TODO: propagate more conservatively
         def di2task(di: DeviceInterface):
-            return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1,headers=headers))
+            return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop,headers=headers))
         
         fib_entry = self.router.get_fib_entry(packet[PACKET_FIELD_DATA_NAME])
         next_device = None
@@ -193,12 +194,16 @@ class Device:
             sub_dict['waiting_list'].append(interested_key_name)
             sub_dict['time_stamp']= datetime.now().timestamp()  # mark the time intersted entry created
             self.PIT[data_name]=sub_dict
-            await self.propagate_interest(packet,hop=hop+1,headers=headers)       
+            await self.propagate_interest(packet,hop=hop,headers=headers)       
         else:
             self.PIT[data_name]['waiting_list'].append(interested_key_name)
             
     def discover_neighbours(self) -> List[DeviceInterface]:
         self.neighbours = self.emulation.discover_neighbours(self.jwt.key_name)
+        for n in self.neighbours:
+            if n.key_name == self.jwt.key_name:
+                print(Exception("sending to self"), self.host, self.server.port, self.jwt.key_name)
+                exit()
         self.logger.debug(f"got neighbours {list(map(str,self.neighbours))}")
         return self.neighbours
     
@@ -214,8 +219,19 @@ class Device:
         jwt = await request.text()
         packet = self.jwt.decode(jwt)
         trace_headers = extract_matching_headers(request)
-        print("TRACE HEADERS", trace_headers)
-        print("ALL HEADERS", request.headers)
+        if len(trace_headers) != hop_count + 1:
+            print("bad trace headers")
+            print(self.host, self.server.port, trace_headers)
+            print(hop_count)
+            try:
+                raise Exception("ahhh")
+            except Exception as e:
+                print(e)
+                print(traceback.print_exc())
+            exit()
+        trace_headers[f"x-g17icn-router-{hop_count + 1}"] = self.router_header()
+        print(self.host, self.server.port, "TRACE HEADERS", trace_headers)
+        print(self.host, self.server.port, "ALL HEADERS",   request.headers)
         self.logger.debug(f"{trace_headers}")
         # TODO: validate packet format
         # TODO: check if id exists in TRUSTED_IDS
@@ -239,7 +255,7 @@ class Device:
         if packet_type == "interest":
                 asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
         elif packet_type == "satisfy":
-                asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count,request=request,headers=trace_headers))
+                asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
         else:
                 raise Exception("unrecognised packet type: " + str(packet_type))
         return web.Response(text="ok")
@@ -248,6 +264,12 @@ class Device:
     Send out directly to a device
     '''
     async def send_payload_to(self,di: DeviceInterface, payload=None, hop=0, headers=None):
+
+        print(self.host, self.server.port, "HEADER TRACE")
+        for i in range(hop + 2):
+            n= f"x-g17icn-router-{i}"
+            print(hop, n, headers.get(n))
+
         try:
             self.logger.debug(f"from {self.server.host}:{self.server.port} to device interface {di.host}:{di.port}")
             assert type(di) == DeviceInterface
@@ -270,7 +292,7 @@ class Device:
 
         if headers is None:
             headers = {
-                "x-g17icn-router-0": self.jwt.key_name,
+                "x-g17icn-router-0": self.router_header(),
             }
         payload = self.jwt.encode({
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
@@ -323,7 +345,7 @@ class Device:
                     }
                     self.logger.debug(data)
                     headers = {
-                        "x-g17icn-router-0": self.jwt.key_name,
+                        "x-g17icn-router-0": self.router_header(),
                     }
                     payload = self.jwt.encode(data)
                     tasks = [asyncio.create_task(self.send_payload_to(di, payload, headers=headers)) for di in current_neighbours]
@@ -331,6 +353,9 @@ class Device:
 
         self.desire_queue_task = asyncio.create_task(handle())
         return self.desire_queue_task
+    
+    def router_header(self):
+        return self.jwt.key_name + "_" + self.host + "_" + str(self.server.port)
 
     async def start(self):
         self.logger.debug(f"starting node")
