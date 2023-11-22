@@ -1,8 +1,8 @@
 from __future__ import annotations
 import asyncio
+import random
 import http_client
 import signal
-import asyncio
 import is_port_open
 import quart
 import schema
@@ -10,6 +10,10 @@ import jsonschema
 from typing import Union
 from typing import List
 from typing import Literal
+import os
+
+def generate_random_desire():
+    return "/temperature"
 
 class MasterEmulator:
     def __init__(self,heartbeat:Union[int,float]=1):
@@ -22,6 +26,7 @@ class MasterEmulator:
             "connections": [],
         }
         self.should_propagate = asyncio.Event()
+        self.random_desire_creation_task = None
 
     def run(self):
         heartbeat_task = self.heartbeat()
@@ -107,19 +112,36 @@ class MasterEmulator:
         ring_connections = []
         devices = []
         for emulator_form in self.registered_slaves:
-            emulator_ring = schema.create_ring_topology(emulator_form['devices'])
+            num_devices:int = len(emulator_form['devices'])
+            num_parent_devices = 5
+            num_sensors_and_actuators = num_devices - num_parent_devices
+            parent_devices = emulator_form['devices'][:num_parent_devices]
+            emulator_ring = schema.create_ring_topology(parent_devices)
+
+            for child_idx in range(num_parent_devices, num_devices):
+                parent_idx = child_idx % num_parent_devices
+                parent_device = emulator_form['devices'][parent_idx]
+                child_device = emulator_form['devices'][child_idx]
+                emulator_ring['connections'].append({
+                    "source": child_device['key_name'],
+                    "target": parent_device['key_name'],
+                })
+                child_device['type'] = 'temperature-sensor'
+                emulator_ring['devices'].append(child_device)
+
             emulator_rings.append(emulator_ring)
             ring_connections += emulator_ring['connections']
             devices += emulator_form['devices']
-        print(emulator_ring)
+        print(emulator_rings)
 
         if len(emulator_rings) > 1:
             for i in range(len(emulator_rings)):
                 orig_ring = emulator_rings[i]
                 next_ring = emulator_rings[(i+1) % len(emulator_rings)]
                 import random
-                random_source_interface = orig_ring['devices'][random.randint(0,len(orig_ring['devices']) - 1)]
-                random_target_interface = next_ring['devices'][random.randint(0,len(next_ring['devices']) - 1)]
+                num_parent_devices = min(5,len(orig_ring['devices']))
+                random_source_interface = orig_ring['devices'][random.randint(0,num_parent_devices - 1)]
+                random_target_interface = next_ring['devices'][random.randint(0,num_parent_devices - 1)]
                 ring_connections.append({
                     "source": random_source_interface['key_name'],
                     "target": random_target_interface['key_name'],
@@ -156,6 +178,33 @@ class MasterEmulator:
             print(str(e))
             raise e
         return "New Slave Registered"
+    
+    def mk_random_desire_generation_task(self) -> asyncio.Task[bool]:
+        self.random_desire_generation_paused = asyncio.Event()
+        self.random_desire_generation_paused.set()
+        async def random_desire_generation_coroutine():
+            while True:
+                print('waiting if paused')
+                await self.random_desire_generation_paused.wait()
+                print('unpaused')
+                wait_interval = 1
+                await asyncio.sleep(wait_interval)
+                devices = self.current_topology['devices']
+                if(len(devices) < 1):
+                    continue
+                random_device = random.choice(devices)
+                random_desire = generate_random_desire()
+                async with http_client.no_proxy() as client:
+                    await client.get(f"http://{random_device['emulator_host']}:{random_device['emulator_port']}/set_desire_for_one?data_name={random_desire}&key_name={random_device['key_name']}")
+                print(f"NYI send desire {random_desire} to device {random_device}")
+        return asyncio.create_task(random_desire_generation_coroutine())
+
+    def start_generating_random_desires(self):
+        if self.random_desire_creation_task:
+            print("cancel random_desire_creation_task:", self.random_desire_creation_task.cancel())
+        self.random_desire_creation_task = self.mk_random_desire_generation_task()
+        return self.random_desire_creation_task
+
 
 def parse_arguments():
     import argparse
@@ -269,6 +318,16 @@ async def main():
         rendered_html = await quart.render_template_string(html)
         print(rendered_html)
         return rendered_html, 200
+    
+    @app.route('/start_generating_random_desires', methods=['GET'])
+    async def start_generating_random_desires():
+        emulator.start_generating_random_desires()
+        return 'started', 200
+    
+    @app.route('/stop_generating_random_desires', methods=['GET'])
+    async def stop_generating_random_desires():
+        await emulator.stop_generating_random_desires()
+        return 'stopped', 200
         
     # for vis
     @app.route('/current_topology', methods=['GET'])
@@ -295,13 +354,17 @@ async def main():
         args.host = get_ip_address.get_ip_address()
 
     try:
-        await asyncio.gather(*([app.run_task(host=args.host, port=args.port,debug=True)] + emulator_tasks))
+        tasks =  emulator_tasks + [asyncio.create_task(app.run_task(host=args.host, port=args.port,debug=True))]
+        await asyncio.gather(*tasks)
     except asyncio.exceptions.CancelledError:
         pass
+
 
 # This script instantiates master emulator
 # optionally starts vis server
 # start master_http
 if __name__ == "__main__":
-   
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except asyncio.CancelledError:
+        pass

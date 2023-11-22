@@ -46,7 +46,9 @@ class SlaveEmulator:
                 "host": host,
                 "port": device.server.port,
                 "public_key": device.jwt.public_key.decode("utf-8"),
-                "emulator_id":self.port
+                "emulator_id": self.host + ":" + str(self.port),
+                "emulator_host": self.host,
+                "emulator_port": self.port,
             })
 
         body = {

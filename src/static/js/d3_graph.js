@@ -23,11 +23,18 @@ function create_graph(topology) {
     d3.select('#graph').selectAll("*").remove()
 
     // Set up the SVG
-    const width = '2000', height = '2000';
+    let width = '600';
+    let height = '600';
     const svg = d3.select('#graph')
         .append('svg')
         .attr('width', width)
         .attr('height', height);
+
+    window.addEventListener('resize', () => {
+        console.log('resize');
+        svg.attr("width", window.innerWidth)
+            .attr("height", window.innerHeight);
+    });
 
     // Create the force simulation
     const simulation = d3.forceSimulation(nodes)
@@ -35,6 +42,22 @@ function create_graph(topology) {
         .force('charge', d3.forceManyBody())
         .force('center', d3.forceCenter(width / 2, height / 2))
         .on('tick', ticked);
+
+    // function boundingBoxForce() {
+    //     return function() {
+    //         nodes.forEach(node => {
+    //             console.log(node)
+    //             if(!node.radius){
+    //                 node.radius = 5
+    //             }
+    //             node.x = Math.max(node.radius, Math.min(width - node.radius, node.x));
+    //             node.y = Math.max(node.radius, Math.min(height - node.radius, node.y));
+    //         });
+    //     }
+    // }
+    
+    // // Assuming 'simulation' is your d3.forceSimulation
+    // simulation.force('bounds', boundingBoxForce());
 
     // Draw lines for the links
     const link = svg.append('g')
