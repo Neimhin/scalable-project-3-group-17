@@ -29,6 +29,10 @@ AiohttpHandler = Callable[[web.Request],Coroutine[Any,Any,web.Response]]
 
 import re
 
+def list_is_unique(lst: List[Any]):
+    return len(lst) == len(set(lst))
+
+
 def extract_matching_headers(request: web.Request) -> dict[str,str]:
     """
     Extracts headers from the request that match the pattern 'x-g17icn-router-<n>',
@@ -229,9 +233,13 @@ class Device:
                 print(e)
                 print(traceback.print_exc())
             exit()
+        
+        if not list_is_unique(trace_headers.values()):
+            self.logger.debug(f"loop detected in headers {trace_headers}")
+            return web.Response(text="loop detected")
+
         trace_headers[f"x-g17icn-router-{hop_count + 1}"] = self.router_header()
-        print(self.host, self.server.port, "TRACE HEADERS", trace_headers)
-        print(self.host, self.server.port, "ALL HEADERS",   request.headers)
+
         self.logger.debug(f"{trace_headers}")
         # TODO: validate packet format
         # TODO: check if id exists in TRUSTED_IDS
