@@ -78,7 +78,6 @@ def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Option
     return None
 
 # TODO: just send key_name in packet, not device_interface
-# PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
 HOP_HEADER =                    "x-g17icn-hop"
 
 class Device:
@@ -118,12 +117,11 @@ class Device:
     TODO: Shift this send/forward logic to storing and routing
     '''
 
-    async def handle_satisfy_packet(self,packet:dict,jwt:str,hop:str=None,request=None):
+    async def handle_satisfy_packet(self,packet:dict,jwt:str,hop:str=None,request=None, headers=None):
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         #_list = self.PIT[data_name]['waiting_list']
         pit_entry = self.PIT.get(data_name)
-        # di = DeviceInterface.from_dict(packet[PACKET_FIELD_DEVICE_INTERFACE])
         interested_key_name = packet.get(PACKET_FIELD_REQUESTOR_KEY_NAME)
         _list = None
         if pit_entry:
@@ -134,7 +132,11 @@ class Device:
         #self.logger.debug(f"now the {self.task_id} node has a waiting list {_list} for {data_name}")
 
         data = packet.get(PACKET_FIELD_DATA_PLAIN)
-        await self.send_to_network(data_name,data,hop,_list)
+        if headers is None:
+            headers = {}
+        headers[f"x-g17icn-router-{hop}"] = self.jwt.key_name
+
+        await self.send_to_network(data_name,data,hop,_list, headers=headers)
         self.PIT.pop(data_name,None)
 
         entry_fib = self.router.get_fib_entry(data_name)
@@ -148,13 +150,12 @@ class Device:
         # TODO delete entry that time is invalid
         self.CACHE[data_name] = packet.get(PACKET_FIELD_DATA_PLAIN)
 
-    async def propagate_interest(self,packet,hop=None):
+    async def propagate_interest(self,packet,hop=None,headers=None):
         assert type(hop) == int
         current_neighbours = self.discover_neighbours()
-        # packet[PACKET_FIELD_DEVICE_INTERFACE]=self.device_interface_dict()
         # TODO: propagate more conservatively
         def di2task(di: DeviceInterface):
-            return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1))
+            return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1,headers=headers))
         
         fib_entry = self.router.get_fib_entry(packet[PACKET_FIELD_DATA_NAME])
         next_device = None
@@ -169,7 +170,7 @@ class Device:
         together = asyncio.gather(*tasks)
         await together
 
-    async def handle_interest_packet(self, packet, jwt, hop=None,request=None):
+    async def handle_interest_packet(self, packet, jwt, hop=None,request=None,headers=None):
         assert type(hop) == int
         self.logger.debug(packet)
         data_name=packet[PACKET_FIELD_DATA_NAME]
@@ -180,12 +181,8 @@ class Device:
         data = self.CACHE.get(data_name)
         self.logger.debug(f"GOT DATA: {data} {self.server.port}")
         interested_key_name = packet[PACKET_FIELD_REQUESTOR_KEY_NAME]
-        # di_dict = packet[PACKET_FIELD_DEVICE_INTERFACE]
-        # di = DeviceInterface.from_dict(di_dict)
         if data:
-            
-            #self.logger.debug(f"get data {self.task_id}")
-            return await self.send_to_network(data_name, data,hop, [interested_key_name] )
+            return await self.send_to_network(data_name, data,hop, [interested_key_name], headers=headers)
         
         if self.PIT.get(data_name) is None:
             #self.PIT[data_name] = set()
@@ -196,7 +193,7 @@ class Device:
             sub_dict['waiting_list'].append(interested_key_name)
             sub_dict['time_stamp']= datetime.now().timestamp()  # mark the time intersted entry created
             self.PIT[data_name]=sub_dict
-            await self.propagate_interest(packet,hop=hop+1)       
+            await self.propagate_interest(packet,hop=hop+1,headers=headers)       
         else:
             self.PIT[data_name]['waiting_list'].append(interested_key_name)
             
@@ -217,16 +214,32 @@ class Device:
         jwt = await request.text()
         packet = self.jwt.decode(jwt)
         trace_headers = extract_matching_headers(request)
+        print("TRACE HEADERS", trace_headers)
+        print("ALL HEADERS", request.headers)
         self.logger.debug(f"{trace_headers}")
         # TODO: validate packet format
         # TODO: check if id exists in TRUSTED_IDS
         packet_type = packet.get(PACKET_FIELD_REQUEST_TYPE)
         self.logger.debug(packet_type)
 
+        # headers = {}
+        # for router_number in range(hop_count):
+        #     print(f"looking for router {router_number}")
+        #     header_name = f"x-g17icn-router-{router_number}"
+        #     header_val = request.headers.get(header_name)
+        #     if not header_val:
+        #         print(request.headers)
+        #         print(packet)
+        #         print("missing router header", header_name)
+        #         exit()
+        #     print("found header", header_name, header_val)
+        #     headers[header_name] = header_val
+        # headers[f"x-g17icn-router-{hop_count+1}"] = self.jwt.key_name
+
         if packet_type == "interest":
-                asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1,request=request))
+                asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
         elif packet_type == "satisfy":
-                asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count,request=request))
+                asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count,request=request,headers=trace_headers))
         else:
                 raise Exception("unrecognised packet type: " + str(packet_type))
         return web.Response(text="ok")
@@ -234,7 +247,7 @@ class Device:
     '''
     Send out directly to a device
     '''
-    async def send_payload_to(self,di: DeviceInterface, payload=None,hop=0):
+    async def send_payload_to(self,di: DeviceInterface, payload=None, hop=0, headers=None):
         try:
             self.logger.debug(f"from {self.server.host}:{self.server.port} to device interface {di.host}:{di.port}")
             assert type(di) == DeviceInterface
@@ -244,20 +257,27 @@ class Device:
         assert payload is not None
         url = di.url()
         async with http_client.no_proxy() as client:
-            headers = {HOP_HEADER: str(hop)}
+            if headers is None:
+                headers = {}
+            headers[HOP_HEADER] = str(hop)
+            print(headers)
             await client.post(url, content=payload, headers=headers)
 
     
     # send named data to the network
-    async def send_to_network(self, data_name, data, hop, neighbour_key_names: List(str)):
+    async def send_to_network(self, data_name, data, hop, neighbour_key_names: List(str), headers=None):
         self.logger.debug(f"sending data to network {data_name}, {data}, {hop}")
+
+        if headers is None:
+            headers = {
+                "x-g17icn-router-0": self.jwt.key_name,
+            }
         payload = self.jwt.encode({
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
             PACKET_FIELD_DATA_NAME: data_name,
             PACKET_FIELD_DATA_PLAIN: data,
             PACKET_FIELD_SENDER_KEY_NAME: self.jwt.key_name,
             PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
-            # PACKET_FIELD_DEVICE_INTERFACE: DeviceInterface.from_device(self).to_dict()
         })
 
         neighbour_interfaces = self.discover_neighbours()
@@ -269,7 +289,7 @@ class Device:
                     forward_to.append(n)
 
         def di2task(di: DeviceInterface) -> asyncio.Task:
-            coroutine = self.send_payload_to(di, hop=hop,payload=payload, )
+            coroutine = self.send_payload_to(di, hop=hop,payload=payload, headers=headers)
             return asyncio.create_task(coroutine)
         tasks = [di2task(di) for di in forward_to] # directly pass the data to the requestor, the reason that do not need to use neighbour is we just want to pass the data to the node who needs it.
         gathered_tasks = asyncio.gather(*tasks)
@@ -300,11 +320,13 @@ class Device:
                         PACKET_FIELD_DATA_NAME: data_name,
                         PACKET_FIELD_REQUESTOR_KEY_NAME: self.jwt.key_name,
                         PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
-                        # PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
                     }
                     self.logger.debug(data)
+                    headers = {
+                        "x-g17icn-router-0": self.jwt.key_name,
+                    }
                     payload = self.jwt.encode(data)
-                    tasks = [asyncio.create_task(self.send_payload_to(di, payload)) for di in current_neighbours]
+                    tasks = [asyncio.create_task(self.send_payload_to(di, payload, headers=headers)) for di in current_neighbours]
                     await asyncio.gather(*tasks)
 
         self.desire_queue_task = asyncio.create_task(handle())
