@@ -78,7 +78,7 @@ def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Option
     return None
 
 # TODO: just send key_name in packet, not device_interface
-PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
+# PACKET_FIELD_DEVICE_INTERFACE = "device_interface"
 HOP_HEADER =                    "x-g17icn-hop"
 
 class Device:
@@ -118,7 +118,7 @@ class Device:
     TODO: Shift this send/forward logic to storing and routing
     '''
 
-    async def handle_satisfy_packet(self, packet: dict, jwt:str, hop:str=None):
+    async def handle_satisfy_packet(self,packet:dict,jwt:str,hop:str=None,request=None):
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         #_list = self.PIT[data_name]['waiting_list']
@@ -151,7 +151,7 @@ class Device:
     async def propagate_interest(self,packet,hop=None):
         assert type(hop) == int
         current_neighbours = self.discover_neighbours()
-        packet[PACKET_FIELD_DEVICE_INTERFACE]=self.device_interface_dict()
+        # packet[PACKET_FIELD_DEVICE_INTERFACE]=self.device_interface_dict()
         # TODO: propagate more conservatively
         def di2task(di: DeviceInterface):
             return asyncio.create_task(self.send_payload_to(di,payload=self.jwt.encode(packet),hop=hop+1))
@@ -169,7 +169,7 @@ class Device:
         together = asyncio.gather(*tasks)
         await together
 
-    async def handle_interest_packet(self, packet, jwt, hop=None,):
+    async def handle_interest_packet(self, packet, jwt, hop=None,request=None):
         assert type(hop) == int
         self.logger.debug(packet)
         data_name=packet[PACKET_FIELD_DATA_NAME]
@@ -224,9 +224,9 @@ class Device:
         self.logger.debug(packet_type)
 
         if packet_type == "interest":
-                asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1))
+                asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1,request=request))
         elif packet_type == "satisfy":
-                asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count))
+                asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count,request=request))
         else:
                 raise Exception("unrecognised packet type: " + str(packet_type))
         return web.Response(text="ok")
@@ -255,10 +255,9 @@ class Device:
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
             PACKET_FIELD_DATA_NAME: data_name,
             PACKET_FIELD_DATA_PLAIN: data,
-            # TODO: don't decode every time
             PACKET_FIELD_SENDER_KEY_NAME: self.jwt.key_name,
             PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
-            PACKET_FIELD_DEVICE_INTERFACE: DeviceInterface.from_device(self).to_dict()
+            # PACKET_FIELD_DEVICE_INTERFACE: DeviceInterface.from_device(self).to_dict()
         })
 
         neighbour_interfaces = self.discover_neighbours()
@@ -301,7 +300,7 @@ class Device:
                         PACKET_FIELD_DATA_NAME: data_name,
                         PACKET_FIELD_REQUESTOR_KEY_NAME: self.jwt.key_name,
                         PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
-                        PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
+                        # PACKET_FIELD_DEVICE_INTERFACE: self.device_interface_dict()
                     }
                     self.logger.debug(data)
                     payload = self.jwt.encode(data)
