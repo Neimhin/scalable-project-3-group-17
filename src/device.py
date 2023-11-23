@@ -104,6 +104,11 @@ class Device:
         self.neighbours = []
         # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
+        # for debugging
+        self.desire_history = []
+        self.request_handling_history = []
+
+
     async def init_logger(self):
         await self.server.started.wait()
         log_filename = f"logs/{self.host}:{self.server.port}"
@@ -119,7 +124,6 @@ class Device:
     '''
     TODO: Shift this send/forward logic to storing and routing
     '''
-
     async def handle_satisfy_packet(self,packet:dict,jwt:str,hop:str=None,request=None, headers=None):
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
@@ -216,17 +220,22 @@ class Device:
             hop_count = int(request.headers.get(HOP_HEADER))
         except Exception as e:
             self.logger.debug(e)
-            self.logger.debug(request.headers())
+            self.logger.debug(f"failed to extract hop count header {request.headers()}")
             return web.Response(text="failed",status=400)
         jwt = await request.text()
         packet = self.jwt.decode(jwt)
         trace_headers = extract_matching_headers(request)
+        self.request_handling_history.append({
+            "time": datetime.now(),
+            "packet": packet,
+            #"trace_headers": trace_headers,
+        })
         if len(trace_headers) != hop_count + 1:
             print("bad trace headers")
             print(self.host, self.server.port, trace_headers)
             print(hop_count)
             try:
-                raise Exception("ahhh")
+                raise Exception("bad trace headers don't match hop count")
             except Exception as e:
                 print(e)
                 print(traceback.print_exc())
@@ -330,6 +339,7 @@ class Device:
         async def handle():
             while True:
                 data_name = await self.desire_queue.get()
+                self.desire_history.append({"time": datetime.now(), "data_name": data_name})
                 self.logger.debug(f"processing new desire: {data_name}")
                 if self.CACHE.get(data_name):
                     continue

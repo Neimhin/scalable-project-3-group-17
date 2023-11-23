@@ -14,6 +14,11 @@
     <button onclick="new_adjacency_matrix()">refresh</button>
     <button onclick="disconnect_a_random_device()">disconnect a random device</button>
     <button onclick="endpoint('/start_generating_random_desires')">start generating random desires</button>
+    <button onclick="endpoint('/start_single_datum_test?distance=1')">start single datum test distance 1</button>
+    <button onclick="endpoint('/start_single_datum_test?distance=2')">start single datum test distance 2</button>
+    <button onclick="endpoint('/start_single_datum_test?distance=3')">start single datum test distance 3</button>
+    <button onclick="endpoint('/start_single_datum_test?distance=4')">start single datum test distance 4</button>
+    <button onclick="endpoint('/start_single_datum_test?distance=5')">start single datum test distance 5</button>
     <div id="graph"></div>
     <script src="{{ url_for('static', filename='js/d3_graph.js') }}"></script>
 

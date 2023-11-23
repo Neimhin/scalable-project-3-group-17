@@ -230,6 +230,7 @@ async def main():
             if device.jwt.key_name == device_key_name:
                 await device.desire_queue.put(data_name)
                 return f'set desire {data_name} for device {device.jwt.key_name}', 200
+        return f"no device with name {device_key_name} found", 400
     
     @app.route('/give_data_to_random_device', methods=['GET'])
     async def give_data_to_random_device():
@@ -242,6 +243,23 @@ async def main():
         device = emulator.devices[random_i]
         device.CACHE[data_name] = data
         return f"gave data to device {random_i} {device.host}:{device.server.port}", 200
+    
+    @app.route('/give_data_to_device', methods=['GET'])
+    async def give_data_to_device():
+        device_name = quart.request.args.get("key_name", default=None, type=str)
+        data_name = quart.request.args.get("data_name", default=None, type=str)
+        data      = quart.request.args.get("data", default=None, type=str)
+        if data_name is None or data is None or device_name is None:
+            return 'please provide data_name, data, and key_name', 400
+        device = None
+        for device_i in emulator.devices:
+            if device_i.jwt.key_name == device_name:
+                device = device_i
+                break
+        if device is None:
+            return f"could not find device with name {device_name}", 400
+        device.CACHE[data_name] = data
+        return f"gave data to device {device.host}:{device.server.port}", 200
     
     @app.route('/all_dbs', methods=['GET'])
     async def all_dbs():
@@ -260,12 +278,26 @@ async def main():
     
     @app.route('/debug/cache' ,methods=['GET'])
     async def debug_cache():
-        neighbours = []
+        neighbours = {}
         for device in emulator.devices:
             print(device)
-            neighbours.append(device.CACHE)
+            neighbours[f"{device.host}:{device.server.port}"] = device.CACHE
         print(neighbours)
         return quart.jsonify(neighbours), 200
+    
+    @app.route('/debug/desires' ,methods=['GET'])
+    async def debug_desires():
+        devices = {}
+        for device in emulator.devices:
+            devices[f"{device.host}:{device.server.port}"] = device.desire_history
+        return quart.jsonify(devices), 200
+    
+    @app.route('/debug/requests' ,methods=['GET'])
+    async def debug_request():
+        devices = {}
+        for device in emulator.devices:
+            devices[f"{device.host}:{device.server.port}"] = device.request_handling_history
+        return quart.jsonify(devices), 200
     
         
     @app.route('/debug/fib' ,methods=['GET'])
