@@ -8,9 +8,7 @@ from aiohttp import web
 import asyncio
 from datetime import datetime
 import JWT
-from cache import CACHEStore
 from DeviceInterface import DeviceInterface
-import interest_emulation
 from typing import List
 from typing import Optional
 import os
@@ -21,13 +19,13 @@ import gateway_port
 from aiohttp import web
 from typing import Coroutine, Any
 import traceback
+import re
 
 if TYPE_CHECKING:
     from slave_emulator import SlaveEmulator
 
 AiohttpHandler = Callable[[web.Request],Coroutine[Any,Any,web.Response]]
 
-import re
 
 def list_is_unique(lst: List[Any]):
     return len(lst) == len(set(lst))

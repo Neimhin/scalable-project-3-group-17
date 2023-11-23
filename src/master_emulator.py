@@ -10,7 +10,69 @@ import jsonschema
 from typing import Union
 from typing import List
 from typing import Literal
-import os
+import networkx as nx
+from typing import Tuple
+from typing import List
+import random
+
+"""
+search through an nx.Graph to find a random pair of nodes
+where the shortest path between the nodes is n
+"""
+def find_pair_with_path_length_n(graph: nx.Graph, n: int) -> Optional[Tuple[str, str]]:
+    nodes = list(graph.nodes())
+    random.shuffle(nodes)
+    
+    for node1 in nodes:
+        random.shuffle(nodes)
+        for node2 in nodes:
+            if node1 != node2:
+                try:
+                    if nx.shortest_path_length(graph, node1, node2) == n:
+                        return (node1, node2)
+                except nx.NetworkXNoPath:
+                    # No path exists between these nodes
+                    continue
+    return None
+
+"""
+This class holds state and functionality for starting,
+querying, and evaluating a network test,
+where a single node is given a piece of data,
+and a single other node is given a desire for that piece of data at the same time.
+The class includes functionality to test whether the desiring node has received the data.
+
+TODO:
+- [ ] implement selection of two nodes with a shortest path of `distance`
+- [ ] implement a query of how widely the interest packet is disseminated
+- [ ] implement a query of how widely the satisfy packet is disseminated
+"""
+class SingleDatumTransferTest:
+    def __init__(self,master_emulator: MasterEmulator, distance: int):
+        assert type(master_emulator) == MasterEmulator
+        self.master_emulator = master_emulator
+        assert type(distance) == int
+        self.distance = distance
+
+
+    # select to nodes, where the shortest path between them in the current topology is `distance`
+    def give_data_and_desires(self):
+        pass
+
+    def topology_to_nx_graph(self):
+        ct = self.master_emulator.current_topology
+        G = nx.Graph()
+        # add each device to the nx graph nodes
+        for device in ct['devices']:
+            G.add_node(device['key_name'])
+        # add each connection to the nx graph edges
+        for connection in ct['connections']:
+            G.add_edge(connection['source'], connection['target'])
+        random_pair = find_pair_with_path_length_n(G, self.distance)
+        self.random_pair = random_pair
+        print(random_pair)
+        print("shortest distance:", nx.shortest_path_length(G, *random_pair))
+
 
 def generate_random_desire():
     return "/temperature"
@@ -335,6 +397,14 @@ async def main():
         if not emulator:
             return quart.jsonify("no emulator"), 500
         return quart.jsonify(emulator.current_topology)
+    
+    @app.route('/debug/single_datum_test', methods=['GET'])
+    async def debug_single_datum_test():
+        if not emulator:
+            return quart.jsonify("no emulator"), 500
+        sdt = SingleDatumTransferTest(emulator,distance=2)
+        sdt.topology_to_nx_graph()
+        return quart.jsonify(sdt.random_pair)
     
     @app.after_serving
     async def shutdown():

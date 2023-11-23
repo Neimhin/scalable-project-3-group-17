@@ -7,3 +7,4 @@ quart
 cryptography
 jsonschema
 netifaces
+networkx

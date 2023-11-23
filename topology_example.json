@@ -1,0 +1,423 @@
+{
+  "connections": [
+    {
+      "source": "0300ba03c74423308ba35ecfe50881f17d44dadc89cd0b27db6f49927b8f131b",
+      "target": "a1913064ababd348bc5b04a06cd1da3b8cbe850f17d08aa98c7360d66c79cea8"
+    },
+    {
+      "source": "0300ba03c74423308ba35ecfe50881f17d44dadc89cd0b27db6f49927b8f131b",
+      "target": "a147b019d9a8f76fbfec4e1380321677a7a2a92b3db53a0304b90b91eb4defc1"
+    },
+    {
+      "source": "47018407e7ca5b7a24321c095e15b4bf8e3d4b68089615c85dedf4b0b78b4480",
+      "target": "a147b019d9a8f76fbfec4e1380321677a7a2a92b3db53a0304b90b91eb4defc1"
+    },
+    {
+      "source": "47018407e7ca5b7a24321c095e15b4bf8e3d4b68089615c85dedf4b0b78b4480",
+      "target": "d9f7b7f95280ebd7d89bc67f961c365bc7ff998b2bbd311de318edcda08a3858"
+    },
+    {
+      "source": "a1913064ababd348bc5b04a06cd1da3b8cbe850f17d08aa98c7360d66c79cea8",
+      "target": "d9f7b7f95280ebd7d89bc67f961c365bc7ff998b2bbd311de318edcda08a3858"
+    },
+    {
+      "source": "1888be8c4e24b44bfb5875ee933a08ff7bee777da1b27a7809e7a7a779ec894d",
+      "target": "9c84a09d3576a0f1608bb8dbbd13d930ab46334f12aea3fa2c0f7a1b1ec06129"
+    },
+    {
+      "source": "9c84a09d3576a0f1608bb8dbbd13d930ab46334f12aea3fa2c0f7a1b1ec06129",
+      "target": "e6da36aa679b832bd397f2e37c89c9a9707def4a4907e632de3882d05a7864fd"
+    },
+    {
+      "source": "d5b05a74239a7d1d1a7ee325d6bd52ac0a95ed6e359719d5b9d29675c94d615e",
+      "target": "e6da36aa679b832bd397f2e37c89c9a9707def4a4907e632de3882d05a7864fd"
+    },
+    {
+      "source": "2707646cdce8f82cd82bab9094df00eabf065248578ad7a3edb855e6435bd14d",
+      "target": "d5b05a74239a7d1d1a7ee325d6bd52ac0a95ed6e359719d5b9d29675c94d615e"
+    },
+    {
+      "source": "1888be8c4e24b44bfb5875ee933a08ff7bee777da1b27a7809e7a7a779ec894d",
+      "target": "2707646cdce8f82cd82bab9094df00eabf065248578ad7a3edb855e6435bd14d"
+    },
+    {
+      "source": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90",
+      "target": "ca1d09bde3e446718da8d130503842fdcc3e7752c1f34e317c56bd8e96b52daa"
+    },
+    {
+      "source": "1018bc0fad374809a24a599c3cc1f61c6d70b9e0b2dba3ceb86dfe79c75b2a82",
+      "target": "ca1d09bde3e446718da8d130503842fdcc3e7752c1f34e317c56bd8e96b52daa"
+    },
+    {
+      "source": "1018bc0fad374809a24a599c3cc1f61c6d70b9e0b2dba3ceb86dfe79c75b2a82",
+      "target": "8bfcc71a2a0868a037569a56442469dab6dff9a5be5f2bd23ec72266ce74e838"
+    },
+    {
+      "source": "8bfcc71a2a0868a037569a56442469dab6dff9a5be5f2bd23ec72266ce74e838",
+      "target": "e59711237a464c7a555a6df36fe3133cd260798a9710b762c1b79714d6a95263"
+    },
+    {
+      "source": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90",
+      "target": "e59711237a464c7a555a6df36fe3133cd260798a9710b762c1b79714d6a95263"
+    },
+    {
+      "source": "132764557bf66f9b9540650d2fa4a5a31750ef69233d5c11eff4e8ebcb410f23",
+      "target": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90"
+    },
+    {
+      "source": "162753c4e5c0bb948611a326d22a7515a8eb3f3d868158aa2313a3849b705044",
+      "target": "ca1d09bde3e446718da8d130503842fdcc3e7752c1f34e317c56bd8e96b52daa"
+    },
+    {
+      "source": "19d4de4197bcbc079902d111aacc8e1783348f746cf002882c1d44be01f4fbe4",
+      "target": "1018bc0fad374809a24a599c3cc1f61c6d70b9e0b2dba3ceb86dfe79c75b2a82"
+    },
+    {
+      "source": "b51cf7135beb1b398d3ea225618a5d5b306d5cb98357c5cb3f6f346ba0b16ab5",
+      "target": "8bfcc71a2a0868a037569a56442469dab6dff9a5be5f2bd23ec72266ce74e838"
+    },
+    {
+      "source": "9994713f143065a887efd789ba8660efc415eab608c40286aaa24f9e25ab2292",
+      "target": "e59711237a464c7a555a6df36fe3133cd260798a9710b762c1b79714d6a95263"
+    },
+    {
+      "source": "c8cee80cf54ab800195c242cc470e100d0390e401f1518c9c77a9b69bc244673",
+      "target": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90"
+    },
+    {
+      "source": "e3ba60f07372bf56da2f68069ad91be39261cda7905f2336825b67bee5710379",
+      "target": "ca1d09bde3e446718da8d130503842fdcc3e7752c1f34e317c56bd8e96b52daa"
+    },
+    {
+      "source": "486b23eca1004afdb6ec91af10c2b5d7cd9d5a96694cfbc98e76bc70e57da233",
+      "target": "1018bc0fad374809a24a599c3cc1f61c6d70b9e0b2dba3ceb86dfe79c75b2a82"
+    },
+    {
+      "source": "4571f80bb05049fbdb73fcc3f0ec46bfcab774d7fb182e09d4a51b84e6eb2acc",
+      "target": "8bfcc71a2a0868a037569a56442469dab6dff9a5be5f2bd23ec72266ce74e838"
+    },
+    {
+      "source": "714b6e96fecec7baba453d0596b500b1c7e1e0130e8f7082a6b698258286bcd0",
+      "target": "e59711237a464c7a555a6df36fe3133cd260798a9710b762c1b79714d6a95263"
+    },
+    {
+      "source": "cbc4c41328b1a2faf31cdba91c5b1ae683cff024f2fb07b47944b64400cc9c47",
+      "target": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90"
+    },
+    {
+      "source": "9195821a339c319200e9e85342eb236c198d6a4a6e9b8f9233fa058503df7250",
+      "target": "ca1d09bde3e446718da8d130503842fdcc3e7752c1f34e317c56bd8e96b52daa"
+    },
+    {
+      "source": "97eb0345742eb7d27024abf8accb10f8c60200dcff791f0d02c6b91ffd9060ba",
+      "target": "1018bc0fad374809a24a599c3cc1f61c6d70b9e0b2dba3ceb86dfe79c75b2a82"
+    },
+    {
+      "source": "8c06d20aaa8fbb96f7ec8675a381184904fd9db05020b47fd4c0ecaf45767f41",
+      "target": "8bfcc71a2a0868a037569a56442469dab6dff9a5be5f2bd23ec72266ce74e838"
+    },
+    {
+      "source": "d052223206d11cc11ac1a07cab50baf3686a3646e7c8a855eeff0c9ef0056255",
+      "target": "e59711237a464c7a555a6df36fe3133cd260798a9710b762c1b79714d6a95263"
+    },
+    {
+      "source": "a1913064ababd348bc5b04a06cd1da3b8cbe850f17d08aa98c7360d66c79cea8",
+      "target": "d5b05a74239a7d1d1a7ee325d6bd52ac0a95ed6e359719d5b9d29675c94d615e"
+    },
+    {
+      "source": "d5b05a74239a7d1d1a7ee325d6bd52ac0a95ed6e359719d5b9d29675c94d615e",
+      "target": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90"
+    },
+    {
+      "source": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90",
+      "target": "0300ba03c74423308ba35ecfe50881f17d44dadc89cd0b27db6f49927b8f131b"
+    }
+  ],
+  "devices": [
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:34000",
+      "emulator_port": 34000,
+      "host": "localhost",
+      "key_name": "a1913064ababd348bc5b04a06cd1da3b8cbe850f17d08aa98c7360d66c79cea8",
+      "port": 33100,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAO+OEamLS55UfaB4ov6PIDnNycjUtl0W\nrBFaEOGjwNqvtuv5koVBnFqsiLCmjIh3xeoiFoL6dGXzlHQvPhoa9+kCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:34000",
+      "emulator_port": 34000,
+      "host": "localhost",
+      "key_name": "0300ba03c74423308ba35ecfe50881f17d44dadc89cd0b27db6f49927b8f131b",
+      "port": 33101,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMAe2NLlSadafLLEP7JvmID4zPaQL/hc\nRYIUxv4CUVWIJtnawWWJ4+GeXAmePhtyZX7X0ASaJi0f0bf5KZBqOlkCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:34000",
+      "emulator_port": 34000,
+      "host": "localhost",
+      "key_name": "a147b019d9a8f76fbfec4e1380321677a7a2a92b3db53a0304b90b91eb4defc1",
+      "port": 33102,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMGlAcWjNMqQJrHxlbtPEXFUi/3dQsYo\nz31r7jC4jz3ALg0oRMN9J4rMX9nB2w/C90ecJfbmZrMnQDpIdAswUO0CAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:34000",
+      "emulator_port": 34000,
+      "host": "localhost",
+      "key_name": "47018407e7ca5b7a24321c095e15b4bf8e3d4b68089615c85dedf4b0b78b4480",
+      "port": 33103,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAL2mDyyi3qT3BBbFpnIJDAeW1hPRp6Vo\n1vUnQsaXUOgLMPm3Mn4udaKIH9j/FO6prCLkemfNenQeiX3R08ZCgRsCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:34000",
+      "emulator_port": 34000,
+      "host": "localhost",
+      "key_name": "d9f7b7f95280ebd7d89bc67f961c365bc7ff998b2bbd311de318edcda08a3858",
+      "port": 33104,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAN9l/B/1Bmyb3s2QlM9OrqsFWs7Uaxhd\nPTTIqkGTFWcKY1q+OC0nLxnFyfTLjqoOfhxqvnU10c/KUl9Mg7YFgeMCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33999",
+      "emulator_port": 33999,
+      "host": "localhost",
+      "key_name": "1888be8c4e24b44bfb5875ee933a08ff7bee777da1b27a7809e7a7a779ec894d",
+      "port": 33105,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAN9yfrCQ3nuVlHHpa/FJPfq9Ii/FL0xg\nV/znd47cE8FCvd/77PjWQPNJ3nuuA6mRMuGojaK2xUzxPYH30YBHCuECAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33999",
+      "emulator_port": 33999,
+      "host": "localhost",
+      "key_name": "9c84a09d3576a0f1608bb8dbbd13d930ab46334f12aea3fa2c0f7a1b1ec06129",
+      "port": 33106,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKWunQxBDpNBfKtEAAh6xRhiGQYOFonz\nRYiywhQZkNJGMFe+Ww2YEU6z+CTIXoYrT2KYchAjkw7qijDnfwYHJpsCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33999",
+      "emulator_port": 33999,
+      "host": "localhost",
+      "key_name": "e6da36aa679b832bd397f2e37c89c9a9707def4a4907e632de3882d05a7864fd",
+      "port": 33107,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALynq89COUA+vxRzls70q/juvhevUt0J\nVAU6cdsC8nhy+WfmrxQqihWLyxkU4TG3VTLwS3UPX9ff0L4Jaop2y0kCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33999",
+      "emulator_port": 33999,
+      "host": "localhost",
+      "key_name": "d5b05a74239a7d1d1a7ee325d6bd52ac0a95ed6e359719d5b9d29675c94d615e",
+      "port": 33108,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMfkfQAJ0C4fwqHdYOQn2KltN44pfB/J\nNPlI9ubrIxlG19XM7DQfNElv7XwUw9kovlp1o9bWiaGYMZXg+Cc1LHsCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33999",
+      "emulator_port": 33999,
+      "host": "localhost",
+      "key_name": "2707646cdce8f82cd82bab9094df00eabf065248578ad7a3edb855e6435bd14d",
+      "port": 33109,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANC2IRvOjiwn5iIEVnVuNds2PebhT7Xh\n1tlBfeLNBal940vmssFcmO+Aw8Vi5szXVYEkSh3gercMCTwQAL0qZD0CAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "05cd8cda3306e0e015ef920d16dbcec901f1f6a89aab341c2bfb453f60d55d90",
+      "port": 33110,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMYIxhbkonkT1Qllv4RS3nVYzzQxFyZS\nF0/Er802x4dR5xhtjUzLtiJ793iA28xnonLXRywMchoqvb6S5XjYECUCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "ca1d09bde3e446718da8d130503842fdcc3e7752c1f34e317c56bd8e96b52daa",
+      "port": 33111,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOYFh1Nl1ww2kETu2alPJbI+fdkzqxEi\n5qW00V99lLcgr4ZqQYJtW1cEHxilF4rFRZBF/FonbAtinoMtuF4WytkCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "1018bc0fad374809a24a599c3cc1f61c6d70b9e0b2dba3ceb86dfe79c75b2a82",
+      "port": 33112,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALJrigkr+hgtfuSgMxbidCWcHRzbaU64\n5h7ZA0bJI/U2FPg1jC4ZSwOTbeOxDT1AFkOMHkmC27Bbf+ySV3AQ2TUCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "8bfcc71a2a0868a037569a56442469dab6dff9a5be5f2bd23ec72266ce74e838",
+      "port": 33113,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJvM10pHsvFAtRxMAMYtpUY5GtixMtjR\n589hWjJsXQDdJ8gIa6nqNVzpOZdXceQtyOF1luxlnPoTDqiTfmONgAUCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "e59711237a464c7a555a6df36fe3133cd260798a9710b762c1b79714d6a95263",
+      "port": 33114,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAK9vmsFY06UoPTQN6veq6GzC/qST4Dz8\nxi6UKaa0yq5rgh/IfhvnQpa0zzxgXhlOLEARRzL76YLL/+lI4d4PLlsCAwEAAQ==\n-----END PUBLIC KEY-----\n"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "132764557bf66f9b9540650d2fa4a5a31750ef69233d5c11eff4e8ebcb410f23",
+      "port": 33115,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAPFD6rHqkU09CQ4wdM5F51/eo1U7xq0O\nVuTcLahYEqxrEzSXlCeJDQm/tr3xG9y1qXF9ZEd82Z1MLCqBXJ/1JVkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "162753c4e5c0bb948611a326d22a7515a8eb3f3d868158aa2313a3849b705044",
+      "port": 33116,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMep75hCP2Qm7wrSygHj7FfJZ/QUS4xM\nz+pKC+LgM76ueKaC2rfDytti5ZWcaAX7OpItjtrViezn/xZ2m5vm60UCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "19d4de4197bcbc079902d111aacc8e1783348f746cf002882c1d44be01f4fbe4",
+      "port": 33117,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJz2PKyg8iMSCcBRbLb/WUmh4zQWGQ4n\nZ+h5yAa1U0RFYrqlUJdm+eYwBGtezgmoSYHcZbajKNCKDJAN1DM9i5sCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "b51cf7135beb1b398d3ea225618a5d5b306d5cb98357c5cb3f6f346ba0b16ab5",
+      "port": 33118,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMlmAH6PCchufwc6OzzLbbQIbOEb1T+x\nc9v9y94v/RidDi5iSNYU9OduECZZ9IF0MxaVpmhW1pxFpK05HvZAwgUCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "9994713f143065a887efd789ba8660efc415eab608c40286aaa24f9e25ab2292",
+      "port": 33119,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMOEheFKzwUz6R+8skVpQ+mYgWPSzMga\n8q0p/2YkzBQ2d7b/5L+cpYkMYNUeApP1bOXb0zCvs8sf08vaLxzIx3ECAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "c8cee80cf54ab800195c242cc470e100d0390e401f1518c9c77a9b69bc244673",
+      "port": 33120,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALtGyodW+/hChdKZfX/UCo0qOFIwuL/V\njggNIV2fy5IMAZAMUqdQMYPuQgOq1NCANaOJ+hBT10nxf/63ijeBqqkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "e3ba60f07372bf56da2f68069ad91be39261cda7905f2336825b67bee5710379",
+      "port": 33121,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKdrFeL26xmJlkQwsXM9228DtU4iFIaU\nFU9VBlke89hlaGATE8sweUJia421f2tiEKJJzFAYhbcsr/YMrPf92gkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "486b23eca1004afdb6ec91af10c2b5d7cd9d5a96694cfbc98e76bc70e57da233",
+      "port": 33122,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAK1NhZBIoWUUrtL/5Vc4PYe90HK2pAnw\nDXaE+XGoAjiqWh12FyxZ7gU+fi4BLoRjhVvOg8cz1h06sYsqjYatdaECAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "4571f80bb05049fbdb73fcc3f0ec46bfcab774d7fb182e09d4a51b84e6eb2acc",
+      "port": 33123,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMEMExa95PLUDZDkl8XI4dp/nc8t8+Vp\nIcIvLCJyME/iW3rsfnWdjb8fkkhj7vFeza0IHG7pkekcoEevq+aAUQUCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "714b6e96fecec7baba453d0596b500b1c7e1e0130e8f7082a6b698258286bcd0",
+      "port": 33124,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANybQirYR76r1JKbLeiidPlOJ3sFZ64o\n6pgCmdQr7n0o4Gy+JJFLNFVjTzdzXSqQtBXXGDQ2OJK2h9eVKi43c7UCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "cbc4c41328b1a2faf31cdba91c5b1ae683cff024f2fb07b47944b64400cc9c47",
+      "port": 33125,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMhfkTSqNU+um28L7jq1faFaRKwTRMdK\n3dljXDnKsg+qL+ya1DJKp/wyEI2NWHBl9X1/GgKaELsYl42HG71+4jkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "9195821a339c319200e9e85342eb236c198d6a4a6e9b8f9233fa058503df7250",
+      "port": 33126,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOeFObncUcH2cei3onT7urXe24t8lV3Z\nxaNdMmgu8ugxRIiOJZPK9AROHV0ELkXbJw6s8sEEsiXNbi4j7KWtRvsCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "97eb0345742eb7d27024abf8accb10f8c60200dcff791f0d02c6b91ffd9060ba",
+      "port": 33127,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOF+0qcGG/EAl7EtmTeloWIIsgHkp/G9\nbTvlz46Xltl1VLpqGCHI2R7Rb5a9Ec70xUPwfT38cRhFL53utBA4MqkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "8c06d20aaa8fbb96f7ec8675a381184904fd9db05020b47fd4c0ecaf45767f41",
+      "port": 33128,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKU1lH75P2Cp0KcLDkt+dL4s/JK863hw\nZiq9Mpofaa5bldRuUoTzaBjghWFW0MBvY3PYZt51zJtj+llEfY7c31MCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    },
+    {
+      "emulator_host": "localhost",
+      "emulator_id": "localhost:33998",
+      "emulator_port": 33998,
+      "host": "localhost",
+      "key_name": "d052223206d11cc11ac1a07cab50baf3686a3646e7c8a855eeff0c9ef0056255",
+      "port": 33129,
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKOqOz+guuG9bcPbAcIeDKny6127UnKY\nta9SxxW9emVhaO7+Y4Y+zrhNYSS2Q84Yy5el9DbAEOaI/I9V/ni/DhkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "type": "temperature-sensor"
+    }
+  ]
+}
