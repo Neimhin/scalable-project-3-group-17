@@ -1,6 +1,6 @@
 function create_graph(topology) {
     // Convert adjacency matrix to nodes and links
-    let nodes = topology.devices.map(d => ({id: d.key_name,em:d.emulator_id}));
+    let nodes = topology.devices.map(d => ({id: d.key_name,em:d.emulator_id, interface: d.host + ":" + d.port}));
     let uniqueItems = [...new Set(nodes.map(d=> {return d.em}))]
     console.log(uniqueItems)
     var colors = d3.scaleOrdinal().domain(uniqueItems).range(["gold", "blue", "green", "yellow", "black", "grey", "darkgreen", "pink", "brown", "slateblue", "grey1", "orange"])
@@ -15,6 +15,11 @@ function create_graph(topology) {
         }
         window.alert("node not not found")
     }
+
+    const tooltip = d3.select('body').append('div')
+        .attr('class', 'tooltip')
+        .style('opacity', 0);
+
     let links = topology.connections.map(d => ({source: find_node(d.source), target: find_node(d.target)}))
     console.log(nodes)
     console.log(links)
@@ -81,6 +86,19 @@ function create_graph(topology) {
         .attr('r', 5)
         .attr('fill',function(d){return colors(d.em)})
         .on('click', on_node_click)
+        .on('mouseover', function(event, d) {
+            tooltip.transition()
+                .duration(200)
+                .style('opacity', .9);
+            tooltip.html(d.interface) // Assuming you have a 'port' attribute in your data
+                .style('left', (event.pageX) + 'px')
+                .style('top', (event.pageY - 28) + 'px');
+        })
+        .on('mouseout', function(d) {
+            tooltip.transition()
+                .duration(500)
+                .style('opacity', 0);
+        });
 
     // Update positions each tick
     function ticked() {

@@ -129,6 +129,15 @@ class SlaveEmulator:
             res = await client.post(f"http://{master_host}:{master_port}/new_device_topology", json=body, headers=headers)
             print("DEVICE TOPOLOGY UPDATED? ", res)        
 
+    def readable_trace_headers(self, trace_headers):
+        string = ""
+        for i in range(len(trace_headers)):
+            header_content = trace_headers[f"x-g17icn-router-{i}"]
+            key_name, host, port = header_content.split("_")
+            string += host + ":" + str(port) + " -> "
+        string += "<"
+        return string
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")

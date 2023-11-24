@@ -42,8 +42,6 @@ def extract_matching_headers(request: web.Request) -> dict[str,str]:
     header_pattern = re.compile(r'x-g17icn-router-(\d+)')
     return {key: value for key, value in request.headers.items() if header_pattern.match(key)}
 
-
-
 class HTTPServer:
     def __init__(self,handler: AiohttpHandler, host:str='localhost'):
         self.logger = logging.getLogger()
@@ -228,7 +226,7 @@ class Device:
         self.request_handling_history.append({
             "time": datetime.now(),
             "packet": packet,
-            #"trace_headers": trace_headers,
+            "trace_headers": self.emulation.readable_trace_headers(trace_headers),
         })
         if len(trace_headers) != hop_count + 1:
             print("bad trace headers")
