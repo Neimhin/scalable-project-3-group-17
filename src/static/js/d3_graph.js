@@ -1,15 +1,24 @@
 function create_graph(topology) {
     // Convert adjacency matrix to nodes and links
-    let nodes = topology.devices.map(d => ({id: d.key_name,em:d.emulator_id, interface: d.host + ":" + d.port}));
+    let nodes = topology.devices.map(d => ({id: d.key_name, em:d.emulator_id, interface: d.host + ":" + d.port}));
     let uniqueItems = [...new Set(nodes.map(d=> {return d.em}))]
     console.log(uniqueItems)
     var colors = d3.scaleOrdinal().domain(uniqueItems).range(["gold", "blue", "green", "yellow", "black", "grey", "darkgreen", "pink", "brown", "slateblue", "grey1", "orange"])
   
+    // Set up the SVG
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    let centralNode = {
+        id: "center",
+        fx: width / 2,
+        fy: height / 2,
+    }; // fx and fy fix the node's position
+    nodes.push(centralNode);
+
     function find_node(key_name) {
         for(const node of nodes) {
-            console.log(node)
             if (node.id === key_name){
-                console.log("found:", nodes)
                 return node
             }
         }
@@ -20,16 +29,20 @@ function create_graph(topology) {
         .attr('class', 'tooltip')
         .style('opacity', 0);
 
+
     let links = topology.connections.map(d => ({source: find_node(d.source), target: find_node(d.target)}))
     console.log(nodes)
     console.log(links)
 
+    nodes.forEach(node => {
+        if (node.id !== "center") {
+            links.push({ source: node, target: centralNode, invisible: true });
+        }
+    });
+
     
     d3.select('#graph').selectAll("*").remove()
 
-    // Set up the SVG
-    let width = window.innerWidth;
-    let height = window.innerHeight;
     const svg = d3.select('#graph')
         .append('svg')
         .attr('width', width)
@@ -50,7 +63,7 @@ function create_graph(topology) {
     // Create the force simulation
     const simulation = d3.forceSimulation(nodes)
         .force('link', d3.forceLink(links).distance(10))
-        .force('charge', d3.forceManyBody().strength(-7))
+        .force('charge', d3.forceManyBody().strength(-45))
         .force('center', d3.forceCenter(width / 2, height / 2))
         .on('tick', ticked);
 
@@ -71,12 +84,19 @@ function create_graph(topology) {
     // simulation.force('bounds', boundingBoxForce());
 
     // Draw lines for the links
+    // const link = svg.append('g')
+    //     .attr('stroke', '#999')
+    //     .attr('stroke-opacity', 0.6)
+    //     .selectAll('line')
+    //     .data(links)
+    //     .join('line');
+
     const link = svg.append('g')
-        .attr('stroke', '#999')
-        .attr('stroke-opacity', 0.6)
         .selectAll('line')
         .data(links)
-        .join('line');
+        .join('line')
+        .attr('stroke', d => d && d.invisible ? 'none' : '#999')
+        .attr('stroke-opacity', 0.6);
 
     function on_node_click(a, b, c) {
         console.log("clicked node:", a, b, c)
@@ -87,7 +107,7 @@ function create_graph(topology) {
         .attr('stroke', '#fff')
         .attr('stroke-width', 1.5)
         .selectAll('circle')
-        .data(nodes)
+        .data(nodes.filter(d=>d.id!=='center'))
         .join('circle')
         .attr('r', 5)
         .attr('fill',function(d){return colors(d.em)})

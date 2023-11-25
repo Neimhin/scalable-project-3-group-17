@@ -17,7 +17,7 @@
     border-radius: 1px;
     pointer-events: none;
 }
-#devices_list {
+#devices_list #test_reoprt {
   height: 10em;
   overflow: auto;
 }
@@ -31,18 +31,22 @@
     <button onclick="endpoint('/start_single_datum_test?distance=3')">start single datum test distance 3</button><br>
     <button onclick="endpoint('/start_single_datum_test?distance=4')">start single datum test distance 4</button><br>
     <button onclick="endpoint('/start_single_datum_test?distance=5')">start single datum test distance 5</button><br>
+    <h1>tests</h1>
+    <button hx-get="/test_report" hx-target="#test_report">refresh test report</button>
+    <div id="test_report"></div>
     <h1>devices</h1>
     <div>
       <div id="devices_list"></div>
       <button  hx-get="/devices" hx-target="#devices_list">refresh devices</button>
-    </div>
+    </div>  
     <h1>network topology</h1>
-    <button onclick="new_adjacency_matrix()">refresh</button>
-    <button onclick="disconnect_a_random_device()">disconnect a random device</button>
+    <button hx-get="/restore_topology" hx-target="#log" hx-swap="afterend">restore-topology (reconnect all nodes)</button>
+    <button onclick="new_adjacency_matrix()">refresh topology</button>
+    <button hx-get="/disconnect_device" hx-target="#log" hx-swap="afterend">disconnect a random device</button>
     <div id="graph"></div>
+    <h1>command log</h1>
+    <div id="log"></div>
     <script src="{{ url_for('static', filename='js/d3_graph.js') }}"></script>
-
-    <script src="{{ url_for('static', filename='js/device_list.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
   </body>
 </html>

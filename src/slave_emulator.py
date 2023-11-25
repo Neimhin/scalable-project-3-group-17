@@ -296,6 +296,16 @@ async def main():
     @app.route('/debug/trusted_keys' ,methods=['GET'])
     async def debug_trusted_keys():
         return quart.jsonify(emulator.trusted_keys), 200
+    
+    @app.route('/device_cache' ,methods=['GET'])
+    async def device_cache():
+        key_name = quart.request.args.get("key_name",type=str,default=None)
+        if key_name is None:
+            return "bad request", 400
+        for device in emulator.devices:
+            if device.jwt.key_name == key_name:
+                return quart.jsonify(device.CACHE)
+        return "device not found", 400
 
     @app.route('/debug/cache' ,methods=['GET'])
     async def debug_cache():

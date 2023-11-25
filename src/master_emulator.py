@@ -43,6 +43,8 @@ def find_devices(device_names_to_find: List[str]=[], device_list=[]) -> List[dic
             devices.append(device)
     return devices
 
+test_id = 0
+
 """
 This class holds state and functionality for starting,
 querying, and evaluating a network test,
@@ -58,10 +60,41 @@ TODO:
 """
 class SingleDatumTransferTest:
     def __init__(self,master_emulator: MasterEmulator, distance: int):
+        global test_id
         assert type(master_emulator) == MasterEmulator
         self.master_emulator = master_emulator
         assert type(distance) == int
         self.distance = distance
+        self.test_id = test_id
+        test_id += 1
+
+    async def render_html(self):
+        device_1 = self.device_with_data
+        device_2 = self.device_with_desire
+        h2 = device_2['emulator_host']
+        p2 = device_2['emulator_port']
+        k2 = device_2['key_name']
+        async with http_client.no_proxy() as client:
+            device_2_cache = await client.get(f"http://{h2}:{p2}/device_cache?key_name={k2}").json()
+            test_passed = self.data_name in device_2_cache
+            return f"""
+<div>
+    <h2>test {self.test_id}</h2>
+    passed: <span style='color: {'green' if test_passed else 'red'};'>{'✓' if test_passed else '✗'}</span>
+    data name: {self.data_name}<br>
+    data: {self.data}<br>
+    <h3>device with data</h3>
+        emulator id: {device_1['emulator_id']}<br>
+        interface:  {device_1['host']}:{device_1['port']}<br>
+    <h3>device with desire</h3>
+        emulator id: {device_1['emulator_id']}<br>
+        interface:  {device_1['host']}:{device_1['port']}<br>
+        cache: {device_2_cache}
+</div>
+"""
+
+
+
 
     async def start(self):
         self.topology_to_nx_graph() # convert emulator topology to networkx graph
@@ -74,6 +107,8 @@ class SingleDatumTransferTest:
             device_names_to_find=self.random_pair,
             device_list=self.master_emulator.current_topology['devices']
             )
+        self.device_with_data = device_1
+        self.device_with_desire = device_2
         self.data_name = f"/random-data/{random.randint(0,100000)}"
         self.data = random.randint(0,100000)
         # slave emulator interface
@@ -408,12 +443,25 @@ async def main():
     @app.route('/disconnect_device', methods=['GET'])
     async def disconnect_device():
         device_key_name = quart.request.args.get('key_name',default=None, type=str)
+        device = None
         if device_key_name is None:
             import random
-            device_key_name = random.choice(emulator.current_topology['devices'])['key_name']
+            device = random.choice(emulator.current_topology['devices'])
+            device_key_name = device['key_name']
+        else:
+            for d in emulator.current_topology['devices']
+                if d['key_name'] == device_key_name
+                    device = d
+                    break
         emulator.disconnect_device(device_key_name)
+        for device
         emulator.should_propagate.set()
-        return "ok baby", 200
+        return f"<div>disconnected device: {device_key_name[:8]} {device['host']}:{device['port']}</div>", 200
+    
+    @app.route('/restore_topology', methods=['GET'])
+    async def restore_topology():
+        emulator.create_ocean_demo_topology()
+        return "done", 200
     
     @app.route('/devices', methods=['GET'])
     async def devices_index():
@@ -456,7 +504,11 @@ async def main():
         data_giver = sdt.random_pair[0]
         desire_receiver = sdt.random_pair[1]
         return quart.jsonify(f"Gave data to {data_giver} and desire to {desire_receiver}"), 200
-
+    
+    @app.route("/test_report", methods=['GET'])
+    async def test_report():
+        results = await asyncio.gather(*[asyncio.create_task(test.render_html()) for test in single_datum_tests])
+        return "".join(results), 200
     
     @app.route('/debug/single_datum_test', methods=['GET'])
     async def debug_single_datum_test():
