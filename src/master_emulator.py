@@ -119,6 +119,7 @@ def generate_random_desire():
 class MasterEmulator:
     def __init__(self,heartbeat:Union[int,float]=1):
         self.heartbeat_interval = heartbeat
+        self.trusted_keys = {}
         self.registered_slaves = []
         self.dead_interfaces = []
         self.adjacency_matrix = []
@@ -169,8 +170,7 @@ class MasterEmulator:
     
     ##### contributor: naarora #####
 
-    async def send_topology_to_slave(self, slave):
-
+    async def send_topology_and_trusted_keys_to_slave(self, slave: dict):
         slave_emulator_interface = slave["emulator_interface"]
         host = slave_emulator_interface['host']
         port = int(slave_emulator_interface['port'])
@@ -179,11 +179,12 @@ class MasterEmulator:
         try:
             async with http_client.no_proxy() as client:
                     headers = {"content-type": "application/json"}
-                    await client.post(f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}/update_topology", json=self.current_topology, headers=headers)
+                    prefix = f"http://{slave_emulator_interface['host']}:{slave_emulator_interface['port']}"
+                    await client.post(f"{prefix}/update_topology", json=self.current_topology, headers=headers)
+                    await client.post(f"{prefix}/update_trusted_keys", json=self.trusted_keys, headers=headers)
                     return True
         except Exception as e:
             print(f"failed to send topology to {host}:{port}", str(e))
-            raise e
             return False
     
     def propagate_topology(self) -> asyncio.Task:
@@ -192,7 +193,7 @@ class MasterEmulator:
                 await self.should_propagate.wait()
                 try:
                     self.should_propagate.clear()
-                    tasks = [asyncio.create_task(self.send_topology_to_slave(s)) for s in self.registered_slaves]
+                    tasks = [asyncio.create_task(self.send_topology_and_trusted_keys_to_slave(s)) for s in self.registered_slaves]
                     together = asyncio.gather(*tasks,return_exceptions=True)
                     results = await together
                     print("finished propagating topology")
@@ -271,6 +272,11 @@ class MasterEmulator:
                 self.registered_slaves[i] = registration_form
                 return "Slave Updated"
         self.registered_slaves.append(registration_form)
+
+        for device in registration_form['devices']:
+            if device['trusted']:
+                self.trusted_keys[device['key_name']] = device['public_key']
+
         self.create_ocean_demo_topology()
         print("setting should_propagate")
         try:

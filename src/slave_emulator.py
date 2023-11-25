@@ -32,6 +32,7 @@ class SlaveEmulator:
             "devices": [],
             "connections": [],
         }
+        self.trusted_keys = {}
 
         # TODO: start slave http server
 
@@ -45,6 +46,7 @@ class SlaveEmulator:
                 "key_name": device.jwt.key_name,
                 "host": host,
                 "port": device.server.port,
+                "trusted": True,
                 "public_key": device.jwt.public_key.decode("utf-8"),
                 "emulator_id": self.host + ":" + str(self.port),
                 "emulator_host": self.host,
@@ -218,6 +220,12 @@ async def main():
             return quart.jsonify({"message": "bad topology", "error": str(e)}), 400
         return quart.jsonify({"message": "topology updated"}), 200
     
+    @app.route('/update_trusted_keys' ,methods=['POST'])
+    async def update_trusted_keys():
+        body = await quart.request.get_json()
+        emulator.trusted_keys = body
+        return quart.jsonify({"message": "trusted keys updated"}), 200
+    
     @app.route('/set_desire_for_all' ,methods=['GET'])
     async def set_desire_for_all():
         # give each device a new desire
@@ -285,6 +293,10 @@ async def main():
     async def debug_topology():
         return quart.jsonify(emulator.current_topology), 200
     
+    @app.route('/debug/trusted_keys' ,methods=['GET'])
+    async def debug_trusted_keys():
+        return quart.jsonify(emulator.trusted_keys), 200
+
     @app.route('/debug/cache' ,methods=['GET'])
     async def debug_cache():
         neighbours = {}

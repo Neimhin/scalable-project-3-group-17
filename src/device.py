@@ -266,8 +266,24 @@ class Device:
         # headers[f"x-g17icn-router-{hop_count+1}"] = self.jwt.key_name
 
         if packet_type == "interest":
+                requestor_key_name = packet[PACKET_FIELD_REQUESTOR_KEY_NAME]
+                requestor_public_key = self.emulation.trusted_keys.get(requestor_key_name)
+                if requestor_public_key is None:
+                    return web.Response(text="invalid packet", status=400)
+                is_valid_token = self.jwt.valid_token(jwt, requestor_public_key)
+                if not is_valid_token:
+                    return web.Response(text="invalid packet", status=400)
+                print("valid interest token")
                 asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
         elif packet_type == "satisfy":
+                sender_key_name = packet[PACKET_FIELD_SENDER_KEY_NAME]
+                sender_public_key = self.emulation.trusted_keys.get(sender_key_name)
+                if sender_public_key is None:
+                    return web.Response(text="invalid packet", status=400)
+                is_valid_token = self.jwt.valid_token(jwt, sender_public_key)
+                if not is_valid_token:
+                    return web.Response(text="invalid packet", status=400)
+                print("valid satisfy token")
                 asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
         else:
                 raise Exception("unrecognised packet type: " + str(packet_type))

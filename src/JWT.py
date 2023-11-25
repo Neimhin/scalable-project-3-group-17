@@ -73,6 +73,14 @@ class JWT:
             return tok
         else:
             raise ValueError("Public key not available. Call init_jwt with a public key.")
+        
+    def valid_token(self, token: str, pub_key: str) -> bool:
+        try:
+            decode_result = jwt.decode(token, pub_key.encode("utf-8"), options={"verify_signaturue": True}, algorithms=[self.algorithm])
+            print("decode result:", decode_result)
+            return True
+        except jwt.InvalidTokenError:
+            return False
 
 if __name__ == "__main__":
     j = JWT(algorithm='none')
