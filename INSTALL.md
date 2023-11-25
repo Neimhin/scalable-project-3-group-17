@@ -1,10 +1,11 @@
 ### cryptography
-installing the pip `cryptography` library depends on 
-having an installion of the rust compiler
+When running on a raspberry pi the python `cryptography` library won't install
+unless you have the rust compiler installed.
 
-follow the instructions no the rustup website to [install rust](https://rustup.rs/)
+Follow the instructions on the rustup website to [install rust](https://rustup.rs/).
 
-source your .bashrc to make sure rust is on your path:
+Source your .bashrc to make sure `rustc` is on your path:
 `source ~/.bashrc`
 
-`pip install cryptography`
+### install the python dependencies
+`pip install -f requirements.txt`
