@@ -17,8 +17,7 @@ from typing import TYPE_CHECKING
 from typing import Callable
 import gateway_port
 from aiohttp import web
-from typing import Coroutine, Any
-import traceback
+from typing import Coroutine, Any, Literal
 import re
 
 if TYPE_CHECKING:
@@ -31,7 +30,7 @@ def list_is_unique(lst: List[Any]):
     return len(lst) == len(set(lst))
 
 
-def extract_matching_headers(request: web.Request) -> dict[str,str]:
+def extract_trace_headers(request: web.Request) -> dict[str,str]:
     """
     Extracts headers from the request that match the pattern 'x-g17icn-router-<n>',
     where <n> is a natural number.
@@ -69,8 +68,8 @@ PACKET_FIELD_DATA_NAME =                "data_name"
 PACKET_FIELD_REQUEST_TYPE =             "type"
 PACKET_FIELD_CREATED_AT =               "created_at"
 PACKET_FIELD_DATA_PLAIN =               "data"
-PACKET_FIELD_REQUESTOR_KEY_NAME =       "requestor_key_name"
-PACKET_FIELD_SENDER_KEY_NAME =          "requestor_key_name"
+PACKET_FIELD_AUTHOR_KEY_NAME =          "author_key_name"
+MAX_HOPS = 10
 
 def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Optional[DeviceInterface]:
     for di in dis:
@@ -83,24 +82,27 @@ HOP_HEADER =                    "x-g17icn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
-    def __init__(self, emulation: 'SlaveEmulator',  router: Router, jwt_algorithm:str='RS256',host:str='localhost'):
+    def __init__(self,
+                 emulation: 'SlaveEmulator', 
+                 router: Router,
+                 jwt_algorithm:str='RS256',
+                 host:str='localhost',
+                 key_size:Literal[512,1024,2048]=512,
+                 ):
         self.host = host
         self.router = router
         self.logger = logging.getLogger()
         self.emulation = emulation
-        # async def handler_async(request):
-        #     return await self.handler(request)
-        self.server = HTTPServer(self.handler, host=host)
+        self.server = HTTPServer(self.http_post_request_handler, host=host)
         self.desire_queue_task = None
         self.desire_queue: asyncio.Queue[str] = asyncio.Queue()
         self.jwt = JWT.JWT(algorithm=jwt_algorithm)
-        self.jwt.init_jwt(key_size=512)
+        self.jwt.init_jwt(key_size=key_size)
         self.debug_flag=False
         # TODO: define these from seperate class cache       
         self.PIT = {} 
         self.CACHE = {}
         self.neighbours = []
-        # self.TRUSTED_IDS = self.emulation.generate_trusted_keys_table_all_nodes()
 
         # for debugging
         self.desire_history = []
@@ -127,7 +129,7 @@ class Device:
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
         #_list = self.PIT[data_name]['waiting_list']
         pit_entry = self.PIT.get(data_name)
-        interested_key_name = packet.get(PACKET_FIELD_REQUESTOR_KEY_NAME)
+        interested_key_name = packet.get(PACKET_FIELD_AUTHOR_KEY_NAME)
         _list = None
         if pit_entry:
             _list = pit_entry.get('waiting_list')
@@ -179,13 +181,13 @@ class Device:
         assert type(hop) == int
         self.logger.debug(packet)
         data_name=packet[PACKET_FIELD_DATA_NAME]
-        requestor = packet[PACKET_FIELD_REQUESTOR_KEY_NAME]
+        requestor = packet[PACKET_FIELD_AUTHOR_KEY_NAME]
         if requestor == self.jwt.public_key:
             return
 
         data = self.CACHE.get(data_name)
         self.logger.debug(f"GOT DATA: {data} {self.server.port}")
-        interested_key_name = packet[PACKET_FIELD_REQUESTOR_KEY_NAME]
+        interested_key_name = packet[PACKET_FIELD_AUTHOR_KEY_NAME]
         if data:
             return await self.send_to_network(data_name, data,hop, [interested_key_name], headers=headers)
         
@@ -211,7 +213,7 @@ class Device:
         self.logger.debug(f"got neighbours {list(map(str,self.neighbours))}")
         return self.neighbours
     
-    async def handler(self, request: web.Request) -> web.Response:
+    async def http_post_request_handler(self, request: web.Request) -> web.Response:
         hop_count=None
         try:
             self.logger.debug(request.headers)
@@ -221,72 +223,46 @@ class Device:
             self.logger.debug(f"failed to extract hop count header {request.headers()}")
             return web.Response(text="failed",status=400)
         jwt = await request.text()
+        # decode the jwt payload WITHOUT validating
         packet = self.jwt.decode(jwt)
-        trace_headers = extract_matching_headers(request)
+        trace_headers = extract_trace_headers(request)
+        
         self.request_handling_history.append({
             "time": datetime.now(),
             "packet": packet,
             "trace_headers": self.emulation.readable_trace_headers(trace_headers),
         })
+
         if len(trace_headers) != hop_count + 1:
-            print("bad trace headers")
-            print(self.host, self.server.port, trace_headers)
-            print(hop_count)
-            try:
-                raise Exception("bad trace headers don't match hop count")
-            except Exception as e:
-                print(e)
-                print(traceback.print_exc())
-            exit()
+            self.logger.debug(f"wrong number of trace headers: got {len(trace_headers)}, should be {hop_count + 1}")
+            return web.Response(text="bad trace headers",status=400)
         
-        if not list_is_unique(trace_headers.values()):
-            self.logger.debug(f"loop detected in headers {trace_headers}")
-            return web.Response(text="loop detected")
+        if hop_count + 1 > MAX_HOPS:
+            self.logger.debug(f"too many hops")
+            return web.Response(text="too many hops",status=400)
+
+        # if not list_is_unique(trace_headers.values()):
+        #     self.logger.debug(f"loop detected in headers {trace_headers}")
+        #     return web.Response(text="loop detected")
 
         trace_headers[f"x-g17icn-router-{hop_count + 1}"] = self.router_header()
 
-        self.logger.debug(f"{trace_headers}")
-        # TODO: validate packet format
-        # TODO: check if id exists in TRUSTED_IDS
         packet_type = packet.get(PACKET_FIELD_REQUEST_TYPE)
-        self.logger.debug(packet_type)
+        self.logger.debug(f"validating {packet_type} packet")
 
-        # headers = {}
-        # for router_number in range(hop_count):
-        #     print(f"looking for router {router_number}")
-        #     header_name = f"x-g17icn-router-{router_number}"
-        #     header_val = request.headers.get(header_name)
-        #     if not header_val:
-        #         print(request.headers)
-        #         print(packet)
-        #         print("missing router header", header_name)
-        #         exit()
-        #     print("found header", header_name, header_val)
-        #     headers[header_name] = header_val
-        # headers[f"x-g17icn-router-{hop_count+1}"] = self.jwt.key_name
+        author_key_name = packet[PACKET_FIELD_AUTHOR_KEY_NAME]
+        author_public_key = self.emulation.trusted_keys.get(author_key_name)
+        if author_public_key is None or not self.jwt.valid_token(jwt, author_public_key):
+            return web.Response(text=f"invalid {packet_type} packet", status=400)
 
         if packet_type == "interest":
-                requestor_key_name = packet[PACKET_FIELD_REQUESTOR_KEY_NAME]
-                requestor_public_key = self.emulation.trusted_keys.get(requestor_key_name)
-                if requestor_public_key is None:
-                    return web.Response(text="invalid packet", status=400)
-                is_valid_token = self.jwt.valid_token(jwt, requestor_public_key)
-                if not is_valid_token:
-                    return web.Response(text="invalid packet", status=400)
-                print("valid interest token")
-                asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
+            self.logger.debug("processing valid interest token")
+            asyncio.create_task(self.handle_interest_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
         elif packet_type == "satisfy":
-                sender_key_name = packet[PACKET_FIELD_SENDER_KEY_NAME]
-                sender_public_key = self.emulation.trusted_keys.get(sender_key_name)
-                if sender_public_key is None:
-                    return web.Response(text="invalid packet", status=400)
-                is_valid_token = self.jwt.valid_token(jwt, sender_public_key)
-                if not is_valid_token:
-                    return web.Response(text="invalid packet", status=400)
-                print("valid satisfy token")
-                asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
+            self.logger.debug("processing valid satisfy token")
+            asyncio.create_task(self.handle_satisfy_packet(packet,jwt,hop=hop_count+1,request=request,headers=trace_headers))
         else:
-                raise Exception("unrecognised packet type: " + str(packet_type))
+            raise Exception("unrecognised packet type: " + str(packet_type))
         return web.Response(text="ok")
 
     '''
@@ -327,7 +303,7 @@ class Device:
             PACKET_FIELD_REQUEST_TYPE: "satisfy",
             PACKET_FIELD_DATA_NAME: data_name,
             PACKET_FIELD_DATA_PLAIN: data,
-            PACKET_FIELD_SENDER_KEY_NAME: self.jwt.key_name,
+            PACKET_FIELD_AUTHOR_KEY_NAME: self.jwt.key_name,
             PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
         })
 
@@ -370,7 +346,7 @@ class Device:
                     data = {
                         PACKET_FIELD_REQUEST_TYPE: "interest",
                         PACKET_FIELD_DATA_NAME: data_name,
-                        PACKET_FIELD_REQUESTOR_KEY_NAME: self.jwt.key_name,
+                        PACKET_FIELD_AUTHOR_KEY_NAME: self.jwt.key_name,
                         PACKET_FIELD_CREATED_AT: datetime.now().timestamp(),
                     }
                     self.logger.debug(data)
