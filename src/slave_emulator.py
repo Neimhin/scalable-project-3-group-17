@@ -210,7 +210,7 @@ async def main():
     # instantiate app
     app = Quart(__name__)
 
-
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     @app.route('/update_topology' ,methods=['POST'])
     async def update_topology():
         body = await quart.request.get_json()
@@ -220,12 +220,14 @@ async def main():
             return quart.jsonify({"message": "bad topology", "error": str(e)}), 400
         return quart.jsonify({"message": "topology updated"}), 200
     
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     @app.route('/update_trusted_keys' ,methods=['POST'])
     async def update_trusted_keys():
         body = await quart.request.get_json()
         emulator.trusted_keys = body
         return quart.jsonify({"message": "trusted keys updated"}), 200
     
+    # contributors: NAARORA NROBINSO
     @app.route('/set_desire_for_all' ,methods=['GET'])
     async def set_desire_for_all():
         # give each device a new desire
@@ -236,6 +238,7 @@ async def main():
             await device.desire_queue.put(data_name)
         return f'set desire {data_name} for {len(emulator.devices)} devices', 200
     
+    # contributors: NAARORA NROBINSO
     @app.route('/set_desire_for_one' ,methods=['GET'])
     async def set_desire_for_one():
         # give one device a new desire
@@ -249,6 +252,7 @@ async def main():
                 return f'set desire {data_name} for device {device.jwt.key_name}', 200
         return f"no device with name {device_key_name} found", 400
     
+    # contributors: NAARORA NROBINSO
     @app.route('/give_data_to_random_device', methods=['GET'])
     async def give_data_to_random_device():
         data_name = quart.request.args.get("data_name", default=None, type=str)
@@ -261,6 +265,7 @@ async def main():
         device.CACHE[data_name] = data
         return f"gave data to device {random_i} {device.host}:{device.server.port}", 200
     
+    # contributors: ZHFU NROBINSO
     @app.route('/give_data_to_device', methods=['GET'])
     async def give_data_to_device():
         device_name = quart.request.args.get("key_name", default=None, type=str)
@@ -278,6 +283,7 @@ async def main():
         device.CACHE[data_name] = data
         return f"gave data to device {device.host}:{device.server.port}", 200
     
+    # contributors: NROBINSO
     @app.route('/all_dbs', methods=['GET'])
     async def all_dbs():
         dbs = []
@@ -289,14 +295,17 @@ async def main():
             dbs.append(db_set)
         return quart.jsonify(dbs), 200
 
+    # contributors: NROBINSO
     @app.route('/debug/topology' ,methods=['GET'])
     async def debug_topology():
         return quart.jsonify(emulator.current_topology), 200
     
+    # contributors: NROBINSO
     @app.route('/debug/trusted_keys' ,methods=['GET'])
     async def debug_trusted_keys():
         return quart.jsonify(emulator.trusted_keys), 200
     
+    # contributors: NROBINSO
     @app.route('/device_cache' ,methods=['GET'])
     async def device_cache():
         key_name = quart.request.args.get("key_name",type=str,default=None)
@@ -309,6 +318,7 @@ async def main():
         print(f"device not found: {key_name}")
         return "device not found", 400
 
+    # contributors: NROBINSO
     @app.route('/debug/cache' ,methods=['GET'])
     async def debug_cache():
         neighbours = {}
@@ -318,6 +328,7 @@ async def main():
         print(neighbours)
         return quart.jsonify(neighbours), 200
     
+    # contributors: NROBINSO
     @app.route('/debug/desires' ,methods=['GET'])
     async def debug_desires():
         devices = {}
@@ -325,6 +336,7 @@ async def main():
             devices[f"{device.host}:{device.server.port}"] = device.desire_history
         return quart.jsonify(devices), 200
     
+    # contributors: NROBINSO
     @app.route('/debug/requests' ,methods=['GET'])
     async def debug_request():
         devices = {}
@@ -332,7 +344,7 @@ async def main():
             devices[f"{device.host}:{device.server.port}"] = device.request_handling_history
         return quart.jsonify(devices), 200
     
-        
+    # contributors: NROBINSO
     @app.route('/debug/fib' ,methods=['GET'])
     async def debug_fib():
         neighbours = []
@@ -342,6 +354,7 @@ async def main():
         print(neighbours)
         return quart.jsonify(neighbours), 200
     
+    # contributors: NROBINSO
     @app.route('/debug/pit' ,methods=['GET'])
     async def debug_pit():
         neighbours = []
@@ -351,6 +364,7 @@ async def main():
         print(neighbours)
         return quart.jsonify(neighbours), 200
     
+    # contributors: NROBINSO
     @app.route('/debug/neighbours' ,methods=['GET'])
     async def debug_neighbours():
         neighbours = []
@@ -360,6 +374,7 @@ async def main():
         print(neighbours)
         return quart.jsonify(neighbours), 200
     
+    # contributors: NROBINSO
     @app.route('/debug/interest' ,methods=['GET'])
     async def debug_interest():
         PITTable = []
@@ -369,6 +384,7 @@ async def main():
         print(PITTable)
         return quart.jsonify(PITTable), 200
     
+    # contributors: NROBINSO
     def signal_handler():
         print("interruption signal received")
         for t in emulator_tasks:

@@ -25,11 +25,11 @@ if TYPE_CHECKING:
 
 AiohttpHandler = Callable[[web.Request],Coroutine[Any,Any,web.Response]]
 
-
+# contributors: AGRAWASA ZHFU NAARORA NROBINSO
 def list_is_unique(lst: List[Any]):
     return len(lst) == len(set(lst))
 
-
+# contributors: AGRAWASA ZHFU NAARORA NROBINSO
 def extract_trace_headers(request: web.Request) -> dict[str,str]:
     """
     Extracts headers from the request that match the pattern 'x-g17icn-router-<n>',
@@ -41,7 +41,9 @@ def extract_trace_headers(request: web.Request) -> dict[str,str]:
     header_pattern = re.compile(r'x-g17icn-router-(\d+)')
     return {key: value for key, value in request.headers.items() if header_pattern.match(key)}
 
+# contributors: ZHFU NROBINSO
 class HTTPServer:
+    # contributors: ZHFU NROBINSO
     def __init__(self,handler: AiohttpHandler, host:str='localhost'):
         self.logger = logging.getLogger()
         self.port = None
@@ -49,7 +51,7 @@ class HTTPServer:
         self.host = host
         # an async event that is set after the server has started
         self.started = asyncio.Event()
-
+    # contributors: ZHFU NROBINSO
     async def start(self):
         app = web.Application()
         app.router.add_post("/", self.handler)
@@ -71,6 +73,7 @@ PACKET_FIELD_DATA_PLAIN =               "data"
 PACKET_FIELD_AUTHOR_KEY_NAME =          "author_key_name"
 MAX_HOPS = 10
 
+# contributors: AGRAWASA NROBINSO
 def find_device_by_key_name(key_name: str, dis: List[DeviceInterface]) -> Optional[DeviceInterface]:
     for di in dis:
         if di.key_name == key_name:
@@ -82,6 +85,7 @@ HOP_HEADER =                    "x-g17icn-hop"
 
 class Device:
     # TODO: remove circular depedency Device has ICNEmulator and ICNEmulator has list of Device's
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     def __init__(self,
                  emulation: 'SlaveEmulator', 
                  router: Router,
@@ -108,7 +112,7 @@ class Device:
         self.desire_history = []
         self.request_handling_history = []
 
-
+    # contributors: AGRAWASA NROBINSO
     async def init_logger(self):
         await self.server.started.wait()
         log_filename = f"logs/{self.host}:{self.server.port}"
@@ -124,6 +128,7 @@ class Device:
     '''
     TODO: Shift this send/forward logic to storing and routing
     '''
+    # contributors: ZHFU NAARORA NROBINSO
     async def handle_satisfy_packet(self,packet:dict,jwt:str,hop:str=None,request=None, headers=None):
         assert type(hop) == int
         data_name = packet.get(PACKET_FIELD_DATA_NAME)
@@ -157,6 +162,7 @@ class Device:
         # TODO delete entry that time is invalid
         self.CACHE[data_name] = packet.get(PACKET_FIELD_DATA_PLAIN)
 
+    # contributors: ZHFU NAARORA NROBINSO
     async def propagate_interest(self,packet,hop=None,headers=None):
         assert type(hop) == int
         current_neighbours = self.discover_neighbours()
@@ -177,6 +183,7 @@ class Device:
         together = asyncio.gather(*tasks)
         await together
 
+    # contributors: ZHFU NAARORA NROBINSO
     async def handle_interest_packet(self, packet, jwt, hop=None,request=None,headers=None):
         assert type(hop) == int
         self.logger.debug(packet)
@@ -203,7 +210,8 @@ class Device:
             await self.propagate_interest(packet,hop=hop,headers=headers)       
         else:
             self.PIT[data_name]['waiting_list'].append(interested_key_name)
-            
+    
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     def discover_neighbours(self) -> List[DeviceInterface]:
         self.neighbours = self.emulation.discover_neighbours(self.jwt.key_name)
         for n in self.neighbours:
@@ -213,6 +221,7 @@ class Device:
         self.logger.debug(f"got neighbours {list(map(str,self.neighbours))}")
         return self.neighbours
     
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     async def http_post_request_handler(self, request: web.Request) -> web.Response:
         hop_count=None
         try:
@@ -268,6 +277,7 @@ class Device:
     '''
     Send out directly to a device
     '''
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     async def send_payload_to(self,di: DeviceInterface, payload=None, hop=0, headers=None):
 
         print(self.host, self.server.port, "HEADER TRACE")
@@ -292,6 +302,7 @@ class Device:
 
     
     # send named data to the network
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     async def send_to_network(self, data_name, data, hop, neighbour_key_names: List(str), headers=None):
         self.logger.debug(f"sending data to network {data_name}, {data}, {hop}")
 
@@ -322,9 +333,11 @@ class Device:
         gathered_tasks = asyncio.gather(*tasks)
         await gathered_tasks
 
+    # contributors: NROBINSO
     def device_interface_dict(self) -> DeviceInterface:
         return DeviceInterface.from_device(self).to_dict()
     
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     def start_queue_handler(self):
         async def handle():
             while True:
@@ -360,9 +373,11 @@ class Device:
         self.desire_queue_task = asyncio.create_task(handle())
         return self.desire_queue_task
     
+    # contributors: NROBINSO
     def router_header(self):
         return self.jwt.key_name + "_" + self.host + "_" + str(self.server.port)
 
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     async def start(self):
         self.logger.debug(f"starting node")
         self.start_queue_handler()

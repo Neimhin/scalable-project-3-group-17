@@ -1,11 +1,10 @@
+// # contributors: AGRAWASA NROBINSO
 function create_graph(topology) {
-    // Convert adjacency matrix to nodes and links
     let nodes = topology.devices.map(d => ({id: d.key_name, em:d.emulator_id, interface: d.host + ":" + d.port}));
     let uniqueItems = [...new Set(nodes.map(d=> {return d.em}))]
     console.log(uniqueItems)
     var colors = d3.scaleOrdinal().domain(uniqueItems).range(["gold", "blue", "green", "yellow", "black", "grey", "darkgreen", "pink", "brown", "slateblue", "grey1", "orange"])
   
-    // Set up the SVG
     let width = window.innerWidth;
     let height = window.innerHeight;
 
@@ -60,36 +59,11 @@ function create_graph(topology) {
             .restart();
     });
 
-    // Create the force simulation
     const simulation = d3.forceSimulation(nodes)
         .force('link', d3.forceLink(links).distance(10))
         .force('charge', d3.forceManyBody().strength(-45))
         .force('center', d3.forceCenter(width / 2, height / 2))
         .on('tick', ticked);
-
-    // function boundingBoxForce() {
-    //     return function() {
-    //         nodes.forEach(node => {
-    //             console.log(node)
-    //             if(!node.radius){
-    //                 node.radius = 5
-    //             }
-    //             node.x = Math.max(node.radius, Math.min(width - node.radius, node.x));
-    //             node.y = Math.max(node.radius, Math.min(height - node.radius, node.y));
-    //         });
-    //     }
-    // }
-    
-    // // Assuming 'simulation' is your d3.forceSimulation
-    // simulation.force('bounds', boundingBoxForce());
-
-    // Draw lines for the links
-    // const link = svg.append('g')
-    //     .attr('stroke', '#999')
-    //     .attr('stroke-opacity', 0.6)
-    //     .selectAll('line')
-    //     .data(links)
-    //     .join('line');
 
     const link = svg.append('g')
         .selectAll('line')
@@ -102,7 +76,7 @@ function create_graph(topology) {
         console.log("clicked node:", a, b, c)
         console.log("clicked node:", b.id)
     }
-    // Draw circles for the nodes
+
     const node = svg.append('g')
         .attr('stroke', '#fff')
         .attr('stroke-width', 1.5)
@@ -116,7 +90,7 @@ function create_graph(topology) {
             tooltip.transition()
                 .duration(200)
                 .style('opacity', .9);
-            tooltip.html(d.interface) // Assuming you have a 'port' attribute in your data
+            tooltip.html(d.interface)
                 .style('left', (event.pageX) + 'px')
                 .style('top', (event.pageY - 28) + 'px');
         })
@@ -161,7 +135,7 @@ function create_graph(topology) {
     }
 }
 
-
+// # contributors: NROBINSO
 function new_adjacency_matrix() {
     fetch('/current_topology')
         .then(response => {
@@ -176,3 +150,6 @@ function new_adjacency_matrix() {
             create_graph(topology)
         });
 }
+
+
+new_adjacency_matrix()

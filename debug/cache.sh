@@ -1,3 +1,4 @@
+# contributors: NROBINSO
 emulator_port=$1
 if [ -z "$emulator_port" ]; then
 	emulator_port=34000

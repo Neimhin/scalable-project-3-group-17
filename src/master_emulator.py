@@ -19,6 +19,7 @@ import random
 search through an nx.Graph to find a random pair of nodes
 where the shortest path between the nodes is n
 """
+# contributors: AGRAWASA ZHFU NAARORA NROBINSO
 def find_pair_with_path_length_n(graph: nx.Graph, n: int) -> Tuple[str, str]:
     nodes = list(graph.nodes())
     random.shuffle(nodes)
@@ -35,6 +36,7 @@ def find_pair_with_path_length_n(graph: nx.Graph, n: int) -> Tuple[str, str]:
                     continue
     raise Exception(f"not possible to find nodes at distance {n}")
 
+# contributors: NROBINSO
 def find_devices(device_names_to_find: List[str]=[], device_list=[]) -> List[dict]:
     names_to_find_set = set(device_names_to_find)
     devices = []
@@ -58,6 +60,7 @@ TODO:
 - [ ] implement a query of how widely the interest packet is disseminated
 - [ ] implement a query of how widely the satisfy packet is disseminated
 """
+# contributors: NROBINSO
 class SingleDatumTransferTest:
     def __init__(self,master_emulator: MasterEmulator, distance: int):
         global test_id
@@ -68,6 +71,7 @@ class SingleDatumTransferTest:
         self.test_id = test_id
         test_id += 1
 
+    # contributors: NROBINSO
     async def render_html(self):
         device_1 = self.device_with_data
         device_2 = self.device_with_desire
@@ -103,13 +107,14 @@ class SingleDatumTransferTest:
 
 
 
-
+    # contributors: NROBINSO
     async def start(self):
         self.topology_to_nx_graph() # convert emulator topology to networkx graph
         self.choose_random_nodes() # choose two nodes with the right shortest path length
         await self.give_data_and_desires() # send data to the chosen nodes
 
     # select to nodes, where the shortest path between them in the current topology is `distance`
+    # contributors: NROBINSO
     async def give_data_and_desires(self):
         device_1, device_2 = find_devices(
             device_names_to_find=self.random_pair,
@@ -137,6 +142,7 @@ class SingleDatumTransferTest:
             print(res2.status_code)
         return self
 
+    # contributors: NROBINSO
     def topology_to_nx_graph(self) -> 'SingleDatumTransferTest':
         ct = self.master_emulator.current_topology
         G = nx.Graph()
@@ -149,17 +155,20 @@ class SingleDatumTransferTest:
         self.graph = G
         return self
     
+    # contributors: NROBINSO
     def choose_random_nodes(self) -> 'SingleDatumTransferTest':
         random_pair = find_pair_with_path_length_n(self.graph, self.distance)
         self.random_pair = random_pair
         assert self.distance == nx.shortest_path_length(self.graph, *random_pair)
         return self
 
-
+# contributors: NROBINSO
 def generate_random_desire():
     return "/temperature"
 
+# contributors: AGRAWASA ZHFU NAARORA NROBINSO
 class MasterEmulator:
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     def __init__(self,heartbeat:Union[int,float]=1):
         self.heartbeat_interval = heartbeat
         self.trusted_keys = {}
@@ -173,11 +182,13 @@ class MasterEmulator:
         self.should_propagate = asyncio.Event()
         self.random_desire_creation_task = None
 
+    # contributors: NROBINSO
     def run(self):
         heartbeat_task = self.heartbeat()
         topology_propagation_task = self.propagate_topology()
         return [heartbeat_task, topology_propagation_task]
 
+    # contributors: NROBINSO
     def heartbeat(self) -> asyncio.Task:
         # periodically send a heartbeat request to each slave
         async def loop():
@@ -211,8 +222,7 @@ class MasterEmulator:
 
         return asyncio.create_task(loop())
     
-    ##### contributor: naarora #####
-
+    # contributors: NAARORA NROBINSO
     async def send_topology_and_trusted_keys_to_slave(self, slave: dict):
         slave_emulator_interface = slave["emulator_interface"]
         host = slave_emulator_interface['host']
@@ -229,7 +239,8 @@ class MasterEmulator:
         except Exception as e:
             print(f"failed to send topology to {host}:{port}", str(e))
             return False
-    
+        
+    # contributors: NAARORA NROBINSO
     def propagate_topology(self) -> asyncio.Task:
         async def task():
             while True:
@@ -246,12 +257,14 @@ class MasterEmulator:
                     print("exception while propagating topology", str(e))
         return asyncio.create_task(task())
 
+    # contributors: ZHFU NROBINSO
     def create_ring_topology(self):
         devices = []
         for form in self.registered_slaves:
             devices = devices + form["devices"]
         self.current_topology = schema.create_ring_topology(devices)
 
+    # contributors: NROBINSO
     def create_ocean_demo_topology(self):
         emulator_rings = []
         ring_connections = []
@@ -297,6 +310,7 @@ class MasterEmulator:
         }
         self.should_propagate.set()
         
+    # contributors: NROBINSO
     def disconnect_device(self, key_name):
         connections = []
         print(key_name, len(self.current_topology['connections']))
@@ -307,7 +321,7 @@ class MasterEmulator:
         self.current_topology['connections'] = connections
         print(key_name, len(self.current_topology['connections']))
 
-
+    # contributors: NROBINSO
     def register_slave(self, registration_form):
         for i, slave in enumerate(self.registered_slaves):
             if (registration_form["emulator_interface"]["host"] == slave["emulator_interface"]["host"] and
@@ -329,6 +343,7 @@ class MasterEmulator:
             raise e
         return "New Slave Registered"
     
+    # contributors: NROBINSO
     def mk_random_desire_generation_task(self) -> asyncio.Task[bool]:
         self.random_desire_generation_paused = asyncio.Event()
         self.random_desire_generation_paused.set()
@@ -349,40 +364,15 @@ class MasterEmulator:
                 print(f"NYI send desire {random_desire} to device {random_device}")
         return asyncio.create_task(random_desire_generation_coroutine())
 
+    # contributors: NROBINSO
     def start_generating_random_desires(self):
         if self.random_desire_creation_task:
             print("cancel random_desire_creation_task:", self.random_desire_creation_task.cancel())
         self.random_desire_creation_task = self.mk_random_desire_generation_task()
         return self.random_desire_creation_task
 
-
-def parse_arguments():
-    import argparse
-    parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
-    
-    parser.add_argument(
-        '--port', 
-        type=int, 
-        default=33000, 
-        help='Port number for the master emulator (default: 33000)'
-    )
-
-    parser.add_argument(
-        '--heartbeat', 
-        type=int, 
-        default=1, 
-        help='Interval in seconds between heartbeats.'
-    )
-
-    parser.add_argument(
-        '--host',
-        type=str, 
-        default='localhost', 
-        help='Port number for the master emulator (default: 33000)'
-    )
-        
-
 import argparse
+# contributors: AGRAWASA ZHFU NAARORA NROBINSO
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Argument parser for emulator configuration")
     
@@ -409,12 +399,15 @@ def parse_arguments():
     args = parser.parse_args()
     return args
 
+# contributors: AGRAWASA ZHFU NAARORA NROBINSO
 async def main():
     args = parse_arguments()
     emulator = MasterEmulator()
     emulator = MasterEmulator(heartbeat=args.heartbeat)
     emulator_tasks = emulator.run()
     app = quart.Quart(__name__)
+
+    # contributors: NAARORA NROBINSO
     @app.route('/register' ,methods=['POST'])
     async def register():
         print("run register")
@@ -432,22 +425,28 @@ async def main():
         except jsonschema.ValidationError as e:
             print(str(e))
             return quart.jsonify({"error": str(e)}), 400
-        
+    
+    # contributors: NROBINSO
     @app.route('/' ,methods=['GET'])
     async def index():
         print("rendering index.html")
         return await quart.render_template('index.html')
     
+    # contributors: NAARORA NROBINSO
     @app.route('/new_device_topology', methods=['GET'])
     async def new_adjacency_matrix():
         if not emulator:
             return quart.jsonify("no emulator"), 500
         return quart.jsonify(emulator.adjacency_matrix)
     
+    # debug the current registered slaves
+    # contributors: NROBINSO
     @app.route('/slaves', methods=['GET'])
     async def slave():
         return quart.jsonify(emulator.registered_slaves)
     
+    # disconnect device based on the key_name parameter or a random device if no key_name is provided
+    # contributors: AGRAWASA ZHFU NAARORA NROBINSO
     @app.route('/disconnect_device', methods=['GET'])
     async def disconnect_device():
         device_key_name = quart.request.args.get('key_name',default=None, type=str)
@@ -465,11 +464,14 @@ async def main():
         emulator.should_propagate.set()
         return f"<div>disconnected device: {device_key_name[:8]} {device['host']}:{device['port']}</div>", 200
     
+    # reconnect nodes in topology
+    # contributors: NROBINSO
     @app.route('/restore_topology', methods=['GET'])
     async def restore_topology():
         emulator.create_ocean_demo_topology()
         return "done", 200
     
+    # contributors: NROBINSO
     @app.route('/devices', methods=['GET'])
     async def devices_index():
         import render
@@ -480,25 +482,28 @@ async def main():
         rendered_html = await quart.render_template_string(html)
         print(rendered_html)
         return rendered_html, 200
-    
+
+    # contributors: NROBINSO   
     @app.route('/start_generating_random_desires', methods=['GET'])
     async def start_generating_random_desires():
         emulator.start_generating_random_desires()
         return 'started', 200
     
+    # contributors: NROBINSO
     @app.route('/stop_generating_random_desires', methods=['GET'])
     async def stop_generating_random_desires():
         await emulator.stop_generating_random_desires()
         return 'stopped', 200
         
     # for vis
+    # contributors: NROBINSO
     @app.route('/current_topology', methods=['GET'])
     async def current_topology():
         if not emulator:
             return quart.jsonify("no emulator"), 500
         return quart.jsonify(emulator.current_topology)
-    
 
+    # contributors: NROBINSO
     single_datum_tests: List[SingleDatumTransferTest] = []
     @app.route('/start_single_datum_test', methods=['GET'])
     async def start_single_datum_test():
@@ -512,11 +517,13 @@ async def main():
         desire_receiver = sdt.random_pair[1]
         return quart.jsonify(f"Gave data to {data_giver} and desire to {desire_receiver}"), 200
     
+    # contributors: NROBINSO
     @app.route("/test_report", methods=['GET'])
     async def test_report():
         results = await asyncio.gather(*[asyncio.create_task(test.render_html()) for test in single_datum_tests])
         return "".join(results), 200
     
+    # contributors: NROBINSO
     @app.route('/debug/single_datum_test', methods=['GET'])
     async def debug_single_datum_test():
         if not emulator:
@@ -525,12 +532,14 @@ async def main():
         sdt.topology_to_nx_graph()
         return quart.jsonify(sdt.random_pair)
     
+    # contributors: NROBINSO
     @app.after_serving
     async def shutdown():
         print("shuttting down...")
         for task in emulator_tasks:
             task.cancel()
-        
+    
+    # contributors: NROBINSO
     def signal_handler():
         print("interruption signal received")
         for t in emulator_tasks:
@@ -550,8 +559,7 @@ async def main():
 
 
 # This script instantiates master emulator
-# optionally starts vis server
-# start master_http
+# and starts vis server
 if __name__ == "__main__":
     try:
         asyncio.run(main())
