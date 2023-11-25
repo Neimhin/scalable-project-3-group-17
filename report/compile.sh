@@ -1,1 +1,0 @@
-latexmk -pdf report.tex
