@@ -17,20 +17,21 @@
     border-radius: 1px;
     pointer-events: none;
 }
-#devices_list #test_reoprt {
+#devices_list, #test_report, #command_log {
   height: 10em;
+  width: 50%;
   overflow: auto;
 }
 </style>
   </head>
   <body>
     <h1>commands</h1>
-    <button onclick="endpoint('/start_generating_random_desires')">start generating random desires</button><br>
-    <button onclick="endpoint('/start_single_datum_test?distance=1')">start single datum test distance 1</button><br>
-    <button onclick="endpoint('/start_single_datum_test?distance=2')">start single datum test distance 2</button><br>
-    <button onclick="endpoint('/start_single_datum_test?distance=3')">start single datum test distance 3</button><br>
-    <button onclick="endpoint('/start_single_datum_test?distance=4')">start single datum test distance 4</button><br>
-    <button onclick="endpoint('/start_single_datum_test?distance=5')">start single datum test distance 5</button><br>
+    <button hx-get='/start_single_datum_test?distance=1' hx-target="#command_log" hx-swap="afterend">start single datum test distance 1</button><br>
+    <button hx-get='/start_single_datum_test?distance=2' hx-target="#command_log" hx-swap="afterend">start single datum test distance 2</button><br>
+    <button hx-get='/start_single_datum_test?distance=3' hx-target="#command_log" hx-swap="afterend">start single datum test distance 3</button><br>
+    <button hx-get='/start_single_datum_test?distance=4' hx-target="#command_log" hx-swap="afterend">start single datum test distance 4</button><br>
+    <button hx-get='/start_single_datum_test?distance=5' hx-target="#command_log" hx-swap="afterend">start single datum test distance 5</button><br>
+
     <h1>tests</h1>
     <button hx-get="/test_report" hx-target="#test_report">refresh test report</button>
     <div id="test_report"></div>
@@ -40,12 +41,16 @@
       <button  hx-get="/devices" hx-target="#devices_list">refresh devices</button>
     </div>  
     <h1>network topology</h1>
-    <button hx-get="/restore_topology" hx-target="#log" hx-swap="afterend">restore-topology (reconnect all nodes)</button>
+    <button hx-get="/restore_topology" hx-target="#command_log" hx-swap="afterend">restore-topology (reconnect all nodes)</button>
     <button onclick="new_adjacency_matrix()">refresh topology</button>
-    <button hx-get="/disconnect_device" hx-target="#log" hx-swap="afterend">disconnect a random device</button>
+    <button hx-get="/disconnect_device" hx-target="#command_log" hx-swap="afterend">disconnect a random device</button>
     <div id="graph"></div>
+
     <h1>command log</h1>
-    <div id="log"></div>
+    <div>
+      <div id="command_log"></div>
+    </div>
+
     <script src="{{ url_for('static', filename='js/d3_graph.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
   </body>

@@ -304,7 +304,9 @@ async def main():
             return "bad request", 400
         for device in emulator.devices:
             if device.jwt.key_name == key_name:
+                print(device.CACHE)
                 return quart.jsonify(device.CACHE)
+        print(f"device not found: {key_name}")
         return "device not found", 400
 
     @app.route('/debug/cache' ,methods=['GET'])

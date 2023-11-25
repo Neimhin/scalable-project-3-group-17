@@ -71,25 +71,33 @@ class SingleDatumTransferTest:
     async def render_html(self):
         device_1 = self.device_with_data
         device_2 = self.device_with_desire
+        h1 = device_1['emulator_host']
+        p1 = device_1['emulator_port']
+        k1 = device_1['key_name']
         h2 = device_2['emulator_host']
         p2 = device_2['emulator_port']
         k2 = device_2['key_name']
         async with http_client.no_proxy() as client:
-            device_2_cache = await client.get(f"http://{h2}:{p2}/device_cache?key_name={k2}").json()
+            res = await client.get(f"http://{h1}:{p1}/device_cache?key_name={k1}")
+            device_1_cache = res.json()
+            res = await client.get(f"http://{h2}:{p2}/device_cache?key_name={k2}")
+            device_2_cache = res.json()
             test_passed = self.data_name in device_2_cache
             return f"""
 <div>
     <h2>test {self.test_id}</h2>
+    distance: {self.distance}<br>
     passed: <span style='color: {'green' if test_passed else 'red'};'>{'✓' if test_passed else '✗'}</span>
     data name: {self.data_name}<br>
     data: {self.data}<br>
     <h3>device with data</h3>
         emulator id: {device_1['emulator_id']}<br>
         interface:  {device_1['host']}:{device_1['port']}<br>
+        cache: {device_1_cache}<br>
     <h3>device with desire</h3>
         emulator id: {device_1['emulator_id']}<br>
         interface:  {device_1['host']}:{device_1['port']}<br>
-        cache: {device_2_cache}
+        cache: {device_2_cache}<br>
 </div>
 """
 
@@ -449,12 +457,11 @@ async def main():
             device = random.choice(emulator.current_topology['devices'])
             device_key_name = device['key_name']
         else:
-            for d in emulator.current_topology['devices']
-                if d['key_name'] == device_key_name
+            for d in emulator.current_topology['devices']:
+                if d['key_name'] == device_key_name:
                     device = d
                     break
         emulator.disconnect_device(device_key_name)
-        for device
         emulator.should_propagate.set()
         return f"<div>disconnected device: {device_key_name[:8]} {device['host']}:{device['port']}</div>", 200
     

@@ -237,13 +237,13 @@ class Device:
             self.logger.debug(f"wrong number of trace headers: got {len(trace_headers)}, should be {hop_count + 1}")
             return web.Response(text="bad trace headers",status=400)
         
-        if hop_count + 1 > MAX_HOPS:
+        if (hop_count + 1) > MAX_HOPS:
             self.logger.debug(f"too many hops")
-            return web.Response(text="too many hops",status=400)
+            return web.Response(text="too many hops")
 
-        # if not list_is_unique(trace_headers.values()):
-        #     self.logger.debug(f"loop detected in headers {trace_headers}")
-        #     return web.Response(text="loop detected")
+        if not list_is_unique(trace_headers.values()):
+            self.logger.debug(f"loop detected in headers {trace_headers}")
+            return web.Response(text="loop detected")
 
         trace_headers[f"x-g17icn-router-{hop_count + 1}"] = self.router_header()
 
