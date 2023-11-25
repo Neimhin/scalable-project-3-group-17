@@ -16,7 +16,7 @@ def get_ip_address() -> str:
                 ipv4s = addrs[netifaces.AF_INET]
                 for ipv4 in ipv4s:
                     ip = ipv4['addr']
-                    if ip != "127.0.0.1":  # Exclude localhost
+                    if ip != "127.0.0.1":  # Exclude 127.0.0.1
                         cached_ip_address = ip
                         return ip
 

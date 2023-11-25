@@ -44,7 +44,7 @@ class DeviceInterface:
     # param device: DeviceInterface
     def from_device(device) -> 'DeviceInterface':
         host = device.server.host
-        if not host == 'localhost':
+        if not host == '127.0.0.1':
             ip = host.split(".")
             try:
                 assert len(ip) == 4

@@ -44,7 +44,7 @@ def extract_trace_headers(request: web.Request) -> dict[str,str]:
 # contributors: ZHFU NROBINSO
 class HTTPServer:
     # contributors: ZHFU NROBINSO
-    def __init__(self,handler: AiohttpHandler, host:str='localhost'):
+    def __init__(self,handler: AiohttpHandler, host:str='127.0.0.1'):
         self.logger = logging.getLogger()
         self.port = None
         self.handler = handler
@@ -90,7 +90,7 @@ class Device:
                  emulation: 'SlaveEmulator', 
                  router: Router,
                  jwt_algorithm:str='RS256',
-                 host:str='localhost',
+                 host:str='127.0.0.1',
                  key_size:Literal[512,1024,2048]=512,
                  ):
         self.host = host

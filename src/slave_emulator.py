@@ -18,7 +18,7 @@ from typing import Optional
 from router import BasicRouter
 
 class SlaveEmulator:
-    def __init__(self,num_nodes:int=3,jwt_algorithm:str=JWT.ALGORITHM,port:int=34000,host:str='localhost',master_port:int=33000, master_host:Optional[str]=None):
+    def __init__(self,num_nodes:int=3,jwt_algorithm:str=JWT.ALGORITHM,port:int=34000,host:str='127.0.0.1',master_port:int=33000, master_host:Optional[str]=None):
         self.port = port
         self.host = host or get_ip_address.get_ip_address()
         self.num_nodes = num_nodes
@@ -154,8 +154,8 @@ def parse_arguments():
     parser.add_argument(
         '--host', 
         type=str, 
-        default='localhost', 
-        help='Port number for host (default: localhost)'
+        default='127.0.0.1', 
+        help='Port number for host (default: 127.0.0.1)'
     )
 
     parser.add_argument(
@@ -168,7 +168,7 @@ def parse_arguments():
     parser.add_argument(
         '--master-host', 
         type=str, 
-        default='localhost', 
+        default='127.0.0.1', 
         help='Host address for the master emulator (default: None)'
     )
 

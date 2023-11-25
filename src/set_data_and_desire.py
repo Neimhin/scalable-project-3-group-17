@@ -18,11 +18,11 @@ data_name = '/sensor/measurements'
 data = sdg.get_measurements()
 
 
-set_data_url=f"http://localhost:{data_port}/give_data_to_random_device?data_name={data_name}&data={data}"
+set_data_url=f"http://127.0.0.1:{data_port}/give_data_to_random_device?data_name={data_name}&data={data}"
 response_data = requests.get(set_data_url)
 print(f"Response from giving data: {response_data.text}")
 
 
-desire_url=f"http://localhost:{desire_port}/set_desire_for_one?data_name={data_name}"
+desire_url=f"http://127.0.0.1:{desire_port}/set_desire_for_one?data_name={data_name}"
 response_desire = requests.get(desire_url)
 print(f"Response from setting desire: {response_desire.text}")
