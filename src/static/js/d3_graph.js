@@ -28,8 +28,8 @@ function create_graph(topology) {
     d3.select('#graph').selectAll("*").remove()
 
     // Set up the SVG
-    let width = '600';
-    let height = '600';
+    let width = window.innerWidth;
+    let height = window.innerHeight;
     const svg = d3.select('#graph')
         .append('svg')
         .attr('width', width)
@@ -37,14 +37,20 @@ function create_graph(topology) {
 
     window.addEventListener('resize', () => {
         console.log('resize');
-        svg.attr("width", window.innerWidth)
-            .attr("height", window.innerHeight);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        svg.attr("width", width)
+            .attr("height", height);
+
+        simulation.force('center', d3.forceCenter(width/2,height/2))
+            .alpha(1)
+            .restart();
     });
 
     // Create the force simulation
     const simulation = d3.forceSimulation(nodes)
-        .force('link', d3.forceLink(links).distance(100))
-        .force('charge', d3.forceManyBody())
+        .force('link', d3.forceLink(links).distance(10))
+        .force('charge', d3.forceManyBody().strength(-7))
         .force('center', d3.forceCenter(width / 2, height / 2))
         .on('tick', ticked);
 
@@ -100,7 +106,6 @@ function create_graph(topology) {
                 .style('opacity', 0);
         });
 
-    // Update positions each tick
     function ticked() {
         link
             .attr('x1', d => d.source.x)
@@ -113,7 +118,6 @@ function create_graph(topology) {
             .attr('cy', d => d.y);
     }
 
-    // Optionally, add drag behavior
     node.call(d3.drag()
         .on('start', dragstarted)
         .on('drag', dragged)
@@ -137,38 +141,6 @@ function create_graph(topology) {
     }
 }
 
-function updateGraph(newMatrix) {
-    // Convert the new adjacency matrix to nodes and links
-    let newNodes = newMatrix.map((_, i) => ({ id: i }));
-    let newLinks = [];
-
-    newMatrix.forEach((row, i) => {
-        row.forEach((cell, j) => {
-            if (cell === 1 && i < j) { // Avoid duplicates
-                newLinks.push({ source: i, target: j });
-            }
-        });
-    });
-
-    // Update the nodes and links data
-    nodes = newNodes;
-    links = newLinks;
-
-    // Restart the simulation with new data
-    simulation.nodes(nodes);
-    simulation.force('link').links(links);
-    simulation.alpha(1).restart();
-
-    // Re-bind the data to the node and link elements
-    link = link.data(links, d => d.source.id + "-" + d.target.id);
-    link.exit().remove();
-    link.enter().append('line')
-        // additional attributes for new links
-
-    node = node.data(nodes, d => d.id);
-    node.exit().remove();
-    node.enter().append('circle')
-}
 
 function new_adjacency_matrix() {
     fetch('/current_topology')

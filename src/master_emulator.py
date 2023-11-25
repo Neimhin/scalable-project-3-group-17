@@ -52,7 +52,7 @@ The class includes functionality to test whether the desiring node has received 
 
 TODO:
 - [x] implement selection of two nodes with a shortest path of `distance` -- nrobinso
-- [ ] implement desire and data dissemination
+- [x] implement desire and data dissemination
 - [ ] implement a query of how widely the interest packet is disseminated
 - [ ] implement a query of how widely the satisfy packet is disseminated
 """
