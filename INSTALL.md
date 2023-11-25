@@ -7,5 +7,8 @@ Follow the instructions on the rustup website to [install rust](https://rustup.r
 Source your .bashrc to make sure `rustc` is on your path:
 `source ~/.bashrc`
 
-### install the python dependencies
-`pip install -f requirements.txt`
+With rustc installed on the pi you should now be able to install the pip `cryptography` library:
+`pip install cryptography`.
+
+### install the rest of the python dependencies
+`pip install -r requirements.txt`
