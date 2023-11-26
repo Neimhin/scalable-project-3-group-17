@@ -1,4 +1,6 @@
 '''
+contributor: Naman Arora
+
 Base script to generate random various sensor data
 
 '''
