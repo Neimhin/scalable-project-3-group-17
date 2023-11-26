@@ -1,5 +1,7 @@
 import ipaddress
 
+# CONTRIBUTOR: NAARORA
+
 class DeviceInterface:
     def __init__(self, host,port,key_name):
         self.host = host
