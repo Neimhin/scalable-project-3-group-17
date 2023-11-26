@@ -90,7 +90,7 @@ class Routing:
         self.pit = PIT()
         self.fib = FIB()
         # self.devices would be a mapping of device IDs to network interfaces or connections
-        # for us it will the ports ??
+        # for us it will be the ports ??
 
     def handle_interest(self, interest_packet, incoming_device):
         # Check content store
@@ -118,47 +118,4 @@ class Routing:
         self.pit.remove_entry(data_packet.data_name)
         # Add data to content store
         self.content_store.add_data(data_packet)
-
     
-    # The longest match between the name of the matched interest packet and the prefix in the fib,
-    # returned with the fib storage format, and not contains urls that do not match at all
-    def longestPrefix(self, str_packet):
-        match_fib = dict()
-        resorted = list()
-        # split the url with '/'
-        packet_len = len(str_packet.split('/'))
-        print(str_packet)
-        # print(len(self.fib))
-
-        # match how many strings between the packet name and fib
-        for k in range(len(self.fib)):
-            fib_len = len(self.fib[k][0].split('/'))
-            # get the length of the shorter string
-            loop_len = fib_len if packet_len > fib_len else packet_len
-            prefix_len = 0
-            # print(loop_len)
-            for i in range(loop_len):
-                if str_packet.split('/')[i] == self.fib[k][0].split('/')[i]:
-                    prefix_len += 1
-                else:
-                    break
-            # set the largest level if match completely
-            if str_packet == self.fib[k][0]:
-                loop_len = 9999
-                print(0)
-                print(self.fib[k])
-                return [list(self.fib[k])]
-            # If matches more than one string, it is added to the dictionary
-            if prefix_len > 1:
-                match_fib[self.fib[k][0]] = loop_len
-
-        # rank the dictionary
-        resorted = sorted(match_fib.items(), key=lambda x: x[1], reverse=True)
-
-        # return the data has the same format with fib table
-        resorted_fib = list(tuple())
-        for i in range(len(resorted)):
-            for k in self.fib:
-                if (resorted[i][0] == k[0]) & (len(k[0].split('/')) != 4):
-                    resorted_fib.append(k)
-        return resorted_fib
