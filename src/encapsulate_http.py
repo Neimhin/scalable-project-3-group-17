@@ -1,3 +1,5 @@
+# CONTRIBUTOR: NAARORA
+
 import socket
 import asyncio
 def http_request(path, tcp_host, tcp_port, method='GET',headers=[],body=""):
