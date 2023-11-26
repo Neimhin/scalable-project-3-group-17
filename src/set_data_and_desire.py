@@ -1,3 +1,5 @@
+# CONTRIBUTOR: NAARORA
+
 '''
 set data for one device within the slave
 set a desire for the above data from some other device (mayber in some other slave emulator?)
