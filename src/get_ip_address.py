@@ -1,3 +1,5 @@
+# CONTRIBUTORS: NROBINSO, NAARORA
+
 import netifaces
 from typing import Optional
 

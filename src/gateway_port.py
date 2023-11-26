@@ -1,3 +1,5 @@
+# CONTRIBUTORS: NROBINSO, NAARORA
+
 import socket
 
 START_PORT = 33100
